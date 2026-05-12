@@ -27,89 +27,55 @@ export async function POST(req: Request) {
 
     // ─── SEND OTP ─────────────────────────────────────────────────────────────
     if (action === 'send') {
-
-      // ✅ SECURITY FIX: Cross-Role Email Check
-      // Prevent any signup if the email already exists in our users registry
       const existingUser = await db.collection('users').where('email', '==', email).limit(1).get();
       if (!existingUser.empty) {
-        return NextResponse.json({ error: 'This email is already registered with another account.' }, { status: 400 });
+        return NextResponse.json({ error: 'This email is already registered.' }, { status: 400 });
       }
 
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = Date.now() + 10 * 60 * 1000;
 
       await db.collection('otps').doc(email).set({ otp, expiresAt, used: false });
+      console.log(`[OTP] Code generated for ${email}`);
 
-      // ✅ SECURITY FIX: Never log the actual OTP value
-      console.log(`[OTP] Code sent to ${email}`);
-
-      // Send email — fire and forget (never blocks the response)
       const subject = `${otp} is your Blueteeth verification code`;
-      const html = `
-        <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:30px;border:1px solid #e2e8f0;border-radius:12px;">
+      const html = `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:30px;border:1px solid #e2e8f0;border-radius:12px;">
           <h2 style="color:#0891b2;margin:0 0 16px;">Blueteeth Verification</h2>
           <p style="color:#475569;">Hello <strong>${(name || 'User').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</strong>,</p>
-          <p style="color:#475569;">Your one-time verification code is:</p>
+          <p style="color:#475569;">Your verification code is:</p>
           <div style="background:#f1f5f9;border-radius:8px;padding:20px;text-align:center;font-size:36px;font-weight:900;letter-spacing:8px;color:#0891b2;">${otp}</div>
-          <p style="color:#94a3b8;font-size:12px;margin-top:16px;">Valid for 10 minutes. Do not share this code.</p>
-        </div>
-      `;
+        </div>`;
 
-      (async () => {
-        // Try Resend first
-        if (process.env.RESEND_API_KEY) {
-          try {
-            const r = await fetch('https://api.resend.com/emails', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                from: 'Blueteeth <onboarding@resend.dev>',
-                to: [email],
-                subject,
-                html
-              })
-            });
-            const d = await r.json();
-            if (d.id) { console.log('✅ Email sent via Resend:', d.id); return; }
-            console.error('❌ Resend error:', JSON.stringify(d));
-          } catch (e: any) {
-            console.error('❌ Resend exception:', e.message);
-          }
-        }
+      // 🚀 AWAIT EMAIL SENDING FOR DEBUGGING
+      let emailSent = false;
+      
+      if (process.env.RESEND_API_KEY) {
+        try {
+          const r = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ from: 'Blueteeth <onboarding@resend.dev>', to: [email], subject, html })
+          });
+          if (r.ok) emailSent = true;
+        } catch (e) { console.error('Resend failed'); }
+      }
 
-        // Fallback to Gmail
-        if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
-          try {
-            const t = nodemailer.createTransport({
-              host: 'smtp.gmail.com',
-              port: 587,
-              secure: false,
-              auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_APP_PASSWORD
-              }
-            });
-            await t.sendMail({
-              from: `"Blueteeth" <${process.env.GMAIL_USER}>`,
-              to: email,
-              subject,
-              html
-            });
-            console.log('✅ Email sent via Gmail');
-          } catch (e: any) {
-            console.error('❌ Gmail error:', e.message);
-          }
-        }
+      if (!emailSent && process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+        try {
+          const t = nodemailer.createTransport({
+            host: 'smtp.gmail.com', port: 587, secure: false,
+            auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD }
+          });
+          await t.sendMail({ from: `"Blueteeth" <${process.env.GMAIL_USER}>`, to: email, subject, html });
+          emailSent = true;
+          console.log('✅ Email sent via Gmail');
+        } catch (e: any) { console.error('❌ Gmail error:', e.message); }
+      }
 
-        if (!process.env.RESEND_API_KEY && !process.env.GMAIL_USER) {
-          console.warn('⚠️  No email provider configured. Code is in terminal above.');
-        }
-      })();
+      if (!emailSent) {
+        return NextResponse.json({ error: 'Failed to deliver verification email. Contact admin.' }, { status: 500 });
+      }
 
-      // Respond IMMEDIATELY — email sends in background
       return NextResponse.json({ message: 'OTP sent' });
     }
 
