@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /signup
+
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /_next/
+
+Sitemap: https://blueteeth-rewards.vercel.app/sitemap.xml

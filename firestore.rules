@@ -1,0 +1,81 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Direct check for admin role without recursion issues
+    function isAdmin() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      // Allow read if it's the user's own profile OR if the requester is an admin
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      
+      // Allow update if it's the user's own profile (but prevent role changes) OR if requester is an admin
+      allow update: if isAuthenticated() && (
+        isAdmin() || 
+        (request.auth.uid == userId && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])))
+      );
+      
+      // Allow creation during signup - Ensure uid matches
+      allow create: if isAuthenticated() && request.auth.uid == userId && 
+                    request.resource.data.uid == request.auth.uid;
+      
+      allow delete: if isAdmin();
+    }
+
+    // Cases Collection
+    match /cases/{caseId} {
+      // List queries must be filtered by clinicianId or associateId in the code
+      // Admins bypass this filter
+      allow read: if isAuthenticated() && (
+        isAdmin() ||
+        resource.data.clinicianId == request.auth.uid ||
+        resource.data.associateId == request.auth.uid
+      );
+
+      // Only associates can create cases, and must own them
+      allow create: if isAuthenticated() && 
+                    request.resource.data.associateId == request.auth.uid;
+      
+      // Only Admins or the assigned Clinician can update
+      allow update: if isAuthenticated() && (
+        isAdmin() ||
+        resource.data.clinicianId == request.auth.uid
+      );
+      
+      allow delete: if isAdmin();
+    }
+
+    // Payouts (General/Associates)
+    match /payouts/{payoutId} {
+      allow read: if isAuthenticated() && (isAdmin() || resource.data.clinicianId == request.auth.uid || resource.data.associateId == request.auth.uid);
+      allow create: if isAuthenticated() && (request.resource.data.clinicianId == request.auth.uid || request.resource.data.associateId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // Clinician Specific Payouts
+    match /clinicianPayouts/{payoutId} {
+      allow read: if isAuthenticated() && (isAdmin() || resource.data.clinicianId == request.auth.uid);
+      allow create: if isAuthenticated() && request.resource.data.clinicianId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      // Users can only see their own notifications
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      // Admins can create notifications, users can update their own (mark as read)
+      allow write: if isAuthenticated() && (isAdmin() || resource.data.userId == request.auth.uid);
+    }
+  }
+}

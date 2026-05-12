@@ -1,0 +1,48 @@
+{
+  "name": "blueteeth-portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
+    "@opentelemetry/api": "^1.9.1",
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/nodemailer": "^6.4.16",
+    "axios": "^1.7.7",
+    "cloudinary": "^2.5.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "firebase": "^10.14.1",
+    "firebase-admin": "^12.7.0",
+    "framer-motion": "^11.11.17",
+    "jspdf": "^2.5.2",
+    "lucide-react": "^0.460.0",
+    "next": "15.1.0",
+    "nodemailer": "^6.9.16",
+    "razorpay": "^2.9.5",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-dropzone": "^14.3.5",
+    "react-easy-crop": "^5.1.0",
+    "react-hook-form": "^7.53.2",
+    "react-hot-toast": "^2.4.1",
+    "recharts": "^2.13.3",
+    "resend": "^4.0.1",
+    "tailwind-merge": "^2.5.4",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.6",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "15.1.0",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^5.6.3"
+  }
+}
