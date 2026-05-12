@@ -76,22 +76,25 @@ export async function POST(request: Request) {
 
     const safeExt = fileExt;
 
-    // ✅ UNIQUE FILE ID
-    const fileId = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
-    const uniqueFilename = `${fileId}.${safeExt}`;
-    
-    // Ensure public/uploads directory exists
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
-      // Ignore if directory already exists
-    }
+    // ✅ UPLOAD TO CLOUDINARY
+    // We use a dynamic import to avoid issues if cloudinary isn't used elsewhere
+    const cloudinary = (await import('cloudinary')).v2;
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
 
-    // Write file to public/uploads
-    const storagePath = `uploads/${uniqueFilename}`;
-    const absolutePath = join(uploadDir, uniqueFilename);
-    await writeFile(absolutePath, buffer);
+    // Convert buffer to base64 for Cloudinary
+    const base64File = `data:${detectedMime};base64,${buffer.toString('base64')}`;
+    
+    const uploadResponse = await cloudinary.uploader.upload(base64File, {
+      folder: 'blueteeth_proofs',
+      resource_type: 'auto',
+    });
+
+    const fileId = uploadResponse.public_id.split('/').pop() || uploadResponse.public_id;
+    const storagePath = uploadResponse.secure_url; // Cloudinary URL
 
     // ✅ REGISTER FILE OWNERSHIP
     const userRole = (await getAdminDb()?.collection('users').doc(decodedToken.uid).get())?.data()?.role || 'unknown';
@@ -101,7 +104,7 @@ export async function POST(request: Request) {
       ownerId: decodedToken.uid,
       uploaderRole: userRole,
       caseId: caseId || undefined,
-      storagePath: storagePath
+      storagePath: storagePath // Store Cloudinary URL
     });
 
     // ✅ AUDIT LOG
@@ -111,12 +114,12 @@ export async function POST(request: Request) {
       action: 'FILE_UPLOAD',
       resource: 'FILE',
       resourceId: fileId,
-      metadata: { filename: file.name, size: buffer.byteLength }
+      metadata: { filename: file.name, size: buffer.byteLength, provider: 'cloudinary' }
     });
 
-    return NextResponse.json({ success: true, fileId, url: `/api/view-file?id=${fileId}` });
+    return NextResponse.json({ success: true, fileId, url: storagePath });
   } catch (error: any) {
-    console.error('🔥 Local Upload Error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('🔥 Cloudinary Upload Error:', error);
+    return NextResponse.json({ success: false, error: `Upload failed: ${error.message}` }, { status: 500 });
   }
 }
