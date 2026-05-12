@@ -148,7 +148,8 @@ export default function SubmitCasePage() {
         });
         
         if (!res.ok) {
-          throw new Error("Internal server upload failed.");
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || "Internal server upload failed.");
         }
         
         const data = await res.json();
