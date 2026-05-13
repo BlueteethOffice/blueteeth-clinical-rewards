@@ -64,6 +64,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(false);
     }
 
+    // 🛡️ FAIL-SAFE: Force loading to false after 3 seconds no matter what
+    const forceLoadTimeout = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+
     const unsubscribeAuth = onAuthStateChanged(auth, async (fUser) => {
       if (unsubscribeSnapshot) {
         unsubscribeSnapshot();

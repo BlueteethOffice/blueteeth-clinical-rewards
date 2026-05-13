@@ -37,19 +37,10 @@ export default function DashboardLayout({ children, hideNavbar = false }: { chil
 
   if (!mounted) return <div className="h-screen bg-slate-50 dark:bg-[#020617]" />;
 
-  // ⚡ NITRO LOAD: If we have a user (even from cache), show the UI immediately
-  if (loading && !user) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-[#020617]">
-        <div className="text-center">
-          <div className="relative w-16 h-16 mx-auto mb-6">
-            <div className="absolute inset-0 border-4 border-cyan-100 dark:border-white/5 rounded-full" />
-            <div className="absolute inset-0 border-4 border-t-cyan-500 rounded-full animate-spin" />
-          </div>
-          <p className="text-slate-400 dark:text-slate-500 font-black uppercase text-[9px] tracking-[0.3em]">Connecting...</p>
-        </div>
-      </div>
-    );
+  // ⚡ ANTI-STUCK: Never show a full-screen spinner that blocks the user
+  if (!user && loading && mounted) {
+    // Show a minimal skeleton or nothing instead of a blocking spinner
+    return <div className="min-h-screen bg-slate-50 dark:bg-[#020617]" />;
   }
 
   return (
