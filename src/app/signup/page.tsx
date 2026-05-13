@@ -122,6 +122,17 @@ export default function SignupPage() {
         registrationNumber: formData.role === 'clinician' ? formData.registrationNumber : null
       });
       
+      // ⚡ NITRO CACHE: Set cache immediately so dashboard opens instantly
+      const cachedUser = {
+        uid: user.uid,
+        name: finalName,
+        email: cleanEmail,
+        role: formData.role,
+        displayName: formData.role === 'clinician' ? `Dr. ${finalName}` : finalName
+      };
+      localStorage.setItem('cached_user', JSON.stringify(cachedUser));
+      sessionStorage.setItem('2fa_verified', 'true');
+      
       // ✅ SECURITY: Pass token for authenticated welcome email
       const token = await user.getIdToken();
       fetch('/api/auth/welcome', {
@@ -134,7 +145,8 @@ export default function SignupPage() {
       }).catch((e) => console.error("Welcome email trigger failed:", e));
 
       setStep('success');
-      setTimeout(() => router.push('/dashboard'), 2000);
+      // 🚀 BULLET REDIRECT: Go straight to the role hub to bypass middle-man redirects
+      setTimeout(() => router.replace(`/dashboard/${formData.role}`), 1500);
     } catch (error: any) {
       let msg = error.message || 'Signup failed';
       if (error.code === 'auth/email-already-in-use') {
