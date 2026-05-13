@@ -169,26 +169,16 @@ export default function LandingPage() {
             </motion.p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              {user ? (
-                <Link href={`/dashboard/${user.role}`} className="w-full sm:w-auto">
-                  <button className="group w-full px-10 py-4 premium-gradient text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
-                    Enter Workspace <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </Link>
-              ) : (
-                <>
-                  <Link href="/signup" className="w-full sm:w-auto">
-                    <button className="group w-full px-7 py-3 premium-gradient text-white rounded-xl font-bold text-sm shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
-                      Join as Practitioner <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  </Link>
-                  <Link href="/login" className="w-full sm:w-auto">
-                    <button className="w-full px-7 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.03]">
-                      Admin Access
-                    </button>
-                  </Link>
-                </>
-              )}
+              <Link href="/signup" className="w-full sm:w-auto">
+                <button className="group w-full px-10 py-4 premium-gradient text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
+                  Join Now <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+              </Link>
+              <Link href="/login" className="w-full sm:w-auto">
+                <button className="w-full px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.03]">
+                  Admin Access
+                </button>
+              </Link>
             </div>
           </motion.div>
 
