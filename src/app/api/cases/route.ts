@@ -49,17 +49,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    q = q.orderBy('createdAt', 'desc') as any;
+    // NOTE: No orderBy to avoid needing a composite index.
+    // Sorting is done client-side after fetch.
+    const snapshot = await q.limit(limit * 3).get(); // Fetch more to compensate for sort
+    let cases = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+    
+    // Client-side sort by createdAt desc
+    cases.sort((a: any, b: any) => {
+      const timeA = a.createdAt?._seconds || 0;
+      const timeB = b.createdAt?._seconds || 0;
+      return timeB - timeA;
+    });
 
+    // Apply pagination manually
     if (lastId) {
-      const lastDoc = await db.collection('cases').doc(lastId).get();
-      if (lastDoc.exists) {
-        q = q.startAfter(lastDoc) as any;
-      }
+      const lastIndex = cases.findIndex((c: any) => c.id === lastId);
+      if (lastIndex !== -1) cases = cases.slice(lastIndex + 1);
     }
-
-    const snapshot = await q.limit(limit).get();
-    const cases = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    cases = cases.slice(0, limit);
 
     return NextResponse.json({ 
       cases,
