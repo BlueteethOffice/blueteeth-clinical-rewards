@@ -37,10 +37,18 @@ export default function DashboardLayout({ children, hideNavbar = false }: { chil
 
   if (!mounted) return <div className="h-screen bg-slate-50 dark:bg-[#020617]" />;
 
-  // ⚡ ANTI-STUCK: Never show a full-screen spinner that blocks the user
+  // ⚡ ANTI-STUCK: Show a premium pulse shell instead of a blank white screen
   if (!user && loading && mounted) {
-    // Show a minimal skeleton or nothing instead of a blocking spinner
-    return <div className="min-h-screen bg-slate-50 dark:bg-[#020617]" />;
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center border border-cyan-500/20 animate-pulse">
+            <div className="w-6 h-6 bg-cyan-500 rounded-lg opacity-40" />
+          </div>
+          <p className="text-[10px] font-black text-cyan-600/40 uppercase tracking-[0.4em] animate-pulse">Syncing Intel...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

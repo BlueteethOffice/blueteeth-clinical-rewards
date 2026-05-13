@@ -23,7 +23,7 @@ const ColorfulLoginIcon = () => (
 );
 
 export default function LoginPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, firebaseUser } = useAuth();
   const [step, setStep] = useState<'login' | 'otp'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,14 +36,15 @@ export default function LoginPage() {
   const [showReset, setShowReset] = useState(false);
   const router = useRouter();
 
-  // Auto-redirect if already logged in and verified
+  // 🛡️ SECURITY FIX: Only auto-redirect when Firebase has ACTUALLY confirmed the session
+  // Never redirect from localStorage cache alone - that's the root cause of auto-login bug
   useEffect(() => {
-    if (!authLoading && user) {
+    if (!authLoading && user && firebaseUser) {
+      // Firebase session is confirmed - now safe to redirect
       const isVerified = sessionStorage.getItem('2fa_verified') === 'true';
       if (!user.twoFAEnabled || isVerified) {
-        router.push('/dashboard');
+        router.replace(`/dashboard/${user.role}`);
       } else if (user.twoFAEnabled && !isVerified && step === 'login') {
-        // If they are logged in but need 2FA, show OTP screen
         setTempUser({
           uid: user.uid,
           email: user.email,
@@ -53,7 +54,7 @@ export default function LoginPage() {
         setStep('otp');
       }
     }
-  }, [user, authLoading, router, step]);
+  }, [user, authLoading, firebaseUser, router, step]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
