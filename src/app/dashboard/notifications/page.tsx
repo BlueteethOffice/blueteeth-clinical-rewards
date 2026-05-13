@@ -97,7 +97,7 @@ export default function NotificationsPage() {
               <div className="w-12 h-12 bg-cyan-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-cyan-600/20">
                 <Bell size={24} />
               </div>
-              <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight uppercase tracking-tighter">Activity Log</h1>
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-white tracking-tight uppercase tracking-tight">Activity Log</h1>
             </div>
             <div className="text-slate-500 dark:text-slate-400 font-bold ml-1 flex items-center gap-2">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -109,14 +109,14 @@ export default function NotificationsPage() {
             <button 
               onClick={markAllAsRead}
               disabled={unreadCount === 0}
-              className="flex items-center gap-2 px-6 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-50 transition-all disabled:opacity-50"
             >
               <CheckCheck size={18} /> Mark All Read
             </button>
             <button 
               onClick={clearAllNotifications}
               disabled={notifications.length === 0 || isDeletingAll}
-              className="flex items-center gap-2 px-6 py-3.5 bg-red-50 dark:bg-red-500/10 text-red-600 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-red-100 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-3.5 bg-red-50 dark:bg-red-500/10 text-red-600 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-red-100 transition-all disabled:opacity-50"
             >
               {isDeletingAll ? <Loader2 className="animate-spin" size={18} /> : <Trash2 size={18} />} 
               Purge Log
@@ -139,7 +139,7 @@ export default function NotificationsPage() {
                 />
               </div>
 
-              <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2 px-2">
+              <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2 px-2">
                 <FilterIcon size={14} className="text-cyan-600" /> Filter Options
               </h3>
               
@@ -162,10 +162,10 @@ export default function NotificationsPage() {
                   >
                     <div className="flex items-center gap-3">
                       <item.icon size={18} className={filter === item.id ? 'text-cyan-400' : item.color} />
-                      <span className="text-xs font-black uppercase tracking-tight">{item.label}</span>
+                      <span className="text-xs font-bold uppercase tracking-tight">{item.label}</span>
                     </div>
                     {item.id === 'unread' && unreadCount > 0 && (
-                      <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black ${filter === 'unread' ? 'bg-cyan-500 text-white' : 'bg-cyan-50 text-cyan-600'}`}>
+                      <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold ${filter === 'unread' ? 'bg-cyan-500 text-white' : 'bg-cyan-50 text-cyan-600'}`}>
                         {unreadCount}
                       </span>
                     )}
@@ -177,7 +177,7 @@ export default function NotificationsPage() {
             <div className="glass-card rounded-2xl p-6 bg-slate-900 text-white overflow-hidden relative border-none">
               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/20 rounded-full blur-3xl -mr-16 -mt-16" />
               <div className="relative z-10">
-                <h3 className="text-xs font-black uppercase tracking-widest mb-2">Real-time Hub</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider mb-2">Real-time Hub</h3>
                 <p className="text-slate-400 text-[10px] font-bold leading-relaxed mb-6">Notifications are synced instantly across all your connected devices.</p>
                 <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                   <motion.div 
@@ -195,7 +195,7 @@ export default function NotificationsPage() {
             {loading ? (
               <div className="py-32 flex flex-col items-center justify-center text-slate-300">
                 <Loader2 className="animate-spin mb-4" size={48} />
-                <p className="font-black uppercase tracking-[0.3em] text-[10px]">Syncing secure log...</p>
+                <p className="font-bold uppercase tracking-[0.3em] text-[10px]">Syncing secure log...</p>
               </div>
             ) : filteredNotifications.length > 0 ? (
               <div className="space-y-4">
@@ -227,10 +227,10 @@ export default function NotificationsPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-4 mb-2">
                           <div className="min-w-0">
-                            <h3 className={`text-lg font-black tracking-tight truncate ${!n.isRead ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>
+                            <h3 className={`text-lg font-bold tracking-tight truncate ${!n.isRead ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>
                               {n.title}
                             </h3>
-                            <div className="flex items-center gap-4 text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">
+                            <div className="flex items-center gap-4 text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">
                               <span className="flex items-center gap-1.5">
                                 <Calendar size={12} /> {n.createdAt?.toDate ? format(n.createdAt.toDate(), 'dd MMM, yyyy') : 'Live'}
                               </span>
@@ -266,7 +266,7 @@ export default function NotificationsPage() {
                 <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-200">
                   <Inbox size={48} />
                 </div>
-                <h3 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Log is Clean</h3>
+                <h3 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Log is Clean</h3>
                 <p className="text-slate-500 mt-2 font-bold max-w-xs mx-auto text-sm">
                   {searchQuery ? "No matching logs found in the system archives." : "All system events have been acknowledged. There's nothing to display."}
                 </p>

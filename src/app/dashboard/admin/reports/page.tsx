@@ -131,7 +131,7 @@ export default function AdminReportsPage() {
       <DashboardLayout>
         <div className="h-[60vh] flex flex-col items-center justify-center gap-4">
           <Loader2 className="animate-spin text-cyan-600" size={40} />
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Assembling Market Intelligence...</p>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Assembling Market Intelligence...</p>
         </div>
       </DashboardLayout>
     );
@@ -236,27 +236,27 @@ export default function AdminReportsPage() {
         {/* Print-Only Header */}
         <div className="print-header">
           <div>
-            <h1 className="text-2xl font-black uppercase tracking-tighter">Blueteeth <span className="text-cyan-600">Clinical Platform</span></h1>
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Enterprise Analytics Report</p>
+            <h1 className="text-2xl font-bold uppercase tracking-tight">Blueteeth <span className="text-cyan-600">Clinical Platform</span></h1>
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Enterprise Analytics Report</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-black uppercase tracking-widest">Generated On</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider">Generated On</p>
             <p className="text-sm font-bold">{format(new Date(), 'dd MMMM yyyy, HH:mm')}</p>
           </div>
         </div>
 
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-1 sm:px-0 no-print">
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Analytics & Reports</h1>
-            <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">Real-time platform performance and financial flow.</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight uppercase">Analytics & Reports</h1>
+            <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">Real-time platform performance and financial flow.</p>
           </div>
           <div className="flex flex-col xs:flex-row gap-3">
-            <button className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-white/5 rounded-xl text-[9px] sm:text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest flex items-center justify-center gap-2 shadow-sm">
+            <button className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-white/5 rounded-xl text-[9px] sm:text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm">
               <Calendar size={14} /> Last 6 Months
             </button>
             <button 
               onClick={handleExport}
-              className="px-6 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-black text-[9px] sm:text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-all"
+              className="px-6 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-all"
             >
               <Download size={14} /> Export Report
             </button>
@@ -274,8 +274,8 @@ export default function AdminReportsPage() {
           <div className="bg-white dark:bg-slate-900/50 p-4 sm:p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-xl shadow-slate-200/40 dark:shadow-none">
             <div className="flex items-center justify-between mb-8 sm:mb-10">
               <div>
-                <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Case Velocity</h3>
-                <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Growth of clinical volume</p>
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white uppercase tracking-tight">Case Velocity</h3>
+                <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Growth of clinical volume</p>
               </div>
               <div className="w-10 h-10 sm:w-11 sm:h-11 bg-cyan-500/10 rounded-xl flex items-center justify-center border border-cyan-500/10">
                 <BarChart3 size={18} className="text-cyan-500" />
@@ -307,8 +307,8 @@ export default function AdminReportsPage() {
           <div className="bg-white dark:bg-slate-900/50 p-4 sm:p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-xl shadow-slate-200/40 dark:shadow-none">
             <div className="flex items-center justify-between mb-8 sm:mb-10">
               <div>
-                <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Financial Inflow</h3>
-                <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Settled clinician consultation fees</p>
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white uppercase tracking-tight">Financial Inflow</h3>
+                <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Settled clinician consultation fees</p>
               </div>
               <div className="w-10 h-10 sm:w-11 sm:h-11 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/10">
                 <TrendingUp size={18} className="text-emerald-500" />

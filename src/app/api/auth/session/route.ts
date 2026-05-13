@@ -34,25 +34,27 @@ export async function POST(request: NextRequest) {
     // Use next/headers to set the cookie
     (await cookies()).set(cookieOptions);
 
-    // ✅ AUDIT LOG
-    try {
-      const decodedToken = await adminAuth.verifyIdToken(idToken);
-      const db = getAdminDb();
-      if (!db) throw new Error("DB not found");
-      const userDoc = await db.collection('users').doc(decodedToken.uid).get();
-      const userData = userDoc.data();
-      
-      const { logAuditAction } = await import('@/lib/security');
-      await logAuditAction({
-        userId: decodedToken.uid,
-        userRole: userData?.role || 'unknown',
-        action: 'USER_LOGIN',
-        resource: 'AUTH',
-        metadata: { email: userData?.email, userAgent: request.headers.get('user-agent') }
-      });
-    } catch (e) {
-      console.error('Audit Log Error (Login):', e);
-    }
+    // ✅ AUDIT LOG (Fire and forget to reduce latency)
+    (async () => {
+      try {
+        const decodedToken = await adminAuth.verifyIdToken(idToken);
+        const db = getAdminDb();
+        if (!db) return;
+        const userDoc = await db.collection('users').doc(decodedToken.uid).get();
+        const userData = userDoc.data();
+        
+        const { logAuditAction } = await import('@/lib/security');
+        await logAuditAction({
+          userId: decodedToken.uid,
+          userRole: userData?.role || 'unknown',
+          action: 'USER_LOGIN',
+          resource: 'AUTH',
+          metadata: { email: userData?.email, userAgent: request.headers.get('user-agent') }
+        });
+      } catch (e) {
+        console.error('Audit Log Error (Login):', e);
+      }
+    })();
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

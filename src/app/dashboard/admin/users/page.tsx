@@ -159,12 +159,12 @@ export default function AdminUsersPage() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1 sm:px-0">
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">User Management</h1>
-            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">Manage system users, roles, and earnings.</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight uppercase">User Management</h1>
+            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">Manage system users, roles, and earnings.</p>
           </div>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="w-full sm:w-auto justify-center px-6 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg active:scale-95 transition-all"
+            className="w-full sm:w-auto justify-center px-6 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold text-[10px] uppercase tracking-wider flex items-center gap-2 shadow-lg active:scale-95 transition-all"
           >
             <UserPlus size={16} /> Add New User
           </button>
@@ -185,7 +185,7 @@ export default function AdminUsersPage() {
             
             <button 
               onClick={() => setShowAdmins(!showAdmins)}
-              className={`w-full sm:w-auto justify-center flex items-center gap-2 px-5 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border ${
+              className={`w-full sm:w-auto justify-center flex items-center gap-2 px-5 py-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border ${
                 showAdmins 
                 ? 'bg-purple-50 border-purple-100 text-purple-600 shadow-sm' 
                 : 'bg-slate-50 border-slate-100 text-slate-400 hover:bg-slate-100'
@@ -199,10 +199,10 @@ export default function AdminUsersPage() {
             {loading ? (
               <div className="py-16 flex flex-col items-center gap-4">
                 <Loader2 className="animate-spin text-cyan-600" size={32} />
-                <p className="text-[10px] font-black text-slate-400 uppercase">Synchronizing Users...</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">Synchronizing Users...</p>
               </div>
             ) : filteredUsers.length === 0 ? (
-              <div className="py-12 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <div className="py-12 text-center text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                 No users found
               </div>
             ) : (
@@ -210,15 +210,15 @@ export default function AdminUsersPage() {
                 <div key={u.uid} className="rounded-xl border border-slate-100 dark:border-white/5 bg-white dark:bg-slate-900 p-4 shadow-sm">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-11 h-11 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center font-black text-slate-400 text-base shrink-0">
+                      <div className="w-11 h-11 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center font-bold text-slate-400 text-base shrink-0">
                         {u.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0">
-                        <div className="font-black text-slate-900 dark:text-white text-xs tracking-tight truncate">{formatName(u.name, u.role)}</div>
-                        <div className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter">ID: {u.uid.slice(-8).toUpperCase()}</div>
+                        <div className="font-bold text-slate-900 dark:text-white text-xs tracking-tight truncate">{formatName(u.name, u.role)}</div>
+                        <div className="text-[7px] font-bold text-slate-400 uppercase tracking-tight">ID: {u.uid.slice(-8).toUpperCase()}</div>
                       </div>
                     </div>
-                    <div className="inline-flex shrink-0 items-center gap-1.5 px-2 py-1 bg-slate-50 dark:bg-slate-800 rounded-md text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-wider border border-slate-100 dark:border-white/5">
+                    <div className="inline-flex shrink-0 items-center gap-1.5 px-2 py-1 bg-slate-50 dark:bg-slate-800 rounded-md text-[9px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider border border-slate-100 dark:border-white/5">
                       {getRoleIcon(u.role)}
                       {u.role}
                     </div>
@@ -237,10 +237,10 @@ export default function AdminUsersPage() {
 
                   <div className="mt-4 flex items-center justify-between gap-3">
                     <div>
-                      <div className="text-xs font-black text-slate-900 dark:text-white tracking-tight">
+                      <div className="text-xs font-bold text-slate-900 dark:text-white tracking-tight">
                         {u.role === 'associate' ? `${u.totalPoints || 0} PTS` : `₹${u.totalEarnings || 0}`}
                       </div>
-                      <div className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Lifetime Activity</div>
+                      <div className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">Lifetime Activity</div>
                     </div>
                     <div className="flex items-center gap-2">
                       <button 
@@ -268,17 +268,17 @@ export default function AdminUsersPage() {
             {loading ? (
               <div className="py-20 flex flex-col items-center gap-4">
                 <Loader2 className="animate-spin text-cyan-600" size={32} />
-                <p className="text-[10px] font-black text-slate-400 uppercase">Synchronizing Users...</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">Synchronizing Users...</p>
               </div>
             ) : (
               <table className="w-full text-left whitespace-nowrap min-w-[800px]">
                 <thead>
                   <tr className="bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
-                    <th className="px-4 sm:px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">User Profile</th>
-                    <th className="px-4 sm:px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Contact Info</th>
-                    <th className="px-4 sm:px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Role</th>
-                    <th className="px-4 sm:px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Statistics</th>
-                    <th className="px-4 sm:px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                    <th className="px-4 sm:px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider">User Profile</th>
+                    <th className="px-4 sm:px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider">Contact Info</th>
+                    <th className="px-4 sm:px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider">Role</th>
+                    <th className="px-4 sm:px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider">Statistics</th>
+                    <th className="px-4 sm:px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 dark:divide-white/5">
@@ -286,12 +286,12 @@ export default function AdminUsersPage() {
                     <tr key={u.uid} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-all group">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center font-black text-slate-400 text-base">
+                          <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center font-bold text-slate-400 text-base">
                             {u.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <div className="font-black text-slate-900 dark:text-white text-sm tracking-tight">{formatName(u.name, u.role)}</div>
-                            <div className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">ID: {u.uid.slice(-8).toUpperCase()}</div>
+                            <div className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">{formatName(u.name, u.role)}</div>
+                            <div className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">ID: {u.uid.slice(-8).toUpperCase()}</div>
                           </div>
                         </div>
                       </td>
@@ -306,16 +306,16 @@ export default function AdminUsersPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-slate-50 dark:bg-slate-800 rounded-md text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-wider border border-slate-100 dark:border-white/5">
+                        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-slate-50 dark:bg-slate-800 rounded-md text-[9px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider border border-slate-100 dark:border-white/5">
                           {getRoleIcon(u.role)}
                           {u.role}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-xs font-black text-slate-900 dark:text-white tracking-tight">
+                        <div className="text-xs font-bold text-slate-900 dark:text-white tracking-tight">
                           {u.role === 'associate' ? `${u.totalPoints || 0} PTS` : `₹${u.totalEarnings || 0}`}
                         </div>
-                        <div className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Lifetime Activity</div>
+                        <div className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">Lifetime Activity</div>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
@@ -361,15 +361,15 @@ export default function AdminUsersPage() {
                       {selectedUser.photoURL ? (
                         <img src={selectedUser.photoURL} alt={selectedUser.name} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-300 font-black text-3xl sm:text-5xl">
+                        <div className="w-full h-full flex items-center justify-center text-slate-300 font-bold text-3xl sm:text-5xl">
                           {selectedUser.name?.charAt(0).toUpperCase()}
                         </div>
                       )}
                     </div>
                     <div className="pb-4 sm:pb-8 min-w-0">
-                      <h3 className="text-xl sm:text-3xl font-black text-white tracking-tight uppercase leading-none mb-3 sm:mb-5 truncate drop-shadow-md">{formatName(selectedUser.name, selectedUser.role)}</h3>
+                      <h3 className="text-xl sm:text-3xl font-bold text-white tracking-tight uppercase leading-none mb-3 sm:mb-5 truncate drop-shadow-md">{formatName(selectedUser.name, selectedUser.role)}</h3>
                       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                        <div className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[11px] font-black uppercase tracking-[0.1em] border flex items-center gap-2 shadow-lg transition-all ${
+                        <div className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[11px] font-bold uppercase tracking-[0.1em] border flex items-center gap-2 shadow-lg transition-all ${
                           selectedUser.role === 'admin' ? 'bg-purple-600 border-purple-400 text-white shadow-purple-500/20' :
                           selectedUser.role === 'clinician' ? 'bg-cyan-600 border-cyan-400 text-white shadow-cyan-500/20' :
                           selectedUser.role === 'emerald'
@@ -377,7 +377,7 @@ export default function AdminUsersPage() {
                           {getRoleIcon(selectedUser.role)}
                           {selectedUser.role}
                         </div>
-                        <span className="text-[8px] sm:text-[10px] font-black text-cyan-50 uppercase tracking-widest bg-slate-800/80 backdrop-blur-md border border-white/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl shadow-lg">ID: {selectedUser.uid.slice(0, 7).toUpperCase()}</span>
+                        <span className="text-[8px] sm:text-[10px] font-bold text-cyan-50 uppercase tracking-wider bg-slate-800/80 backdrop-blur-md border border-white/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl shadow-lg">ID: {selectedUser.uid.slice(0, 7).toUpperCase()}</span>
                       </div>
                     </div>
                   </div>
@@ -388,20 +388,20 @@ export default function AdminUsersPage() {
                     {/* Stats Mesh */}
                     <div className="grid grid-cols-2 gap-4 sm:gap-6">
                       <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
-                        <p className="text-[9px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 sm:mb-2">Activity</p>
-                        <p className="text-xl sm:text-3xl font-black text-slate-900 dark:text-white">
+                        <p className="text-[9px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 sm:mb-2">Activity</p>
+                        <p className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-white">
                           {selectedUser.role === 'associate' ? `${selectedUser.totalPoints || 0} PTS` : `₹${selectedUser.totalEarnings || 0}`}
                         </p>
                       </div>
                       <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
-                        <p className="text-[9px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 sm:mb-2">Email</p>
+                        <p className="text-[9px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 sm:mb-2">Email</p>
                         <p className="text-[10px] sm:text-sm font-bold text-slate-900 dark:text-white truncate">{selectedUser.email}</p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-8">
                       <div className="space-y-1.5 sm:space-y-2.5">
-                        <label className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                        <label className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Full Name</label>
                         <input 
                           type="text" 
                           value={selectedUser.name || ''} 
@@ -411,7 +411,7 @@ export default function AdminUsersPage() {
                       </div>
 
                       <div className="space-y-1.5 sm:space-y-2.5">
-                        <label className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Mobile Number</label>
+                        <label className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Mobile Number</label>
                         <input 
                           type="text" 
                           value={selectedUser.phone || ''} 
@@ -421,7 +421,7 @@ export default function AdminUsersPage() {
                       </div>
 
                       <div className="space-y-1.5 sm:space-y-2.5">
-                        <label className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Age</label>
+                        <label className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Age</label>
                         <input 
                           type="text" 
                           value={selectedUser.age || 'N/A'} 
@@ -431,7 +431,7 @@ export default function AdminUsersPage() {
                       </div>
 
                       <div className="space-y-1.5 sm:space-y-2.5">
-                        <label className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Gender</label>
+                        <label className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Gender</label>
                         <input 
                           type="text" 
                           value={selectedUser.gender || 'N/A'} 
@@ -442,24 +442,24 @@ export default function AdminUsersPage() {
 
                       {/* Professional Info */}
                       <div className="col-span-1 sm:col-span-2 pt-6 sm:pt-10 mt-2 sm:mt-4 border-t border-slate-100 dark:border-white/10">
-                        <h4 className="text-[11px] sm:text-[13px] font-black text-slate-900 dark:text-white uppercase tracking-[0.2em] mb-6 sm:mb-8 flex items-center gap-3">
+                        <h4 className="text-[11px] sm:text-[13px] font-bold text-slate-900 dark:text-white uppercase tracking-[0.2em] mb-6 sm:mb-8 flex items-center gap-3">
                           <Shield size={18} className="text-cyan-600" /> Clinical Identity Mesh
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-8">
                           <div className="space-y-1.5 sm:space-y-2.5">
-                            <label className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Registration Number</label>
-                            <div className="px-4 py-3 sm:px-5 sm:py-4 bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-white/5 rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-[12px] text-slate-500 dark:text-slate-400 tracking-widest shadow-inner">
+                            <label className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Registration Number</label>
+                            <div className="px-4 py-3 sm:px-5 sm:py-4 bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-white/5 rounded-xl sm:rounded-2xl font-bold text-[10px] sm:text-[12px] text-slate-500 dark:text-slate-400 tracking-wider shadow-inner">
                               {selectedUser.registrationNumber || 'NOT VERIFIED'}
                             </div>
                           </div>
                           <div className="space-y-1.5 sm:space-y-2.5">
-                            <label className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Clinic Name</label>
+                            <label className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Clinic Name</label>
                             <div className="px-4 py-3 sm:px-5 sm:py-4 bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-white/5 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base text-slate-500 dark:text-slate-400 shadow-inner">
                               {selectedUser.clinicName || 'N/A'}
                             </div>
                           </div>
                           <div className="col-span-1 sm:col-span-2 space-y-1.5 sm:space-y-2.5">
-                            <label className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Clinic Address</label>
+                            <label className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Clinic Address</label>
                             <div className="px-4 py-3 sm:px-5 sm:py-4 bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-white/5 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base text-slate-500 dark:text-slate-400 min-h-[60px] sm:min-h-[80px] shadow-inner">
                               {selectedUser.clinicAddress || 'No address provided'}
                             </div>
@@ -472,7 +472,7 @@ export default function AdminUsersPage() {
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 shadow-xl shadow-amber-500/20">
                         <Lock size={16} />
                       </div>
-                      <p className="text-[8px] sm:text-[10px] font-black text-amber-800 dark:text-amber-400 uppercase leading-relaxed tracking-wider">
+                      <p className="text-[8px] sm:text-[10px] font-bold text-amber-800 dark:text-amber-400 uppercase leading-relaxed tracking-wider">
                         Security Notice: User identity fields are read-only for administrators to maintain global data integrity.
                       </p>
                     </div>
@@ -496,15 +496,15 @@ export default function AdminUsersPage() {
                 <form onSubmit={handleProvisionUser} className="p-8">
                   <div className="flex items-center justify-between mb-8">
                     <div>
-                      <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Provision User</h3>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Create a new platform identity</p>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Provision User</h3>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Create a new platform identity</p>
                     </div>
                     <button type="button" onClick={() => setShowAddModal(false)} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-900 hover:text-white transition-all">✕</button>
                   </div>
 
                   <div className="space-y-5">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Full Name</label>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
                       <input 
                         type="text" 
                         required
@@ -516,7 +516,7 @@ export default function AdminUsersPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Email Address</label>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email Address</label>
                       <input 
                         type="email" 
                         required
@@ -528,7 +528,7 @@ export default function AdminUsersPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mobile Number</label>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mobile Number</label>
                       <input 
                         type="text" 
                         placeholder="10-12 digits"
@@ -539,7 +539,7 @@ export default function AdminUsersPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">System Role</label>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">System Role</label>
                       <select 
                         value={newUserData.role} 
                         onChange={(e) => setNewUserData({...newUserData, role: e.target.value as any})}
@@ -554,7 +554,7 @@ export default function AdminUsersPage() {
 
                   <button 
                     type="submit"
-                    className="w-full mt-10 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-2xl"
+                    className="w-full mt-10 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-2xl"
                   >
                     Create Identity
                   </button>

@@ -45,7 +45,7 @@ export default function DashboardLayout({ children, hideNavbar = false }: { chil
           <div className="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center border border-cyan-500/20 animate-pulse">
             <div className="w-6 h-6 bg-cyan-500 rounded-lg opacity-40" />
           </div>
-          <p className="text-[10px] font-black text-cyan-600/40 uppercase tracking-[0.4em] animate-pulse">Syncing Intel...</p>
+          <p className="text-[10px] font-bold text-cyan-600/40 uppercase tracking-[0.4em] animate-pulse">Syncing Intel...</p>
         </div>
       </div>
     );

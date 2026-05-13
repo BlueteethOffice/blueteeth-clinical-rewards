@@ -71,8 +71,8 @@ export default function Sidebar({
             />
           </div>
           <div className="flex flex-col justify-center">
-            <span className="text-[20px] sm:text-[24px] md:text-[28px] font-black bg-linear-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tighter leading-none pb-1">BLUETEETH</span>
-            <span className="text-[8px] sm:text-[9px] md:text-[10px] font-black text-cyan-600 tracking-[0.3em] uppercase leading-none">CLINICAL PLATFORM</span>
+            <span className="text-[20px] sm:text-[24px] md:text-[28px] font-bold bg-linear-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none pb-1">BLUETEETH</span>
+            <span className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-cyan-600 tracking-[0.3em] uppercase leading-none">CLINICAL PLATFORM</span>
           </div>
         </Link>
       </div>
@@ -115,10 +115,10 @@ export default function Sidebar({
                     <Activity size={20} className="text-cyan-400 animate-pulse" />
                   </div>
                   <div>
-                    <h3 className="font-black text-xs uppercase tracking-[0.2em] text-white">System Core</h3>
+                    <h3 className="font-bold text-xs uppercase tracking-[0.2em] text-white">System Core</h3>
                     <div className="flex items-center gap-1.5">
                       <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
-                      <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Active</p>
+                      <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Active</p>
                     </div>
                   </div>
                 </div>
@@ -126,7 +126,7 @@ export default function Sidebar({
                 <div className="space-y-4">
                   {/* Metric 1: Performance */}
                   <div className="space-y-1.5">
-                    <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-500">
+                    <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-wider text-slate-500">
                       <span>Performance</span>
                       <span className="text-cyan-400">99.8%</span>
                     </div>
@@ -141,7 +141,7 @@ export default function Sidebar({
 
                   {/* Metric 2: Server Load */}
                   <div className="space-y-1.5">
-                    <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-500">
+                    <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-wider text-slate-500">
                       <span>Server Load</span>
                       <span className="text-emerald-400">12%</span>
                     </div>
@@ -157,11 +157,11 @@ export default function Sidebar({
                   {/* Grid Stats */}
                   <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/50 mt-2">
                     <div className="p-2 bg-slate-800/30 rounded-lg border border-slate-800/50">
-                      <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Uptime</p>
+                      <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Uptime</p>
                       <p className="text-[10px] font-bold text-white tracking-tight">14d 6h</p>
                     </div>
                     <div className="p-2 bg-slate-800/30 rounded-lg border border-slate-800/50">
-                      <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Latency</p>
+                      <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Latency</p>
                       <p className="text-[10px] font-bold text-white tracking-tight">24ms</p>
                     </div>
                   </div>

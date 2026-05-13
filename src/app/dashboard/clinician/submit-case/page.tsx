@@ -173,14 +173,14 @@ export default function ClinicianSubmitCasePage() {
     <DashboardLayout>
       <div className="max-w-5xl mx-auto pb-6 px-2 sm:px-6 lg:px-0">
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-4xl font-black text-slate-900 uppercase">Submit Self Case</h1>
+          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 uppercase">Submit Self Case</h1>
           <p className="text-slate-500 font-bold uppercase text-[10px] italic">Turbo Background Sync Enabled</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="glass-card p-5 sm:p-8 rounded-xl relative border border-slate-100 shadow-sm z-20">
             <div className="absolute top-0 left-0 w-1.5 h-full bg-cyan-600 rounded-l-xl" />
-            <h3 className="text-lg font-black text-slate-900 mb-8 uppercase tracking-widest flex items-center gap-3">
+            <h3 className="text-lg font-bold text-slate-900 mb-8 uppercase tracking-wider flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-cyan-100">
                 <User size={20} strokeWidth={2.5} />
               </div>
@@ -189,7 +189,7 @@ export default function ClinicianSubmitCasePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-2 space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Patient Name</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Patient Name</label>
                 <input 
                   {...register('patientName')} 
                   required 
@@ -201,21 +201,21 @@ export default function ClinicianSubmitCasePage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mobile</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mobile</label>
                 <div className="relative">
                   <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500" strokeWidth={2.5} />
                   <input {...register('mobile')} required maxLength={10} className="w-full pl-10 pr-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Age</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Age</label>
                 <div className="relative">
                   <Activity size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-500" strokeWidth={2.5} />
                   <input {...register('age')} type="number" required className="w-full pl-10 pr-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Gender</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Gender</label>
                 <select {...register('gender')} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900">
                   <option value="">Select</option>
                   <option value="Male">Male</option>
@@ -224,7 +224,7 @@ export default function ClinicianSubmitCasePage() {
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Date</label>
                 <input {...register('bookingDate')} type="date" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" />
               </div>
             </div>
@@ -232,7 +232,7 @@ export default function ClinicianSubmitCasePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="glass-card p-5 sm:p-8 rounded-xl relative border border-slate-100 shadow-sm z-30">
-              <h3 className="text-lg font-black text-slate-900 mb-8 uppercase tracking-widest flex items-center gap-3">
+              <h3 className="text-lg font-bold text-slate-900 mb-8 uppercase tracking-wider flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-indigo-400 to-purple-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
                   <Stethoscope size={20} strokeWidth={2.5} />
                 </div>
@@ -278,7 +278,7 @@ export default function ClinicianSubmitCasePage() {
 
             <div className="space-y-6">
               <div className="glass-card p-6 rounded-xl border-l-4 border-emerald-500 shadow-sm">
-                <h4 className="font-black text-slate-900 mb-4 uppercase text-[10px] flex items-center gap-2">
+                <h4 className="font-bold text-slate-900 mb-4 uppercase text-[10px] flex items-center gap-2">
                   <div className="w-7 h-7 bg-gradient-to-br from-emerald-400 to-teal-600 text-white rounded-lg flex items-center justify-center shadow-md">
                     <Upload size={14} strokeWidth={2.5} />
                   </div>
@@ -305,7 +305,7 @@ export default function ClinicianSubmitCasePage() {
               </div>
 
               <div className="glass-card p-6 rounded-xl border-l-4 border-blue-500 shadow-sm">
-                <h4 className="font-black text-slate-900 mb-4 uppercase text-[10px] flex items-center gap-2">
+                <h4 className="font-bold text-slate-900 mb-4 uppercase text-[10px] flex items-center gap-2">
                   <div className="w-7 h-7 bg-gradient-to-br from-blue-400 to-indigo-600 text-white rounded-lg flex items-center justify-center shadow-md">
                     <Upload size={14} strokeWidth={2.5} />
                   </div>
@@ -333,7 +333,7 @@ export default function ClinicianSubmitCasePage() {
             </div>
           </div>
 
-          <button type="submit" disabled={loading} className="w-full py-5 premium-gradient text-white rounded-xl font-black text-xl shadow-xl disabled:opacity-50 flex items-center justify-center gap-3 uppercase cursor-pointer">
+          <button type="submit" disabled={loading} className="w-full py-5 premium-gradient text-white rounded-xl font-bold text-xl shadow-xl disabled:opacity-50 flex items-center justify-center gap-3 uppercase cursor-pointer">
             {loading ? <Loader2 className="animate-spin" size={28} /> : <>Submit Case <Check size={28} /></>}
           </button>
         </form>

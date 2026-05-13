@@ -124,32 +124,32 @@ export default function AdminPayoutsPage() {
       <div className="max-w-7xl mx-auto px-1 sm:px-4">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Payout Management</h1>
-            <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">Settle clinician consultation fees & rewards.</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight uppercase">Payout Management</h1>
+            <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">Settle clinician consultation fees & rewards.</p>
           </div>
           <div className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-white/5 w-fit">
             <Shield size={14} className="text-cyan-500" />
-            <span className="text-[8px] sm:text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Admin Control</span>
+            <span className="text-[8px] sm:text-[9px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Admin Control</span>
           </div>
         </div>
 
         {/* Stats Overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
           <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
-            <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Pending</p>
-            <h3 className="text-xl sm:text-2xl font-black text-yellow-500 tracking-tight">{payouts.filter(p => p.status === 'pending').length}</h3>
+            <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Pending</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-yellow-500 tracking-tight">{payouts.filter(p => p.status === 'pending').length}</h3>
           </div>
           <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
-            <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Approved</p>
-            <h3 className="text-xl sm:text-2xl font-black text-blue-500 tracking-tight">{payouts.filter(p => p.status === 'approved' || p.status === 'processing').length}</h3>
+            <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Approved</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-blue-500 tracking-tight">{payouts.filter(p => p.status === 'approved' || p.status === 'processing').length}</h3>
           </div>
           <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
-            <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Settled</p>
-            <h3 className="text-xl sm:text-2xl font-black text-emerald-500 tracking-tight">{payouts.filter(p => p.status === 'paid').length}</h3>
+            <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Settled</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-emerald-500 tracking-tight">{payouts.filter(p => p.status === 'paid').length}</h3>
           </div>
           <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
-            <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Declined</p>
-            <h3 className="text-xl sm:text-2xl font-black text-red-500 tracking-tight">{payouts.filter(p => p.status === 'rejected').length}</h3>
+            <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Declined</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-red-500 tracking-tight">{payouts.filter(p => p.status === 'rejected').length}</h3>
           </div>
         </div>
 
@@ -158,7 +158,7 @@ export default function AdminPayoutsPage() {
           {loading ? (
             <div className="py-20 flex flex-col items-center gap-4">
               <Loader2 className="animate-spin text-cyan-600" size={32} />
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Synchronizing Payout Stream...</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Synchronizing Payout Stream...</p>
             </div>
           ) : payouts.length > 0 ? (
             <>
@@ -167,12 +167,12 @@ export default function AdminPayoutsPage() {
                 <table className="w-full text-left whitespace-nowrap">
                   <thead>
                     <tr className="bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
-                      <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Clinician Entity</th>
-                      <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Amount</th>
-                      <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Settlement</th>
-                      <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Timeline</th>
-                      <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                      <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Operations</th>
+                      <th className="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider">Clinician Entity</th>
+                      <th className="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider">Amount</th>
+                      <th className="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider">Settlement</th>
+                      <th className="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider">Timeline</th>
+                      <th className="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-wider text-right">Operations</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-white/5">
@@ -180,20 +180,20 @@ export default function AdminPayoutsPage() {
                       <motion.tr layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 font-black text-sm uppercase">
+                            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 font-bold text-sm uppercase">
                               {p.clinicianName?.[0] || 'C'}
                             </div>
                             <div>
-                              <p className="text-sm font-black text-slate-900 dark:text-white leading-none uppercase">{p.clinicianName}</p>
-                              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter mt-1">ID: {p.clinicianId?.slice(-8).toUpperCase()}</p>
+                              <p className="text-sm font-bold text-slate-900 dark:text-white leading-none uppercase">{p.clinicianName}</p>
+                              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1">ID: {p.clinicianId?.slice(-8).toUpperCase()}</p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-base font-black text-slate-900 dark:text-white tracking-tight">₹{p.amount.toLocaleString()}</span>
+                          <span className="text-base font-bold text-slate-900 dark:text-white tracking-tight">₹{p.amount.toLocaleString()}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-slate-50 dark:bg-slate-800 rounded-md text-[9px] font-black text-slate-500 uppercase border border-slate-100 dark:border-white/5">
+                          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-slate-50 dark:bg-slate-800 rounded-md text-[9px] font-bold text-slate-500 uppercase border border-slate-100 dark:border-white/5">
                             {p.method === 'upi' ? <Smartphone size={10} className="text-cyan-500" /> : <Banknote size={10} className="text-emerald-500" />}
                             {p.method}
                           </div>
@@ -204,13 +204,13 @@ export default function AdminPayoutsPage() {
                           </p>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-0.5 border rounded-md text-[8px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit ${getStatusColor(p.status)}`}>
+                          <span className={`px-2 py-0.5 border rounded-md text-[8px] font-bold uppercase tracking-wider flex items-center gap-1.5 w-fit ${getStatusColor(p.status)}`}>
                             <span className={`w-1 h-1 rounded-full ${p.status === 'pending' ? 'bg-yellow-500' : p.status === 'paid' ? 'bg-emerald-500' : 'bg-current'}`} />
                             {p.status}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button onClick={() => setSelectedPayout(p)} className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl text-[9px] font-black uppercase tracking-widest hover:opacity-80 transition-all opacity-0 group-hover:opacity-100">Review</button>
+                          <button onClick={() => setSelectedPayout(p)} className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl text-[9px] font-bold uppercase tracking-wider hover:opacity-80 transition-all opacity-0 group-hover:opacity-100">Review</button>
                         </td>
                       </motion.tr>
                     ))}
@@ -224,20 +224,20 @@ export default function AdminPayoutsPage() {
                   <div key={p.id} onClick={() => setSelectedPayout(p)} className="p-4 active:bg-slate-50 transition-colors">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400 font-black text-sm uppercase">
+                        <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400 font-bold text-sm uppercase">
                           {p.clinicianName?.[0] || 'C'}
                         </div>
                         <div>
-                          <p className="text-xs font-black text-slate-900 dark:text-white uppercase leading-tight truncate max-w-[150px]">{p.clinicianName}</p>
-                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">ID: {p.clinicianId?.slice(-8).toUpperCase()}</p>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white uppercase leading-tight truncate max-w-[150px]">{p.clinicianName}</p>
+                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">ID: {p.clinicianId?.slice(-8).toUpperCase()}</p>
                         </div>
                       </div>
-                      <span className="text-base font-black text-slate-900 dark:text-white tracking-tight">₹{p.amount.toLocaleString()}</span>
+                      <span className="text-base font-bold text-slate-900 dark:text-white tracking-tight">₹{p.amount.toLocaleString()}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className={`px-2 py-0.5 border rounded-md text-[8px] font-black uppercase tracking-wider flex items-center gap-1.5 ${getStatusColor(p.status)}`}>
+                        <span className={`px-2 py-0.5 border rounded-md text-[8px] font-bold uppercase tracking-wider flex items-center gap-1.5 ${getStatusColor(p.status)}`}>
                           {p.status}
                         </span>
                         <div className="flex items-center gap-1 text-[8px] font-bold text-slate-400 uppercase">
@@ -253,7 +253,7 @@ export default function AdminPayoutsPage() {
           ) : (
             <div className="py-32 text-center text-slate-400 px-4">
               <Wallet size={48} className="mx-auto mb-4 opacity-10" />
-              <p className="text-[10px] font-black uppercase tracking-widest">No payout requests found</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider">No payout requests found</p>
             </div>
           )}
         </div>
@@ -279,8 +279,8 @@ export default function AdminPayoutsPage() {
               <div className="p-5 sm:p-8 overflow-y-auto custom-scrollbar">
                 <div className="flex items-center justify-between mb-6 sm:mb-8">
                   <div>
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight uppercase">Review Payout</h3>
-                    <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Ref: {selectedPayout.id.toUpperCase()}</p>
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight uppercase">Review Payout</h3>
+                    <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Ref: {selectedPayout.id.toUpperCase()}</p>
                   </div>
                   <button onClick={() => setSelectedPayout(null)} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-red-500 transition-colors">
                     <X size={18} />
@@ -290,13 +290,13 @@ export default function AdminPayoutsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                   {/* Payout Info */}
                   <div className="bg-slate-50 dark:bg-white/5 p-4 sm:p-5 rounded-xl border border-slate-100 dark:border-white/5">
-                    <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Withdrawal Amount</p>
-                    <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">₹{selectedPayout.amount.toLocaleString()}</p>
+                    <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Withdrawal Amount</p>
+                    <p className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">₹{selectedPayout.amount.toLocaleString()}</p>
                   </div>
                   <div className="bg-slate-50 dark:bg-white/5 p-4 sm:p-5 rounded-xl border border-slate-100 dark:border-white/5">
-                    <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Clinician</p>
-                    <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{selectedPayout.clinicianName}</p>
-                    <p className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">Reg: {selectedPayout.registrationNumber || 'N/A'}</p>
+                    <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Clinician</p>
+                    <p className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">{selectedPayout.clinicianName}</p>
+                    <p className="text-[8px] font-bold text-emerald-500 uppercase tracking-wider">Reg: {selectedPayout.registrationNumber || 'N/A'}</p>
                   </div>
 
                   {/* Payment Details */}
@@ -304,33 +304,33 @@ export default function AdminPayoutsPage() {
                     <div className="relative z-10">
                       <div className="flex items-center gap-2 mb-4">
                         <CreditCard className="text-cyan-400" size={16} />
-                        <h4 className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest">Settlement Details</h4>
+                        <h4 className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider">Settlement Details</h4>
                       </div>
                       
                       {selectedPayout.method === 'upi' ? (
                         <div className="space-y-4">
                           <div className="flex justify-between items-center">
                             <span className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase">UPI ID</span>
-                            <span className="text-xs sm:text-sm font-black text-cyan-400 select-all">{selectedPayout.details.upiId}</span>
+                            <span className="text-xs sm:text-sm font-bold text-cyan-400 select-all">{selectedPayout.details.upiId}</span>
                           </div>
                         </div>
                       ) : (
                         <div className="grid grid-cols-2 gap-4">
                           <div className="col-span-2 sm:col-span-1">
                             <p className="text-[7px] sm:text-[8px] font-bold text-slate-400 uppercase mb-0.5">Account Holder</p>
-                            <p className="text-[9px] sm:text-[10px] font-black uppercase truncate">{selectedPayout.details.accountHolder}</p>
+                            <p className="text-[9px] sm:text-[10px] font-bold uppercase truncate">{selectedPayout.details.accountHolder}</p>
                           </div>
                           <div className="col-span-2 sm:col-span-1">
                             <p className="text-[7px] sm:text-[8px] font-bold text-slate-400 uppercase mb-0.5">Bank Name</p>
-                            <p className="text-[9px] sm:text-[10px] font-black uppercase truncate">{selectedPayout.details.bankName}</p>
+                            <p className="text-[9px] sm:text-[10px] font-bold uppercase truncate">{selectedPayout.details.bankName}</p>
                           </div>
                           <div className="col-span-2 sm:col-span-1">
                             <p className="text-[7px] sm:text-[8px] font-bold text-slate-400 uppercase mb-0.5">Account Number</p>
-                            <p className="text-[9px] sm:text-[10px] font-black select-all">{selectedPayout.details.accountNumber}</p>
+                            <p className="text-[9px] sm:text-[10px] font-bold select-all">{selectedPayout.details.accountNumber}</p>
                           </div>
                           <div className="col-span-2 sm:col-span-1">
                             <p className="text-[7px] sm:text-[8px] font-bold text-slate-400 uppercase mb-0.5">IFSC Code</p>
-                            <p className="text-[9px] sm:text-[10px] font-black select-all uppercase">{selectedPayout.details.ifscCode}</p>
+                            <p className="text-[9px] sm:text-[10px] font-bold select-all uppercase">{selectedPayout.details.ifscCode}</p>
                           </div>
                         </div>
                       )}
@@ -341,7 +341,7 @@ export default function AdminPayoutsPage() {
                 {/* Processing Inputs */}
                 <div className="space-y-4">
                   <div>
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Transaction ID (Required for paid)</label>
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Transaction ID (Required for paid)</label>
                     <input 
                       type="text"
                       value={txId}
@@ -351,7 +351,7 @@ export default function AdminPayoutsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Admin Remarks</label>
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Admin Remarks</label>
                     <textarea 
                       value={remarks}
                       onChange={(e) => setRemarks(e.target.value)}
@@ -365,20 +365,20 @@ export default function AdminPayoutsPage() {
                 <div className="flex flex-col sm:grid sm:grid-cols-3 gap-3 mt-8">
                   <button 
                     onClick={() => handleUpdateStatus(selectedPayout.id, 'rejected')}
-                    className="order-3 sm:order-1 py-3.5 bg-red-500/10 text-red-600 rounded-xl font-black text-[9px] uppercase tracking-widest border border-red-500/20 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-1.5"
+                    className="order-3 sm:order-1 py-3.5 bg-red-500/10 text-red-600 rounded-xl font-bold text-[9px] uppercase tracking-wider border border-red-500/20 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-1.5"
                   >
                     <XCircle size={14} /> Reject
                   </button>
                   <button 
                     onClick={() => handleUpdateStatus(selectedPayout.id, 'approved')}
-                    className="order-2 sm:order-2 py-3.5 bg-blue-500/10 text-blue-600 rounded-xl font-black text-[9px] uppercase tracking-widest border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-1.5"
+                    className="order-2 sm:order-2 py-3.5 bg-blue-500/10 text-blue-600 rounded-xl font-bold text-[9px] uppercase tracking-wider border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-1.5"
                   >
                     <CheckCircle2 size={14} /> Approve
                   </button>
                   <button 
                     onClick={() => handleUpdateStatus(selectedPayout.id, 'paid')}
                     disabled={!txId}
-                    className="order-1 sm:order-3 py-4 bg-emerald-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="order-1 sm:order-3 py-4 bg-emerald-500 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     <Check size={16} /> Mark Paid
                   </button>

@@ -243,12 +243,12 @@ export default function ClinicianEarningsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8 pt-4 sm:pt-8">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase mb-1">Earnings & Payouts</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-[9px] sm:text-[10px] font-black uppercase tracking-widest">Real-time settlement portal</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight uppercase mb-1">Earnings & Payouts</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">Real-time settlement portal</p>
           </div>
           <button 
             onClick={() => setShowModal(true)}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-4 sm:py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:bg-slate-800 transition-all"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-4 sm:py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg hover:bg-slate-800 transition-all"
           >
             <Plus size={16} /> Request Payout
           </button>
@@ -258,28 +258,28 @@ export default function ClinicianEarningsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
           <div className="bg-slate-900 rounded-xl p-6 text-white shadow-xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-white/10 transition-all" />
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Balance</p>
-            <h3 className="text-3xl font-black tracking-tighter">₹{availableBalance.toLocaleString()}</h3>
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Balance</p>
+            <h3 className="text-3xl font-bold tracking-tight">₹{availableBalance.toLocaleString()}</h3>
             <Wallet className="absolute right-4 top-4 text-white/5" size={40} />
           </div>
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-white/5 flex flex-col justify-between">
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Earned</p>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">₹{totalApprovedFees.toLocaleString()}</h3>
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total Earned</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">₹{totalApprovedFees.toLocaleString()}</h3>
           </div>
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-white/5 flex flex-col justify-between">
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Treated Cases</p>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">{stats.total}</h3>
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Treated Cases</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{stats.total}</h3>
           </div>
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-white/5 flex flex-col justify-between">
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Min. Withdrawal</p>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">₹{minWithdrawal}</h3>
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Min. Withdrawal</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">₹{minWithdrawal}</h3>
           </div>
         </div>
 
         {/* History */}
         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-white/5 overflow-hidden">
           <div className="p-6 border-b border-slate-100 dark:border-white/5">
-            <h2 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">Withdrawal Ledger</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">Withdrawal Ledger</h2>
           </div>
           <div className="overflow-x-auto custom-scrollbar">
             {loading ? (
@@ -290,22 +290,22 @@ export default function ClinicianEarningsPage() {
                 <table className="hidden sm:table w-full text-left whitespace-nowrap min-w-[500px]">
                   <thead>
                     <tr className="bg-slate-50 dark:bg-white/2">
-                      <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount</th>
-                      <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Method</th>
-                      <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                      <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                      <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Amount</th>
+                      <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Method</th>
+                      <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                     {payouts.map((p) => (
                       <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-white/2 transition-colors">
-                        <td className="px-6 py-4 text-sm font-black text-slate-900 dark:text-white">₹{p.amount.toLocaleString()}</td>
-                        <td className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">{p.method}</td>
-                        <td className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <td className="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white">₹{p.amount.toLocaleString()}</td>
+                        <td className="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider">{p.method}</td>
+                        <td className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                           {p.createdAt?.toDate ? format(p.createdAt.toDate(), 'dd/MM/yyyy') : 'Now'}
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className={`px-3 py-1 border rounded-lg text-[9px] font-black uppercase tracking-widest ${getStatusColor(p.status)}`}>
+                          <span className={`px-3 py-1 border rounded-lg text-[9px] font-bold uppercase tracking-wider ${getStatusColor(p.status)}`}>
                             {p.status}
                           </span>
                         </td>
@@ -324,16 +324,16 @@ export default function ClinicianEarningsPage() {
                             {p.method === 'upi' ? <Smartphone size={14} /> : <Banknote size={14} />}
                           </div>
                           <div>
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{p.createdAt?.toDate ? format(p.createdAt.toDate(), 'dd MMM, yyyy') : 'Recently'}</p>
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{p.createdAt?.toDate ? format(p.createdAt.toDate(), 'dd MMM, yyyy') : 'Recently'}</p>
                             <p className="text-[8px] font-bold text-slate-500 uppercase">via {p.method}</p>
                           </div>
                         </div>
-                        <span className={`px-2 py-0.5 border rounded-md text-[8px] font-black uppercase tracking-widest ${getStatusColor(p.status)}`}>
+                        <span className={`px-2 py-0.5 border rounded-md text-[8px] font-bold uppercase tracking-wider ${getStatusColor(p.status)}`}>
                           {p.status}
                         </span>
                       </div>
                       <div className="flex items-center justify-between pl-10">
-                        <p className="text-base font-black text-slate-900 dark:text-white tracking-tighter">₹{p.amount.toLocaleString()}</p>
+                        <p className="text-base font-bold text-slate-900 dark:text-white tracking-tight">₹{p.amount.toLocaleString()}</p>
                         <ChevronRight size={14} className="text-slate-300" />
                       </div>
                     </div>
@@ -341,7 +341,7 @@ export default function ClinicianEarningsPage() {
                 </div>
               </>
             ) : (
-              <div className="py-40 text-center text-slate-400"><p className="text-[10px] font-black uppercase tracking-widest">No settlement history</p></div>
+              <div className="py-40 text-center text-slate-400"><p className="text-[10px] font-bold uppercase tracking-wider">No settlement history</p></div>
             )}
           </div>
         </div>
@@ -357,8 +357,8 @@ export default function ClinicianEarningsPage() {
               {/* Header */}
               <div className="px-6 py-5 border-b border-slate-100 dark:border-white/5 flex items-center justify-between bg-slate-50/50 dark:bg-white/2">
                 <div>
-                  <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Settlement Request</h3>
-                  <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Limit: ₹{availableBalance.toLocaleString()}</p>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">Settlement Request</h3>
+                  <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-wider">Limit: ₹{availableBalance.toLocaleString()}</p>
                 </div>
                 <button 
                   onClick={() => setShowModal(false)}
@@ -372,48 +372,48 @@ export default function ClinicianEarningsPage() {
                 {/* 1. KYC Section */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest block mb-1.5 flex items-center gap-1"><FileText size={8} /> PAN Number</label>
+                    <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5 flex items-center gap-1"><FileText size={8} /> PAN Number</label>
                     <input 
                       type="text" 
                       maxLength={10}
                       value={bankDetails.panNumber} 
                       onChange={(e) => setBankDetails({...bankDetails, panNumber: e.target.value.toUpperCase().trim()})}
                       placeholder="ABCDE1234F"
-                      className={`w-full px-3 py-2 bg-slate-50 dark:bg-white/5 border rounded-lg text-xs font-black uppercase focus:outline-none transition-all ${isPanValid ? 'border-emerald-500/30' : 'border-slate-100 dark:border-white/5'}`}
+                      className={`w-full px-3 py-2 bg-slate-50 dark:bg-white/5 border rounded-lg text-xs font-bold uppercase focus:outline-none transition-all ${isPanValid ? 'border-emerald-500/30' : 'border-slate-100 dark:border-white/5'}`}
                     />
                   </div>
                   <div>
-                    <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest block mb-1.5 flex items-center gap-1"><Fingerprint size={8} /> Aadhaar Number</label>
+                    <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5 flex items-center gap-1"><Fingerprint size={8} /> Aadhaar Number</label>
                     <input 
                       type="text" 
                       maxLength={12}
                       value={bankDetails.aadhaarNumber} 
                       onChange={(e) => setBankDetails({...bankDetails, aadhaarNumber: e.target.value.replace(/\D/g, '')})}
                       placeholder="12 Digit ID"
-                      className={`w-full px-3 py-2 bg-slate-50 dark:bg-white/5 border rounded-lg text-xs font-black focus:outline-none transition-all ${isAadhaarValid ? 'border-emerald-500/30' : 'border-slate-100 dark:border-white/5'}`}
+                      className={`w-full px-3 py-2 bg-slate-50 dark:bg-white/5 border rounded-lg text-xs font-bold focus:outline-none transition-all ${isAadhaarValid ? 'border-emerald-500/30' : 'border-slate-100 dark:border-white/5'}`}
                     />
                   </div>
                 </div>
 
                 {/* 2. Amount Input */}
                 <div>
-                  <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Withdrawal Amount</label>
+                  <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Withdrawal Amount</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg font-black text-slate-300">₹</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg font-bold text-slate-300">₹</span>
                     <input 
                       type="number"
                       value={withdrawAmount}
                       onChange={(e) => setWithdrawAmount(e.target.value)}
                       placeholder="0"
-                      className="w-full pl-8 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl text-lg font-black focus:outline-none focus:border-slate-900 transition-all"
+                      className="w-full pl-8 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl text-lg font-bold focus:outline-none focus:border-slate-900 transition-all"
                     />
                   </div>
                 </div>
 
                 {/* 3. Transfer Method */}
                 <div className="flex gap-2 p-1 bg-slate-100 dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/5">
-                  <button onClick={() => setPaymentMethod('upi')} className={`flex-1 py-1.5 rounded text-[9px] font-black uppercase tracking-widest transition-all ${paymentMethod === 'upi' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400'}`}>UPI Node</button>
-                  <button onClick={() => setPaymentMethod('bank')} className={`flex-1 py-1.5 rounded text-[9px] font-black uppercase tracking-widest transition-all ${paymentMethod === 'bank' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400'}`}>Bank Wire</button>
+                  <button onClick={() => setPaymentMethod('upi')} className={`flex-1 py-1.5 rounded text-[9px] font-bold uppercase tracking-wider transition-all ${paymentMethod === 'upi' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400'}`}>UPI Node</button>
+                  <button onClick={() => setPaymentMethod('bank')} className={`flex-1 py-1.5 rounded text-[9px] font-bold uppercase tracking-wider transition-all ${paymentMethod === 'bank' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400'}`}>Bank Wire</button>
                 </div>
 
                 {/* 4. Smart Forms */}
@@ -421,9 +421,9 @@ export default function ClinicianEarningsPage() {
                   {paymentMethod === 'upi' ? (
                     <div className="relative">
                       <div className="flex items-center justify-between mb-2">
-                        <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">UPI ID Identity</label>
+                        <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">UPI ID Identity</label>
                         {isUpiValid && (
-                          <span className={`text-[8px] font-black uppercase tracking-widest flex items-center gap-1.5 px-2 py-0.5 rounded-full ${detectApp(bankDetails.upiId).bg} ${detectApp(bankDetails.upiId).color}`}>
+                          <span className={`text-[8px] font-bold uppercase tracking-wider flex items-center gap-1.5 px-2 py-0.5 rounded-full ${detectApp(bankDetails.upiId).bg} ${detectApp(bankDetails.upiId).color}`}>
                             <Check size={10} /> {detectApp(bankDetails.upiId).name} Verified
                           </span>
                         )}
@@ -453,7 +453,7 @@ export default function ClinicianEarningsPage() {
                                   setBankDetails({...bankDetails, upiId: prefix + handle});
                                   setShowUpiSuggestions(false);
                                 }}
-                                className="w-full text-left px-4 py-2 text-[10px] font-black text-slate-500 hover:bg-slate-50 dark:hover:bg-white/5 border-b border-slate-50 dark:border-white/5 last:border-0"
+                                className="w-full text-left px-4 py-2 text-[10px] font-bold text-slate-500 hover:bg-slate-50 dark:hover:bg-white/5 border-b border-slate-50 dark:border-white/5 last:border-0"
                               >
                                 {bankDetails.upiId.substring(0, bankDetails.upiId.indexOf('@'))}{handle} <span className={`float-right text-[8px] font-bold uppercase ${APP_CONFIG[handle]?.color || 'text-slate-400'}`}>{APP_CONFIG[handle]?.name || 'Bank'}</span>
                               </button>
@@ -465,18 +465,18 @@ export default function ClinicianEarningsPage() {
                   ) : (
                     <div className="space-y-3">
                       <div>
-                        <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Account Holder Name</label>
+                        <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Account Holder Name</label>
                         <input 
                           type="text"
                           value={bankDetails.accountHolder}
                           onChange={(e) => setBankDetails({...bankDetails, accountHolder: e.target.value.replace(/[^a-zA-Z\s]/g, '').replace(/\b\w/g, l => l.toUpperCase())})}
                           placeholder="AS PER PASSBOOK"
-                          className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg text-[10px] font-black uppercase focus:outline-none"
+                          className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg text-[10px] font-bold uppercase focus:outline-none"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Account Number</label>
+                          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Account Number</label>
                           <input 
                             type="text"
                             value={bankDetails.accountNumber}
@@ -486,7 +486,7 @@ export default function ClinicianEarningsPage() {
                           />
                         </div>
                         <div>
-                          <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Confirm Number</label>
+                          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Confirm Number</label>
                           <input 
                             type="text"
                             value={bankDetails.confirmAccountNumber}
@@ -498,7 +498,7 @@ export default function ClinicianEarningsPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">IFSC Code</label>
+                          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">IFSC Code</label>
                           <div className="relative">
                             <input 
                               type="text"
@@ -511,8 +511,8 @@ export default function ClinicianEarningsPage() {
                           </div>
                         </div>
                         <div>
-                          <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Detected Bank</label>
-                          <div className="w-full px-3 py-2.5 bg-slate-100 dark:bg-white/5 rounded-lg text-[8px] font-black text-slate-500 truncate uppercase">
+                          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Detected Bank</label>
+                          <div className="w-full px-3 py-2.5 bg-slate-100 dark:bg-white/5 rounded-lg text-[8px] font-bold text-slate-500 truncate uppercase">
                             {bankDetails.bankName || 'AUTO DETECT'}
                           </div>
                         </div>
@@ -527,7 +527,7 @@ export default function ClinicianEarningsPage() {
                 <button 
                   onClick={handleRequestPayout}
                   disabled={!isValid || isRequesting || isSuccess}
-                  className={`w-full py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-lg ${
+                  className={`w-full py-3.5 rounded-xl font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg ${
                     isSuccess 
                       ? 'bg-emerald-500 text-white' 
                       : isValid 
@@ -537,7 +537,7 @@ export default function ClinicianEarningsPage() {
                 >
                   {isRequesting ? <Loader2 className="animate-spin" size={16} /> : isSuccess ? <CheckCircle2 size={16} /> : 'Confirm Payout Request'}
                 </button>
-                <p className="mt-4 text-center text-[8px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-center gap-1">
+                <p className="mt-4 text-center text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-center gap-1">
                   <ShieldCheck size={10} className="text-emerald-500" /> AES-256 Bit Secured Node
                 </p>
               </div>

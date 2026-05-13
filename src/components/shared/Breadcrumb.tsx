@@ -13,7 +13,7 @@ export default function Breadcrumb() {
   if (segments.length === 0) return null;
 
   return (
-    <nav className="flex flex-wrap items-center gap-3 text-[10px] font-black text-slate-400 mb-6 uppercase tracking-[0.2em]">
+    <nav className="flex flex-wrap items-center gap-3 text-[10px] font-bold text-slate-400 mb-6 uppercase tracking-[0.2em]">
       <Link href="/dashboard" className="group flex items-center justify-center">
         <div className="w-8 h-8 bg-white border border-slate-100 rounded-lg flex items-center justify-center group-hover:bg-cyan-50 group-hover:border-cyan-100 transition-all shadow-sm">
           <Home size={14} className="text-cyan-600" />
@@ -35,7 +35,7 @@ export default function Breadcrumb() {
               <motion.span 
                 initial={{ opacity: 0, x: -5 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="text-slate-900 font-black whitespace-nowrap"
+                className="text-slate-900 font-bold whitespace-nowrap"
               >
                 {name}
               </motion.span>

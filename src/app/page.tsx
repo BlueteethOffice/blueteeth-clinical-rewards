@@ -57,23 +57,6 @@ export default function LandingPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Remove the full screen loading state for logged in users
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-[#020617]">
-        <div className="flex flex-col items-center gap-6">
-          <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center border border-white/5 shadow-2xl animate-pulse">
-            <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <h1 className="text-xl font-black text-white tracking-[0.3em] uppercase">Blueteeth</h1>
-            <div className="h-0.5 w-12 bg-cyan-500 rounded-full animate-all duration-1000" style={{ width: '40px' }} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-50 text-slate-900 dark:text-slate-900 selection:bg-cyan-100 selection:text-cyan-900 font-sans antialiased">
       {/* Sticky Navbar */}
@@ -109,11 +92,11 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            <Link href="/login" className="hidden sm:block text-[10px] font-black text-slate-600 hover:text-slate-900 transition-all px-3 uppercase tracking-widest">
+            <Link href="/login" className="hidden sm:block text-[10px] font-black text-slate-600 hover:text-slate-900 transition-all px-3 uppercase tracking-wider">
               Login
             </Link>
             <Link href="/signup">
-              <button className="px-4 md:px-5 py-2 premium-gradient text-white rounded-full text-[10px] md:text-xs font-black shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all uppercase tracking-widest">
+              <button className="px-4 md:px-5 py-2 premium-gradient text-white rounded-full text-[10px] md:text-xs font-black shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all uppercase tracking-wider">
                 Join Now
               </button>
             </Link>
@@ -137,13 +120,13 @@ export default function LandingPage() {
                className="inline-flex max-w-full items-center justify-center gap-2 px-3.5 py-1.5 bg-white/90 backdrop-blur-md border border-cyan-100 text-cyan-600 rounded-full text-[10px] sm:text-[11px] font-bold uppercase mb-5 md:mb-8 shadow-[0_2px_15px_rgba(8,145,178,0.1)]"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-              <span className="tracking-widest">Trusted by 500+ Dental Practices</span>
+              <span className="tracking-wider">Trusted by 500+ Dental Practices</span>
             </motion.div>
             
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl sm:text-6xl md:text-7xl font-bold text-slate-900 mb-6 leading-[1] tracking-tighter"
+              className="text-3xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-[1] tracking-tight"
             >
               <span className="block drop-shadow-sm">Empowering Dentistry</span>
               <span className="text-gradient drop-shadow-sm">Smart Rewards.</span>
@@ -160,12 +143,12 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link href="/signup" className="w-full sm:w-auto">
-                <button className="group w-full px-10 py-4 premium-gradient text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
-                  Join Now <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                <button className="group w-full px-10 py-4 premium-gradient text-white rounded-xl font-black text-xs uppercase tracking-wider shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
+                  JOIN AS PRACTITIONER <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
               <Link href="/login" className="w-full sm:w-auto">
-                <button className="w-full px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.03]">
+                <button className="w-full px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.03]">
                   Admin Access
                 </button>
               </Link>
@@ -182,7 +165,7 @@ export default function LandingPage() {
         <section id="features" className="pt-6 md:pt-8 pb-12 px-6 bg-white">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-xl mx-auto mb-10 md:mb-16">
-              <span className="text-xs font-bold text-cyan-600 uppercase tracking-widest mb-3 block">Features</span>
+              <span className="text-xs font-bold text-cyan-600 uppercase tracking-wider mb-3 block">Features</span>
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Built for clinical excellence</h2>
             </div>
             
@@ -225,7 +208,7 @@ export default function LandingPage() {
         <section id="testimonials" className="pt-12 pb-10 px-6 bg-white">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <span className="text-xs font-bold text-cyan-600 uppercase tracking-widest mb-3 block">Testimonials</span>
+              <span className="text-xs font-bold text-cyan-600 uppercase tracking-wider mb-3 block">Testimonials</span>
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Hear from our community</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -287,7 +270,7 @@ export default function LandingPage() {
             </div>
             
             <div className="flex flex-col items-center md:items-end gap-3">
-              <div className="flex items-center gap-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <div className="flex items-center gap-6 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                 <Link href="#" className="hover:text-cyan-600 transition-colors">Privacy</Link>
                 <Link href="#" className="hover:text-cyan-600 transition-colors">Terms</Link>
                 <Link href="#" className="hover:text-cyan-600 transition-colors">Compliance</Link>

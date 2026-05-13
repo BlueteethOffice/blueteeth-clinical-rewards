@@ -10,15 +10,6 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // 🛡️ TIMEOUT FALLBACK: If loading is stuck for more than 2s, force a role check
-    const timer = setTimeout(() => {
-      const cached = localStorage.getItem('cached_user');
-      if (cached) {
-        const p = JSON.parse(cached);
-        if (p.role) router.replace(`/dashboard/${p.role}`);
-      }
-    }, 2000);
-
     if (!loading) {
       if (user && user.role) {
         router.replace(`/dashboard/${user.role}`);
@@ -26,7 +17,7 @@ export default function DashboardPage() {
         router.replace('/login');
       }
     }
-    return () => clearTimeout(timer);
+    return () => {};
   }, [user, loading, router]);
 
   return <div className="h-screen bg-slate-50 dark:bg-[#020617]" />;

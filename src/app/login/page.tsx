@@ -36,8 +36,8 @@ export default function LoginPage() {
   const [showReset, setShowReset] = useState(false);
   const router = useRouter();
 
-  // 🛡️ SECURITY FIX: Only auto-redirect when Firebase has ACTUALLY confirmed the session
-  // Never redirect from localStorage cache alone - that's the root cause of auto-login bug
+  // 🛡️ SECURITY: Auto-redirect disabled as requested to prevent "automatic" login
+  /*
   useEffect(() => {
     if (!authLoading && user && firebaseUser) {
       // Firebase session is confirmed - now safe to redirect
@@ -55,6 +55,7 @@ export default function LoginPage() {
       }
     }
   }, [user, authLoading, firebaseUser, router, step]);
+  */
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,6 +141,9 @@ export default function LoginPage() {
         localStorage.setItem('cached_user', JSON.stringify(cachedUser));
 
         toast.success('Login Successful');
+        
+        // ⚡ SPEED BOOST: Prefetch and then push
+        router.prefetch(`/dashboard/${userData.role}`);
         router.push(`/dashboard/${userData.role}`);
       }
     } catch (error: any) {
@@ -282,7 +286,7 @@ export default function LoginPage() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-black mb-2 bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tight drop-shadow-sm">
+          <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tight drop-shadow-sm">
             Blueteeth
           </h1>
           <p className="text-cyan-800/80 dark:text-cyan-500/60 font-bold tracking-[0.15em] uppercase text-xs mt-3 transition-colors">
@@ -390,7 +394,7 @@ export default function LoginPage() {
                     await signOut(auth);
                     setStep('login');
                   }}
-                  className="flex items-center gap-2 text-slate-400 hover:text-cyan-600 transition-colors mb-6 text-sm font-bold uppercase tracking-widest"
+                  className="flex items-center gap-2 text-slate-400 hover:text-cyan-600 transition-colors mb-6 text-sm font-bold uppercase tracking-wider"
                 >
                   <ArrowLeft size={16} /> Back to Login
                 </button>
@@ -407,14 +411,14 @@ export default function LoginPage() {
 
                 <form onSubmit={(e) => handleVerifyOTP(e)} className="space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4 transition-colors text-center uppercase tracking-widest">Enter 6-Digit Code</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4 transition-colors text-center uppercase tracking-wider">Enter 6-Digit Code</label>
                     <input
                       type="text"
                       maxLength={6}
                       required
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                      className="w-full text-center text-4xl font-black tracking-[0.5em] py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none transition-all text-slate-900 dark:text-white"
+                      className="w-full text-center text-4xl font-bold tracking-[0.5em] py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none transition-all text-slate-900 dark:text-white"
                       placeholder="000000"
                       autoFocus
                     />
@@ -423,7 +427,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={verifyLoading || otp.length !== 6}
-                    className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50"
+                    className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50"
                   >
                     {verifyLoading ? <Loader2 className="animate-spin" size={20} /> : 'Verify & Continue'}
                   </button>

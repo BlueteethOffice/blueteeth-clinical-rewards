@@ -89,13 +89,13 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                       </div>
                     </div>
                     <div className="ml-3 flex-1">
-                      <p className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">{newNotif.title}</p>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{newNotif.title}</p>
                       <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">{newNotif.message}</p>
                     </div>
                   </div>
                 </div>
                 <div className="flex border-l border-slate-100 dark:border-white/5">
-                  <button onClick={() => toast.dismiss(t.id)} className="w-full border border-transparent rounded-none rounded-r-2xl p-4 flex items-center justify-center text-sm font-black text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors uppercase tracking-widest">Close</button>
+                  <button onClick={() => toast.dismiss(t.id)} className="w-full border border-transparent rounded-none rounded-r-2xl p-4 flex items-center justify-center text-sm font-bold text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors uppercase tracking-wider">Close</button>
                 </div>
               </div>
             ), { duration: 5000 });

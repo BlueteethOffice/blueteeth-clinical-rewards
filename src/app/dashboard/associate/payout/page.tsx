@@ -89,7 +89,7 @@ export default function AssociatePayoutPage() {
           
           <Wallet size={32} className="mb-4 text-cyan-100" />
           <p className="text-cyan-100 font-medium text-sm">Withdrawable Balance</p>
-          <h2 className="text-5xl font-black mb-6">₹{earnings}</h2>
+          <h2 className="text-5xl font-bold mb-6">₹{earnings}</h2>
           
           <div className="flex items-center gap-2 mb-8 text-xs font-bold bg-black/10 w-fit px-3 py-1.5 rounded-lg border border-white/10">
             <AlertCircle size={14} /> Min. Withdrawal: ₹500
@@ -130,7 +130,7 @@ export default function AssociatePayoutPage() {
                         {p.createdAt?.toDate ? format(p.createdAt.toDate(), 'dd MMM, yyyy') : 'Recently'}
                       </td>
                       <td className="px-2 sm:px-4 py-4">
-                        <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase inline-flex items-center gap-1 ${
+                        <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase inline-flex items-center gap-1 ${
                           p.status === 'pending' ? 'bg-amber-50 text-amber-600' :
                           p.status === 'approved' ? 'bg-blue-50 text-blue-600' :
                           'bg-emerald-50 text-emerald-600'

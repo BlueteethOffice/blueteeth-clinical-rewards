@@ -27,11 +27,6 @@ export async function POST(req: Request) {
 
     // ─── SEND OTP ─────────────────────────────────────────────────────────────
     if (action === 'send') {
-      const existingUser = await db.collection('users').where('email', '==', email).limit(1).get();
-      if (!existingUser.empty) {
-        return NextResponse.json({ error: 'This email is already registered.' }, { status: 400 });
-      }
-
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = Date.now() + 10 * 60 * 1000;
 

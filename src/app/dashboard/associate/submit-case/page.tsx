@@ -97,8 +97,8 @@ export default function SubmitCasePage() {
       const points = TREATMENT_POINTS[data.treatmentType] || 0;
       const token = await firebaseUser?.getIdToken();
 
-      // 1. Initial Meta-Save (Instant)
-      await setDoc(newCaseRef, {
+      // 🚀 LIGHTNING SUBMISSION: Save in background and redirect NOW
+      const caseData = {
         ...data,
         id: caseId,
         patientName: formattedPatientName,
@@ -108,19 +108,23 @@ export default function SubmitCasePage() {
         associateName: user.name || 'Anonymous',
         associateMobile: (user as any).phone || '',
         points,
-        initialProof: [], // Will be updated in background
+        initialProof: [], 
         status: 'pending',
         sourceType: 'associate',
         createdAt: serverTimestamp(),
-      });
+      };
 
-      // 2. Instant Feedback & Redirect
-      toast.success('Case submitted! Processing proofs...');
+      // Background Save
+      const savePromise = setDoc(newCaseRef, caseData);
+
+      // Instant Feedback & Redirect
+      toast.success('Case Submitted! Syncing in background...');
       router.push('/dashboard/associate/my-cases');
 
       // 3. BACKGROUND SYNC (The heavy lifting)
       (async () => {
         try {
+          await savePromise; // Ensure initial meta is saved
           const uploadPromises = files.map(async (f) => {
             const formData = new FormData();
             formData.append('file', f.file);
@@ -164,7 +168,7 @@ export default function SubmitCasePage() {
     <DashboardLayout>
       <div className="max-w-5xl mx-auto pb-4 px-1 sm:px-0">
         <div className="mb-6 sm:mb-10">
-          <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight uppercase">Submit New Case</h1>
+          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 tracking-tight uppercase">Submit New Case</h1>
           <p className="text-[10px] sm:text-base text-slate-500 mt-1 sm:mt-2 font-bold uppercase tracking-wide italic">Instant Clinical Submission Mode</p>
         </div>
 
@@ -247,7 +251,7 @@ export default function SubmitCasePage() {
                         {Object.keys(TREATMENT_POINTS).map(type => (
                           <button key={type} type="button" onClick={() => { setValue('treatmentType', type, { shouldValidate: true }); setShowTreatments(false); }} className="w-full px-5 py-3 text-left hover:bg-slate-50 text-sm font-medium border-b border-slate-50 flex items-center justify-between">
                             <span>{type}</span>
-                            <span className="text-[10px] font-black text-slate-400">{TREATMENT_POINTS[type]} PTS</span>
+                            <span className="text-[10px] font-bold text-slate-400">{TREATMENT_POINTS[type]} PTS</span>
                           </button>
                         ))}
                       </motion.div>
@@ -274,6 +278,15 @@ export default function SubmitCasePage() {
                       className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg outline-none font-medium" 
                     />
                   </div>
+                </div>
+                <div className="space-y-2 mt-4">
+                  <label className="text-sm font-bold text-slate-700 ml-1">Clinical Notes (Optional)</label>
+                  <textarea 
+                    {...register('notes')} 
+                    rows={3}
+                    placeholder="Any specific instructions or clinical details..." 
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg outline-none font-medium resize-none"
+                  />
                 </div>
               </div>
             </div>
@@ -311,7 +324,7 @@ export default function SubmitCasePage() {
             </div>
           </div>
 
-          <button type="submit" disabled={loading} className="w-full py-4 sm:py-5 premium-gradient text-white rounded-xl font-black text-xl shadow-xl flex items-center justify-center gap-3 disabled:opacity-50">
+          <button type="submit" disabled={loading} className="w-full py-4 sm:py-5 premium-gradient text-white rounded-xl font-bold text-xl shadow-xl flex items-center justify-center gap-3 disabled:opacity-50">
             {loading ? <Loader2 className="animate-spin" size={28} /> : <>Submit Case <Check size={28} /></>}
           </button>
         </form>

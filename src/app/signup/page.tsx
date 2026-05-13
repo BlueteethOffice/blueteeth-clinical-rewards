@@ -199,7 +199,7 @@ export default function SignupPage() {
       <div className="w-full max-w-md relative z-10 mt-4 sm:mt-0">
         <div className="flex flex-col items-center text-center mb-5 sm:mb-10">
           <Link href="/" className="group mb-3 sm:mb-4">
-            <h1 className="text-4xl sm:text-5xl font-black mb-2 bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tight drop-shadow-sm uppercase">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tight drop-shadow-sm uppercase">
               BLUETEETH
             </h1>
           </Link>
@@ -221,7 +221,7 @@ export default function SignupPage() {
                     <UserPlus size={28} className="hidden sm:block" />
                   </div>
                   <div className="min-w-0 text-left">
-                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Create Account</h2>
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Create Account</h2>
                     <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-1">Enterprise Registration</p>
                   </div>
                 </div>
@@ -229,7 +229,7 @@ export default function SignupPage() {
                 <form onSubmit={(e) => { e.preventDefault(); sendOTP(); }} className="space-y-4 sm:space-y-5">
                   <div className="grid grid-cols-1 gap-4 sm:gap-5">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Full Name</label>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-1">Full Name</label>
                       <div className="relative group">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 transition-colors" size={18} />
                         <input
@@ -248,7 +248,7 @@ export default function SignupPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Email Address</label>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-1">Email Address</label>
                       <div className="relative group">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 transition-colors" size={18} />
                         <input
@@ -270,7 +270,7 @@ export default function SignupPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Mobile</label>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-1">Mobile</label>
                         <div className="relative group">
                           <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 transition-colors" size={18} />
                           <input
@@ -288,7 +288,7 @@ export default function SignupPage() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Role</label>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-1">Role</label>
                         <div className="relative group">
                           <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-500 transition-colors pointer-events-none" size={18} />
                           <select
@@ -301,13 +301,13 @@ export default function SignupPage() {
                           </select>
                         </div>
                         {formData.role === 'clinician' && (
-                          <p className="text-[8px] text-purple-500 font-black uppercase tracking-widest pl-1 animate-pulse">Medical Prefix "Dr." Enabled</p>
+                          <p className="text-[8px] text-purple-500 font-bold uppercase tracking-wider pl-1 animate-pulse">Medical Prefix "Dr." Enabled</p>
                         )}
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Secret Password</label>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-1">Secret Password</label>
                       <div className="relative group">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-rose-500 transition-colors" size={18} />
                         <input
@@ -332,7 +332,7 @@ export default function SignupPage() {
                           exit={{ opacity: 0, height: 0 }}
                           className="space-y-2 overflow-hidden"
                         >
-                          <label className="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em] pl-1">Medical Registration Number</label>
+                          <label className="text-[10px] font-bold text-purple-500 uppercase tracking-[0.2em] pl-1">Medical Registration Number</label>
                           <div className="relative group">
                             <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-600 transition-colors" size={18} />
                             <input
@@ -351,7 +351,7 @@ export default function SignupPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 sm:py-4 premium-gradient text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.3em] shadow-lg shadow-cyan-600/20 hover:shadow-cyan-600/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 mt-5 sm:mt-6"
+                    className="w-full py-3.5 sm:py-4 premium-gradient text-white rounded-xl font-bold text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.3em] shadow-lg shadow-cyan-600/20 hover:shadow-cyan-600/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 mt-5 sm:mt-6"
                   >
                     {loading ? <Loader2 className="animate-spin" size={20} /> : <><Mail size={18} className="animate-pulse" /> Get Secure OTP</>}
                   </button>
@@ -363,13 +363,13 @@ export default function SignupPage() {
               <div
                 key="otp"
               >
-                <button onClick={() => setStep('details')} className="flex items-center gap-1 text-slate-400 hover:text-slate-600 mb-6 transition-colors text-[10px] font-black uppercase tracking-widest">
+                <button onClick={() => setStep('details')} className="flex items-center gap-1 text-slate-400 hover:text-slate-600 mb-6 transition-colors text-[10px] font-bold uppercase tracking-wider">
                   <ChevronLeft size={14} /> Edit Details
                 </button>
 
                 <div className="mb-8">
-                  <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Verify Email</h2>
-                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">Code sent to: {formData.email}</p>
+                  <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Verify Email</h2>
+                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-1">Code sent to: {formData.email}</p>
                 </div>
 
                 <form onSubmit={verifyAndSignup} className="space-y-8">
@@ -383,18 +383,18 @@ export default function SignupPage() {
                         value={digit}
                         onChange={(e) => handleOtpChange(i, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(i, e)}
-                        className="w-full h-14 bg-slate-50 border-2 border-slate-100 rounded-xl text-center text-xl font-black text-slate-900 focus:border-cyan-600 focus:bg-white outline-none transition-all"
+                        className="w-full h-14 bg-slate-50 border-2 border-slate-100 rounded-xl text-center text-xl font-bold text-slate-900 focus:border-cyan-600 focus:bg-white outline-none transition-all"
                       />
                     ))}
                   </div>
 
                   <div className="text-center space-y-4">
                     {countdown > 0 ? (
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center justify-center gap-2">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center justify-center gap-2">
                         <Timer size={14} className="text-cyan-500" /> Resend in {countdown}s
                       </p>
                     ) : (
-                      <button type="button" onClick={sendOTP} className="text-[10px] font-black text-cyan-600 hover:text-cyan-700 uppercase tracking-[0.2em]">
+                      <button type="button" onClick={sendOTP} className="text-[10px] font-bold text-cyan-600 hover:text-cyan-700 uppercase tracking-[0.2em]">
                         Resend Code
                       </button>
                     )}
@@ -402,7 +402,7 @@ export default function SignupPage() {
                     <button
                       type="submit"
                       disabled={loading || otp.some(d => !d)}
-                      className="w-full py-4 bg-cyan-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-cyan-900/10 hover:bg-cyan-500 transition-all flex items-center justify-center gap-2"
+                      className="w-full py-4 bg-cyan-600 text-white rounded-xl font-bold text-xs uppercase tracking-[0.2em] shadow-xl shadow-cyan-900/10 hover:bg-cyan-500 transition-all flex items-center justify-center gap-2"
                     >
                       {loading ? <Loader2 className="animate-spin" size={20} /> : <><CheckCircle2 size={18} /> Verify & Create</>}
                     </button>
@@ -419,11 +419,11 @@ export default function SignupPage() {
                 <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
                   <CheckCircle2 size={40} />
                 </div>
-                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Verified!</h2>
-                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-2">Welcome to the Blueteeth network.</p>
+                <h2 className="text-2xl font-bold text-slate-900 uppercase tracking-tight">Verified!</h2>
+                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-2">Welcome to the Blueteeth network.</p>
                 <div className="mt-8">
                   <Loader2 className="animate-spin text-cyan-600 mx-auto" size={24} />
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mt-4">Redirecting to Dashboard...</p>
+                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-4">Redirecting to Dashboard...</p>
                 </div>
               </div>
             )}
@@ -431,7 +431,7 @@ export default function SignupPage() {
         </div>
 
         <div className="mt-6 text-center">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
             Already a member? {' '}
             <Link href="/login" className="text-slate-900 hover:text-cyan-600 transition-colors">
               Login Securely

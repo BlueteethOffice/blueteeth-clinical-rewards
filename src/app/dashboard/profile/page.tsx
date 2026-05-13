@@ -204,13 +204,13 @@ export default function ProfilePage() {
       <div className="max-w-5xl mx-auto pb-10 px-2 sm:px-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-10 mt-2 sm:mt-0">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Profile Settings</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Profile Settings</h1>
             <p className="text-slate-500 dark:text-slate-400 mt-1 sm:mt-2 font-medium text-[10px] sm:text-sm">Manage your professional identity and clinical practice details.</p>
           </div>
           {!isEditing && (
             <button 
               onClick={() => setIsEditing(true)}
-              className="flex items-center justify-center gap-2 px-6 py-4 sm:py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-700 transition-all shadow-lg w-full sm:w-auto"
+              className="flex items-center justify-center gap-2 px-6 py-4 sm:py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider hover:bg-slate-800 dark:hover:bg-slate-700 transition-all shadow-lg w-full sm:w-auto"
             >
               <Edit3 size={16} /> Edit Profile
             </button>
@@ -251,8 +251,8 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">{user?.displayName || user?.name}</h2>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 rounded-lg text-[9px] sm:text-[10px] font-black uppercase mt-2 tracking-widest border border-cyan-100 dark:border-cyan-500/20">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white truncate">{user?.displayName || user?.name}</h2>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 rounded-lg text-[9px] sm:text-[10px] font-bold uppercase mt-2 tracking-wider border border-cyan-100 dark:border-cyan-500/20">
                 <Briefcase size={12} /> {user?.role}
               </div>
 
@@ -262,7 +262,7 @@ export default function ProfilePage() {
                     <Mail size={16} className="text-blue-500" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[8px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-0.5">Email Identity</p>
+                    <p className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Email Identity</p>
                     <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user?.email}</p>
                   </div>
                 </div>
@@ -271,7 +271,7 @@ export default function ProfilePage() {
                     <Phone size={16} className="text-emerald-500" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[8px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-0.5">Mobile Contact</p>
+                    <p className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Mobile Contact</p>
                     <p className="text-xs font-bold text-slate-900 dark:text-white">+91 {user?.phone}</p>
                   </div>
                 </div>
@@ -280,17 +280,17 @@ export default function ProfilePage() {
 
             <div className="glass-card p-5 sm:p-8 rounded-xl border border-slate-100/50 dark:border-white/5 shadow-sm relative overflow-hidden group">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-cyan-500/10 rounded-full blur-xl group-hover:bg-cyan-500/20 transition-all" />
-              <h4 className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest mb-6 flex items-center gap-2">
+              <h4 className="text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6 flex items-center gap-2">
                 <ShieldCheck size={16} className="text-emerald-500" /> Account Security
               </h4>
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tight">Identity Verification</span>
-                  <span className="px-2 py-1 bg-emerald-500/10 text-emerald-600 rounded text-[8px] font-black uppercase">Verified</span>
+                  <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tight">Identity Verification</span>
+                  <span className="px-2 py-1 bg-emerald-500/10 text-emerald-600 rounded text-[8px] font-bold uppercase">Verified</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tight">Data Encryption</span>
-                  <span className="text-[8px] font-black text-slate-900 dark:text-white uppercase">AES-256 Active</span>
+                  <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tight">Data Encryption</span>
+                  <span className="text-[8px] font-bold text-slate-900 dark:text-white uppercase">AES-256 Active</span>
                 </div>
               </div>
             </div>
@@ -300,10 +300,10 @@ export default function ProfilePage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="glass-card p-6 sm:p-8 rounded-xl relative overflow-hidden border border-slate-100/50 dark:border-white/5 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-3">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-3">
                     <Activity size={20} className="text-cyan-600" /> Personal Data
                   </h3>
-                  <div className={`inline-flex items-center gap-1.5 text-[9px] font-black uppercase px-2.5 py-1 rounded-md transition-colors self-start sm:self-auto ${isEditing ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600' : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600'}`}>
+                  <div className={`inline-flex items-center gap-1.5 text-[9px] font-bold uppercase px-2.5 py-1 rounded-md transition-colors self-start sm:self-auto ${isEditing ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600' : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600'}`}>
                     {isEditing ? <Unlock size={10} /> : <Lock size={10} />}
                     {isEditing ? 'Editing Mode' : 'Profile Locked'}
                   </div>
@@ -312,40 +312,40 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {/* ... same inputs ... */}
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">Full Name</label>
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">Full Name</label>
                     <input {...register('name')} readOnly={isNameLockedGlobal || !isEditing} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${(isNameLockedGlobal || !isEditing) ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">Mobile Number</label>
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">Mobile Number</label>
                     <input {...register('phone')} readOnly={isPhoneLockedGlobal || !isEditing} maxLength={12} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${(isPhoneLockedGlobal || !isEditing) ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Age</label>
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Age</label>
                     <input {...register('age')} type="number" readOnly={!isEditing} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${!isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Gender</label>
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Gender</label>
                     <select {...register('gender')} disabled={!isEditing} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm appearance-none cursor-pointer ${!isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`}><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Clinic / Hospital</label>
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Clinic / Hospital</label>
                     <input {...register('clinicName')} readOnly={!isEditing} placeholder="e.g. City Dental Hub" className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${!isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} />
                   </div>
                   {user?.role === 'clinician' && (
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-purple-500 uppercase tracking-widest flex items-center gap-2">Reg. Number</label>
-                      <input {...register('registrationNumber')} readOnly={!!user?.registrationNumber || !isEditing} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-black text-xs tracking-widest ${!!user?.registrationNumber ? 'bg-emerald-50/30 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 cursor-not-allowed' : !isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-purple-50/30 dark:bg-purple-500/10 border border-purple-100 dark:border-purple-500/20 text-slate-900 dark:text-white'}`} />
+                      <label className="text-[11px] font-bold text-purple-500 uppercase tracking-wider flex items-center gap-2">Reg. Number</label>
+                      <input {...register('registrationNumber')} readOnly={!!user?.registrationNumber || !isEditing} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-xs tracking-wider ${!!user?.registrationNumber ? 'bg-emerald-50/30 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 cursor-not-allowed' : !isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-purple-50/30 dark:bg-purple-500/10 border border-purple-100 dark:border-purple-500/20 text-slate-900 dark:text-white'}`} />
                     </div>
                   )}
                 </div>
               </div>
 
               <div className="glass-card p-6 sm:p-8 rounded-xl border border-slate-100/50 dark:border-white/5 shadow-sm">
-                <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest mb-8 flex items-center gap-3">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-8 flex items-center gap-3">
                   <Hospital size={20} className="text-blue-600" /> Clinical Practice
                 </h3>
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Clinic Address</label>
+                  <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Clinic Address</label>
                   <textarea {...register('clinicAddress')} readOnly={!isEditing} rows={3} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm resize-none ${!isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-blue-600 text-slate-900 dark:text-white'}`} />
                 </div>
               </div>
@@ -355,11 +355,11 @@ export default function ProfilePage() {
                   <button 
                     type="button" 
                     onClick={handleCancelEdit} 
-                    className="px-8 py-4 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-600 transition-all flex items-center justify-center gap-2 border border-slate-200 dark:border-white/5 active:scale-[0.98]"
+                    className="px-8 py-4 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-600 transition-all flex items-center justify-center gap-2 border border-slate-200 dark:border-white/5 active:scale-[0.98]"
                   >
                     <X size={16} /> Cancel
                   </button>
-                  <button type="submit" disabled={loading} className="flex-1 py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-3">{loading ? <Loader2 className="animate-spin" size={20} /> : 'Save Profile'}</button>
+                  <button type="submit" disabled={loading} className="flex-1 py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-xl flex items-center justify-center gap-3">{loading ? <Loader2 className="animate-spin" size={20} /> : 'Save Profile'}</button>
                 </div>
               )}
             </form>
@@ -376,7 +376,7 @@ export default function ProfilePage() {
               <div className="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center">
                 <Crop size={16} className="text-white" />
               </div>
-              <p className="text-sm font-black text-white uppercase tracking-widest">Crop Profile Photo</p>
+              <p className="text-sm font-bold text-white uppercase tracking-wider">Crop Profile Photo</p>
             </div>
             <button onClick={() => setCropSrc(null)} className="w-9 h-9 bg-white/10 hover:bg-rose-500 text-white rounded-md flex items-center justify-center transition-all"><X size={18} /></button>
           </div>
@@ -390,8 +390,8 @@ export default function ProfilePage() {
               <ZoomIn size={16} className="text-slate-400 shrink-0" />
             </div>
             <div className="flex items-center gap-3 shrink-0">
-              <button onClick={() => setCropSrc(null)} className="px-5 py-2.5 bg-white/10 text-white rounded-md text-xs font-black uppercase tracking-widest hover:bg-white/20 transition-all flex items-center gap-2"><X size={14} /> Cancel</button>
-              <button onClick={handleCropConfirm} className="px-6 py-2.5 bg-cyan-600 text-white rounded-md text-xs font-black uppercase tracking-widest hover:bg-cyan-500 transition-all flex items-center gap-2 shadow-lg shadow-cyan-900/40"><Check size={14} /> Apply Crop</button>
+              <button onClick={() => setCropSrc(null)} className="px-5 py-2.5 bg-white/10 text-white rounded-md text-xs font-bold uppercase tracking-wider hover:bg-white/20 transition-all flex items-center gap-2"><X size={14} /> Cancel</button>
+              <button onClick={handleCropConfirm} className="px-6 py-2.5 bg-cyan-600 text-white rounded-md text-xs font-bold uppercase tracking-wider hover:bg-cyan-500 transition-all flex items-center gap-2 shadow-lg shadow-cyan-900/40"><Check size={14} /> Apply Crop</button>
             </div>
           </div>
         </motion.div>

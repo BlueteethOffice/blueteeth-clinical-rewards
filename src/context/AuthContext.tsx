@@ -59,15 +59,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     let unsubscribeSnapshot: (() => void) | null = null;
     
-    // 🛡️ SPEED MODE: If we have a cached user, we can stop the initial spinner faster
+    // 🚀 SPEED MODE: Use cache for instant UI shell
     if (user) {
       setLoading(false);
     }
 
-    // 🛡️ FAIL-SAFE: Force loading to false after 3 seconds no matter what
+    // 🛡️ FAIL-SAFE: Force loading to false after 2 seconds no matter what
     const forceLoadTimeout = setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 1000);
 
     const unsubscribeAuth = onAuthStateChanged(auth, async (fUser) => {
       if (unsubscribeSnapshot) {

@@ -106,11 +106,11 @@ export default function MyCasesPage() {
     <DashboardLayout>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-10">
         <div className="min-w-0">
-          <h1 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Clinical Records</h1>
+          <h1 className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight uppercase">Clinical Records</h1>
           <p className="text-[10px] sm:text-sm text-slate-500 font-bold mt-1 uppercase tracking-wide">Manage and track your patient submissions in real-time.</p>
         </div>
         <Link href="/dashboard/associate/submit-case" className="shrink-0">
-          <button className="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white px-5 sm:px-8 py-3 sm:py-3.5 rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-widest shadow-xl shadow-slate-200 dark:shadow-none flex items-center justify-center gap-2 hover:bg-slate-800 dark:hover:bg-white active:scale-95 transition-all w-full sm:w-auto">
+          <button className="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white px-5 sm:px-8 py-3 sm:py-3.5 rounded-lg sm:rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-xl shadow-slate-200 dark:shadow-none flex items-center justify-center gap-2 hover:bg-slate-800 dark:hover:bg-white active:scale-95 transition-all w-full sm:w-auto">
             <Plus size={18} strokeWidth={3} className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
             Submit New Case
           </button>
@@ -137,7 +137,7 @@ export default function MyCasesPage() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all ${
+                  className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all ${
                     activeTab === tab ? 'bg-white text-cyan-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'
                   }`}
                 >
@@ -153,7 +153,7 @@ export default function MyCasesPage() {
           {loading ? (
             <div className="py-24 flex flex-col items-center justify-center text-slate-400 gap-4 bg-white rounded-xl border border-dashed border-slate-200">
               <Loader2 className="animate-spin text-cyan-600" size={40} />
-              <p className="text-[10px] font-black uppercase tracking-[0.2em]">Syncing Data...</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em]">Syncing Data...</p>
             </div>
           ) : paginatedCases.length > 0 ? (
             <>
@@ -176,9 +176,9 @@ export default function MyCasesPage() {
                               <User size={24} className="w-5 h-5 sm:w-6 sm:h-6" />
                             </div>
                             <div className="flex flex-col min-w-0">
-                              <span className="text-sm sm:text-base font-black text-slate-900 dark:text-white group-hover:text-cyan-600 transition-colors truncate uppercase tracking-tight">{c.patientName}</span>
+                              <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 transition-colors truncate uppercase tracking-tight">{c.patientName}</span>
                               <div className="flex items-center gap-2 mt-0.5">
-                                <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded text-[8px] sm:text-[9px] font-bold font-mono tracking-tighter uppercase">#{c.id.slice(-8)}</span>
+                                <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded text-[8px] sm:text-[9px] font-bold font-mono tracking-tight uppercase">#{c.id.slice(-8)}</span>
                                 <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 flex items-center gap-1 uppercase">
                                   <Clock size={10} /> {c.createdAt?.toDate ? format(c.createdAt.toDate(), 'dd MMM, HH:mm') : 'Recently'}
                                 </span>
@@ -189,14 +189,14 @@ export default function MyCasesPage() {
                           {/* 🦷 Treatment Info */}
                           <div className="flex-1 grid grid-cols-2 gap-4 sm:gap-6">
                             <div className="flex flex-col">
-                              <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Procedure</p>
+                              <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Procedure</p>
                               <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
                                 <FileText size={14} className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-300 dark:text-slate-600" />
-                                <span className="text-[11px] sm:text-sm font-black tracking-tight truncate">{c.treatmentType}</span>
+                                <span className="text-[11px] sm:text-sm font-bold tracking-tight truncate">{c.treatmentType}</span>
                               </div>
                             </div>
                             <div className="flex flex-col">
-                              <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Location</p>
+                              <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Location</p>
                               <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
                                 <MapPin size={14} className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-300 dark:text-slate-600" />
                                 <span className="text-[10px] sm:text-[11px] font-bold truncate">{c.clinicLocation}</span>
@@ -207,15 +207,15 @@ export default function MyCasesPage() {
                           {/* 💰 Rewards & Status */}
                           <div className="flex items-center gap-4 sm:gap-8 justify-between md:justify-end min-w-0 sm:min-w-[200px]">
                             <div className="text-left md:text-right">
-                              <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest">Points</p>
+                              <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider">Points</p>
                               <div className="flex items-center gap-1 mt-0.5">
-                                <span className="text-base sm:text-lg font-black text-slate-900 dark:text-white">{c.points || 0}</span>
-                                <span className="text-[9px] sm:text-[10px] font-black text-cyan-600 uppercase">PTS</span>
+                                <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{c.points || 0}</span>
+                                <span className="text-[9px] sm:text-[10px] font-bold text-cyan-600 uppercase">PTS</span>
                               </div>
                             </div>
 
                             <div className="flex flex-col items-end gap-2">
-                              <span className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[8px] sm:text-[9px] font-black uppercase tracking-[0.1em] inline-flex items-center gap-1.5 shadow-sm ${
+                              <span className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.1em] inline-flex items-center gap-1.5 shadow-sm ${
                                 c.status === 'approved' ? 'bg-emerald-500 text-white' :
                                 c.status === 'pending' ? 'bg-amber-400 text-white' :
                                 c.status === 'rejected' ? 'bg-rose-500 text-white' :
@@ -240,7 +240,7 @@ export default function MyCasesPage() {
               {/* 📟 PAGINATION CONTROLS */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between pt-6 border-t border-slate-100">
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                     Showing Page {currentPage} of {totalPages}
                   </div>
                   <div className="flex gap-2">
@@ -273,7 +273,7 @@ export default function MyCasesPage() {
                   <AlertCircle size={40} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-slate-900 uppercase tracking-[0.2em]">No Records Found</h4>
+                  <h4 className="text-sm font-bold text-slate-900 uppercase tracking-[0.2em]">No Records Found</h4>
                   <p className="text-xs text-slate-400 font-bold mt-2 leading-relaxed uppercase tracking-tight">
                     We couldn't find any cases matching "{searchTerm}". Try adjusting your filters.
                   </p>

@@ -67,7 +67,7 @@ function ResetPasswordContent() {
     return (
       <div className="flex flex-col items-center justify-center space-y-4">
         <Loader2 className="animate-spin text-cyan-500" size={40} />
-        <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">Verifying Secure Token...</p>
+        <p className="text-slate-500 font-bold uppercase text-[10px] tracking-wider">Verifying Secure Token...</p>
       </div>
     );
   }
@@ -176,7 +176,7 @@ export default function ResetPasswordPage() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-black mb-2 bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tight drop-shadow-sm">
+          <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tight drop-shadow-sm">
             Blueteeth
           </h1>
           <p className="text-cyan-800/80 dark:text-cyan-500/60 font-bold tracking-[0.15em] uppercase text-xs mt-3 transition-colors">
@@ -188,7 +188,7 @@ export default function ResetPasswordPage() {
           <Suspense fallback={
             <div className="flex flex-col items-center justify-center space-y-4">
               <Loader2 className="animate-spin text-cyan-500" size={40} />
-              <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">Initializing Secure Reset...</p>
+              <p className="text-slate-500 font-bold uppercase text-[10px] tracking-wider">Initializing Secure Reset...</p>
             </div>
           }>
             <ResetPasswordContent />

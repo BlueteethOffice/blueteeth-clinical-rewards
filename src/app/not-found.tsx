@@ -14,7 +14,7 @@ export default function NotFound() {
       <div className="max-w-md w-full text-center">
         {/* Large 404 visual */}
         <div className="relative mb-8">
-          <span className="text-[120px] font-black text-slate-100 leading-none select-none">
+          <span className="text-[120px] font-bold text-slate-100 leading-none select-none">
             404
           </span>
           <div className="absolute inset-0 flex items-center justify-center">
@@ -24,7 +24,7 @@ export default function NotFound() {
           </div>
         </div>
 
-        <h1 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">
+        <h1 className="text-2xl font-bold text-slate-900 mb-2 tracking-tight">
           Page not found
         </h1>
         <p className="text-slate-500 text-sm font-medium mb-8 leading-relaxed">

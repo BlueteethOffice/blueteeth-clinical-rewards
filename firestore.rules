@@ -37,24 +37,56 @@ service cloud.firestore {
 
     // Cases Collection
     match /cases/{caseId} {
-      // List queries must be filtered by clinicianId or associateId in the code
-      // Admins bypass this filter
+      // Helper to get points (Must match TREATMENT_POINTS in types/index.ts)
+      function getPoints(type) {
+        let pointsMap = {
+          'RCT (Root Canal)': 5,
+          'Dental Implant': 10,
+          'Zirconia Crown': 4,
+          'Fixed Braces': 8,
+          'Clear Aligners': 15,
+          'Cosmetic Veneers': 7,
+          'Smile Makeover': 12,
+          'Simple Extraction': 1,
+          'Surgical Wisdom Removal': 4,
+          'Professional Cleaning': 2,
+          'Teeth Whitening': 3,
+          'Complete Denture': 5,
+          'Composite Filling': 1,
+          'Gum Treatment (Laser)': 6,
+          'Pediatric Dentistry': 2,
+          'Full Mouth Rehab': 20,
+          'Scaling & Polishing': 2,
+          'Dental X-Ray (RVG)': 1,
+          'Clinical Consultation': 1
+        };
+        return pointsMap[type];
+      }
+
+      // Read access
       allow read: if isAuthenticated() && (
         isAdmin() ||
         resource.data.clinicianId == request.auth.uid ||
         resource.data.associateId == request.auth.uid
       );
 
-      // Only associates can create cases, and must own them
-      // Added role check: Must be an associate to create
-      allow create: if isAuthenticated() && 
-                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'associate' &&
-                    request.resource.data.associateId == request.auth.uid;
+      // Create access with strict points validation
+      allow create: if isAuthenticated() && (
+        // Case 1: Associate submission
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'associate' &&
+         request.resource.data.associateId == request.auth.uid &&
+         request.resource.data.points == getPoints(request.resource.data.treatmentType)) ||
+        // Case 2: Clinician self-submission
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'clinician' &&
+         request.resource.data.clinicianId == request.auth.uid &&
+         request.resource.data.points == getPoints(request.resource.data.treatmentType))
+      );
       
-      // Only Admins or the assigned Clinician can update
+      // Only Admins or assigned Clinician can update (but Clinician can't change status/points)
       allow update: if isAuthenticated() && (
         isAdmin() ||
-        resource.data.clinicianId == request.auth.uid
+        (resource.data.clinicianId == request.auth.uid && 
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status', 'points', 'associateId']))
       );
       
       allow delete: if isAdmin();

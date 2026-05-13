@@ -99,7 +99,7 @@ export default function AssignedCasesPage() {
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-10 lg:mb-12 mt-2 sm:mt-0">
           <div>
-            <h1 className="text-2xl min-[400px]:text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Assigned Cases</h1>
+            <h1 className="text-2xl min-[400px]:text-3xl font-bold text-slate-900 dark:text-white tracking-tight uppercase">Assigned Cases</h1>
             <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-2 flex items-center gap-2">
               <ShieldCheck size={14} className="text-cyan-500" /> Clinical Registry
             </p>
@@ -112,7 +112,7 @@ export default function AssignedCasesPage() {
             <button 
               key={s}
               onClick={() => { setFilterStatus(s); setCurrentPage(1); }}
-              className={`px-5 sm:px-6 py-3 sm:py-4 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest whitespace-nowrap border transition-all ${
+              className={`px-5 sm:px-6 py-3 sm:py-4 rounded-xl text-[9px] sm:text-[10px] font-bold uppercase tracking-wider whitespace-nowrap border transition-all ${
                 filterStatus === s 
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent shadow-xl' 
                   : 'bg-white dark:bg-slate-900 text-slate-400 border-slate-200 dark:border-white/5'
@@ -128,7 +128,7 @@ export default function AssignedCasesPage() {
           {loading ? (
             <div className="py-32 flex flex-col items-center justify-center text-slate-400">
               <Loader2 className="animate-spin mb-6 text-cyan-600" size={48} />
-              <p className="font-black uppercase tracking-[0.3em] text-[10px]">Syncing Records...</p>
+              <p className="font-bold uppercase tracking-[0.3em] text-[10px]">Syncing Records...</p>
             </div>
           ) : currentCases.length > 0 ? (
             <AnimatePresence mode='popLayout'>
@@ -145,29 +145,29 @@ export default function AssignedCasesPage() {
                         
                         <div className="flex-1">
                           <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-5 sm:mb-6">
-                            <span className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded text-[8px] sm:text-[9px] font-black uppercase tracking-widest border ${status.bg}`}>
+                            <span className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded text-[8px] sm:text-[9px] font-bold uppercase tracking-wider border ${status.bg}`}>
                               {status.text}
                             </span>
                             {c.selfAssigned && (
-                              <span className="px-3 sm:px-4 py-1 sm:py-1.5 rounded bg-purple-600 text-white text-[8px] sm:text-[9px] font-black uppercase tracking-widest shadow-lg shadow-purple-500/20">
+                              <span className="px-3 sm:px-4 py-1 sm:py-1.5 rounded bg-purple-600 text-white text-[8px] sm:text-[9px] font-bold uppercase tracking-wider shadow-lg shadow-purple-500/20">
                                 Self
                               </span>
                             )}
-                            <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-auto">
+                            <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-auto">
                               ID: {c.id.slice(-8).toUpperCase()}
                             </span>
                           </div>
 
                           <div className="flex flex-col lg:flex-row lg:items-center gap-5 sm:gap-6 lg:gap-16">
                             <div>
-                              <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight uppercase group-hover:text-cyan-600 transition-colors">
+                              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight uppercase group-hover:text-cyan-600 transition-colors">
                                 {c.patientName}
                               </h3>
                               <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-2">
-                                <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                                   {c.gender} • {c.age} Y
                                 </span>
-                                <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                                   <Phone size={12} className="text-cyan-500" /> {c.mobile}
                                 </span>
                               </div>
@@ -175,16 +175,16 @@ export default function AssignedCasesPage() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 lg:gap-12 flex-1 sm:border-l border-slate-100 dark:border-white/5 sm:pl-8">
                               <div>
-                                <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 sm:mb-1.5 flex items-center gap-1.5">
+                                <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1 sm:mb-1.5 flex items-center gap-1.5">
                                   <Stethoscope size={12} className="text-cyan-500" /> Treatment
                                 </p>
-                                <p className="text-[11px] sm:text-xs font-black text-slate-700 dark:text-slate-300 uppercase truncate">{c.treatmentType}</p>
+                                <p className="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase truncate">{c.treatmentType}</p>
                               </div>
                               <div className="hidden sm:block">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                                   <MapPin size={12} className="text-cyan-500" /> Location
                                 </p>
-                                <p className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase truncate">{c.clinicLocation}</p>
+                                <p className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase truncate">{c.clinicLocation}</p>
                               </div>
                             </div>
                           </div>
@@ -204,8 +204,8 @@ export default function AssignedCasesPage() {
           ) : (
             <div className="py-24 sm:py-32 bg-white dark:bg-slate-900/20 border-2 border-dashed border-slate-100 dark:border-white/5 rounded-xl flex flex-col items-center justify-center text-center p-8 sm:p-10">
               <ClipboardList size={40} className="text-slate-200 mb-4" />
-              <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white uppercase">No Assignments</h2>
-              <p className="max-w-xs text-slate-400 mt-2 font-bold text-[9px] sm:text-[10px] uppercase tracking-widest">Your professional queue is currently empty.</p>
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white uppercase">No Assignments</h2>
+              <p className="max-w-xs text-slate-400 mt-2 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider">Your professional queue is currently empty.</p>
             </div>
           )}
         </div>
@@ -216,7 +216,7 @@ export default function AssignedCasesPage() {
             <button
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-lg text-[10px] font-black uppercase tracking-widest disabled:opacity-30"
+              className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-lg text-[10px] font-bold uppercase tracking-wider disabled:opacity-30"
             >
               Prev
             </button>
@@ -225,7 +225,7 @@ export default function AssignedCasesPage() {
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`w-10 h-10 rounded-lg text-[10px] font-black transition-all ${
+                  className={`w-10 h-10 rounded-lg text-[10px] font-bold transition-all ${
                     currentPage === i + 1 
                       ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg' 
                       : 'bg-white dark:bg-slate-900 text-slate-400 border border-slate-100 dark:border-white/5'
@@ -238,7 +238,7 @@ export default function AssignedCasesPage() {
             <button
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-lg text-[10px] font-black uppercase tracking-widest disabled:opacity-30"
+              className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-lg text-[10px] font-bold uppercase tracking-wider disabled:opacity-30"
             >
               Next
             </button>

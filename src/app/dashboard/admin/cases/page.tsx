@@ -275,7 +275,7 @@ export default function AdminCasesPage() {
             </div>
             <div className="min-w-0">
               <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Central Registry</h1>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Clinical Case Management</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Clinical Case Management</p>
             </div>
           </div>
           
@@ -283,7 +283,7 @@ export default function AdminCasesPage() {
             <button 
               onClick={() => setShowSyncModal(true)}
               disabled={loading}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 sm:px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20 transition-all disabled:opacity-50 active:scale-95"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 sm:px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-lg shadow-indigo-500/20 transition-all disabled:opacity-50 active:scale-95"
             >
               {loading ? <RefreshCw className="animate-spin" size={14} /> : <Database size={14} />}
               <span className="sm:inline">Sync Contacts</span>
@@ -326,7 +326,7 @@ export default function AdminCasesPage() {
                 <select 
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value as any)}
-                  className="w-full appearance-none pl-4 pr-10 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/10 rounded-lg outline-none text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-slate-50 transition-all shadow-xs"
+                  className="w-full appearance-none pl-4 pr-10 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/10 rounded-lg outline-none text-[10px] font-bold uppercase tracking-wider cursor-pointer hover:bg-slate-50 transition-all shadow-xs"
                 >
                   <option value="all">Statuses</option>
                   <option value="pending">Pending</option>
@@ -343,7 +343,7 @@ export default function AdminCasesPage() {
                 <select 
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value as any)}
-                  className="w-full appearance-none pl-4 pr-10 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/10 rounded-lg outline-none text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-slate-50 transition-all shadow-xs"
+                  className="w-full appearance-none pl-4 pr-10 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/10 rounded-lg outline-none text-[10px] font-bold uppercase tracking-wider cursor-pointer hover:bg-slate-50 transition-all shadow-xs"
                 >
                   <option value="all">Sources</option>
                   <option value="associate">Associate</option>
@@ -355,7 +355,7 @@ export default function AdminCasesPage() {
             </div>
 
             <div className="hidden sm:flex items-center gap-2 ml-auto">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                 Matches: <span className="text-slate-900 dark:text-white">{filteredCases.length}</span>
               </span>
             </div>
@@ -395,11 +395,11 @@ export default function AdminCasesPage() {
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500"><User size={16} /></div>
                       <div>
-                        <p className="text-sm font-black text-slate-900 dark:text-white uppercase leading-none">{c.patientName}</p>
+                        <p className="text-sm font-bold text-slate-900 dark:text-white uppercase leading-none">{c.patientName}</p>
                         <p className="text-[9px] font-bold text-slate-400 mt-1">ID: {c.id.slice(0, 8)}</p>
                       </div>
                     </div>
-                    <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${getStatusBadge(c.status)}`}>
+                    <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border ${getStatusBadge(c.status)}`}>
                       {c.status.replace('_', ' ')}
                     </span>
                   </div>
@@ -408,15 +408,15 @@ export default function AdminCasesPage() {
                       {c.sourceType === 'associate' ? `Associate: ${c.associateName}` : `Dr. ${c.clinicianName}`}
                     </p>
                     {c.sourceType !== 'associate' && (
-                      <p className="text-[9px] font-black text-emerald-500 uppercase">Reg: {getRegNo(c)}</p>
+                      <p className="text-[9px] font-bold text-emerald-500 uppercase">Reg: {getRegNo(c)}</p>
                     )}
                   </div>
                   <div className="flex gap-2">
                     <Link href={`/dashboard/admin/cases/${c.id}`} className="flex-1">
-                      <button className="w-full py-2.5 bg-slate-900 text-white rounded-lg text-[9px] font-black uppercase tracking-widest active:scale-95 transition-all">Review</button>
+                      <button className="w-full py-2.5 bg-slate-900 text-white rounded-lg text-[9px] font-bold uppercase tracking-wider active:scale-95 transition-all">Review</button>
                     </Link>
                     {c.status === 'pending' && !c.clinicianId && (
-                      <button onClick={() => { setSelectedCase(c); setShowAssignModal(true); }} className="px-4 py-2.5 bg-white border border-slate-200 text-slate-900 rounded-lg text-[9px] font-black uppercase tracking-widest active:scale-95 transition-all">Assign</button>
+                      <button onClick={() => { setSelectedCase(c); setShowAssignModal(true); }} className="px-4 py-2.5 bg-white border border-slate-200 text-slate-900 rounded-lg text-[9px] font-bold uppercase tracking-wider active:scale-95 transition-all">Assign</button>
                     )}
                   </div>
                 </div>
@@ -428,10 +428,10 @@ export default function AdminCasesPage() {
               <table className="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                   <tr className="bg-slate-900 dark:bg-slate-800 border-l-4 border-l-slate-900 dark:border-l-slate-800">
-                    <th className="px-4 sm:px-6 py-5 text-[10px] font-black text-slate-300 uppercase tracking-widest">Patient Profile</th>
-                    <th className="px-4 sm:px-6 py-5 text-[10px] font-black text-slate-300 uppercase tracking-widest">Provider Context</th>
-                    <th className="px-4 sm:px-6 py-5 text-[10px] font-black text-slate-300 uppercase tracking-widest text-center">Status</th>
-                    <th className="px-4 sm:px-6 py-5 text-[10px] font-black text-slate-300 uppercase tracking-widest text-right">Actions</th>
+                    <th className="px-4 sm:px-6 py-5 text-[10px] font-bold text-slate-300 uppercase tracking-wider">Patient Profile</th>
+                    <th className="px-4 sm:px-6 py-5 text-[10px] font-bold text-slate-300 uppercase tracking-wider">Provider Context</th>
+                    <th className="px-4 sm:px-6 py-5 text-[10px] font-bold text-slate-300 uppercase tracking-wider text-center">Status</th>
+                    <th className="px-4 sm:px-6 py-5 text-[10px] font-bold text-slate-300 uppercase tracking-wider text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 dark:divide-white/5">
@@ -453,7 +453,7 @@ export default function AdminCasesPage() {
                               <User size={20} />
                             </div>
                             <div>
-                              <p className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{c.patientName}</p>
+                              <p className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">{c.patientName}</p>
                               <p className="text-[10px] font-bold text-slate-400 mt-0.5 italic">ID: {c.id.slice(0, 8)}</p>
                             </div>
                           </div>
@@ -464,14 +464,14 @@ export default function AdminCasesPage() {
                               {c.sourceType === 'associate' ? `By ${c.associateName}` : `Clinician: Dr. ${c.clinicianName}`}
                             </p>
                             {c.sourceType !== 'associate' && (
-                              <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-0.5">
+                              <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-wider mt-0.5">
                                 Reg ID: {getRegNo(c)}
                               </p>
                             )}
                           </div>
                         </td>
                         <td className="px-6 py-5 text-center">
-                          <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border shadow-sm ${getStatusBadge(c.status)}`}>
+                          <span className={`px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider border shadow-sm ${getStatusBadge(c.status)}`}>
                             {c.status.replace('_', ' ')}
                           </span>
                         </td>
@@ -480,7 +480,7 @@ export default function AdminCasesPage() {
                             {c.status === 'pending' && !c.clinicianId && (
                               <button 
                                 onClick={() => { setSelectedCase(c); setShowAssignModal(true); }}
-                                className="px-4 py-2 bg-slate-900 text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-md shadow-slate-900/10"
+                                className="px-4 py-2 bg-slate-900 text-white rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-slate-800 transition-all shadow-md shadow-slate-900/10"
                               >
                                 Assign Specialist
                               </button>
@@ -520,11 +520,11 @@ export default function AdminCasesPage() {
                           <User size={20} />
                         </div>
                         <div className="min-w-0">
-                          <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none truncate group-hover:text-cyan-600 transition-colors">{c.patientName}</h3>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase mt-1 italic tracking-widest">{c.id.slice(0, 8)}</p>
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight leading-none truncate group-hover:text-cyan-600 transition-colors">{c.patientName}</h3>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase mt-1 italic tracking-wider">{c.id.slice(0, 8)}</p>
                         </div>
                       </div>
-                      <span className={`shrink-0 px-2.5 py-1 rounded-md text-[8px] font-black uppercase tracking-widest border ${getStatusBadge(c.status)} shadow-sm`}>
+                      <span className={`shrink-0 px-2.5 py-1 rounded-md text-[8px] font-bold uppercase tracking-wider border ${getStatusBadge(c.status)} shadow-sm`}>
                         {c.status.replace('_', ' ')}
                       </span>
                     </div>
@@ -537,11 +537,11 @@ export default function AdminCasesPage() {
                       <div className="flex items-center gap-3 text-slate-500">
                         <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-lg"><UserCheck size={14} /></div>
                         <div className="flex flex-col">
-                          <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">
+                          <p className="text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-tight truncate">
                             {c.sourceType === 'associate' ? `By ${c.associateName}` : `Dr. ${c.clinicianName || 'Self'}`}
                           </p>
                           {c.sourceType !== 'associate' && (
-                            <p className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest">
+                            <p className="text-[8px] font-bold text-emerald-500 uppercase tracking-wider">
                               Reg: {getRegNo(c)}
                             </p>
                           )}
@@ -552,9 +552,9 @@ export default function AdminCasesPage() {
                     <div className="pt-4 border-t border-slate-50 dark:border-white/5 flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
                         <div className={`w-2 h-2 rounded-full ${getTypeBadge(c.sourceType).style} shadow-sm`} />
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{getTypeBadge(c.sourceType).label}</span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{getTypeBadge(c.sourceType).label}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] font-black text-cyan-600 uppercase tracking-widest group-hover:text-cyan-500 transition-all">
+                      <div className="flex items-center gap-2 text-[10px] font-bold text-cyan-600 uppercase tracking-wider group-hover:text-cyan-500 transition-all">
                         Review Audit <ArrowUpRight size={14} className="group-hover:rotate-45 active:scale-90 transition-transform" />
                       </div>
                     </div>
@@ -574,7 +574,7 @@ export default function AdminCasesPage() {
           } border-slate-800 shadow-xl backdrop-blur-md transition-all text-white mx-1 sm:mx-0`}>
             
             <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center sm:text-left">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center sm:text-left">
                 Showing <span className="text-white">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="text-white">{Math.min(currentPage * itemsPerPage, filteredCases.length)}</span> of <span className="text-white">{filteredCases.length}</span> entries
               </p>
               <div className="flex gap-1 justify-center sm:justify-start">
@@ -588,20 +588,20 @@ export default function AdminCasesPage() {
               <button 
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-20 transition-all border border-white/5"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider disabled:opacity-20 transition-all border border-white/5"
               >
                 <ChevronLeft size={14} /> <span className="hidden xs:inline">Prev</span>
               </button>
               
               <div className="flex items-center gap-1 bg-white/5 px-4 py-3 rounded-xl border border-white/5 min-w-[60px] justify-center">
-                <span className="text-[10px] font-black text-white">{currentPage}</span>
-                <span className="text-[10px] font-black text-slate-600">/ {totalPages}</span>
+                <span className="text-[10px] font-bold text-white">{currentPage}</span>
+                <span className="text-[10px] font-bold text-slate-600">/ {totalPages}</span>
               </div>
               
               <button 
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-20 transition-all border border-white/5"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider disabled:opacity-20 transition-all border border-white/5"
               >
                 <span className="hidden xs:inline">Next</span> <ChevronRight size={14} />
               </button>
@@ -620,14 +620,14 @@ export default function AdminCasesPage() {
             <div className="p-6 flex-1 flex flex-col min-h-0">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h3 className="text-lg font-black uppercase tracking-tight leading-none text-slate-900 dark:text-white">Assign Specialist</h3>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Select clinician for this case</p>
+                  <h3 className="text-lg font-bold uppercase tracking-tight leading-none text-slate-900 dark:text-white">Assign Specialist</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Select clinician for this case</p>
                 </div>
                 <button onClick={() => setShowAssignModal(false)} className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800 text-slate-400 hover:bg-slate-900 hover:text-white transition-all text-sm">✕</button>
               </div>
 
               <div className="mb-6 p-4 bg-emerald-50 dark:bg-emerald-500/5 rounded-xl border border-emerald-100 dark:border-emerald-500/10">
-                <label className="text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest mb-2 block">Consultation Fee (INR)</label>
+                <label className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2 block">Consultation Fee (INR)</label>
                 <div className="relative">
                   <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-600" size={16} />
                   <input 
@@ -660,7 +660,7 @@ export default function AdminCasesPage() {
                           <Stethoscope size={18} />
                         </div>
                         <div>
-                          <p className="text-xs font-black uppercase tracking-tight">{clinician.name}</p>
+                          <p className="text-xs font-bold uppercase tracking-tight">{clinician.name}</p>
                           <p className={`text-[9px] font-bold uppercase ${
                             selectedClinician?.id === clinician.id ? 'text-slate-400' : 'text-slate-400 group-hover:text-slate-400/60'
                           }`}>{clinician.registrationNumber || 'No Registration'}</p>
@@ -675,7 +675,7 @@ export default function AdminCasesPage() {
               <button 
                 disabled={!selectedClinician || !assignmentFee}
                 onClick={handleAssign}
-                className={`w-full py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${
+                className={`w-full py-4 rounded-xl font-bold text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${
                   selectedClinician && assignmentFee 
                   ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-xl shadow-emerald-500/20' 
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
@@ -701,7 +701,7 @@ export default function AdminCasesPage() {
               <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 rounded-full flex items-center justify-center mb-8">
                 <Database size={40} />
               </div>
-              <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Sync Contacts?</h3>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Sync Contacts?</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-3 font-medium leading-relaxed">
                 This will backfill missing associate contact information for all legacy case records.
               </p>
@@ -709,13 +709,13 @@ export default function AdminCasesPage() {
               <div className="grid grid-cols-2 gap-4 w-full mt-10">
                 <button 
                   onClick={() => setShowSyncModal(false)}
-                  className="py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all"
+                  className="py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-slate-200 transition-all"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={handleSyncContacts}
-                  className="py-4 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all"
+                  className="py-4 bg-indigo-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all"
                 >
                   Start Sync
                 </button>

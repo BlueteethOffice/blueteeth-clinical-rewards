@@ -133,19 +133,19 @@ export default function SettingsPage() {
     <DashboardLayout>
       <div className="max-w-5xl mx-auto pb-10 px-2 sm:px-0">
         <div className="mb-6 sm:mb-10 mt-2 sm:mt-0">
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Settings & Identity</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight uppercase">Settings & Identity</h1>
           <p className="text-slate-500 dark:text-slate-400 font-bold text-[8px] sm:text-[10px] uppercase tracking-[0.2em] mt-1">Configure your clinical workspace profile.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           {/* Security Card */}
           <div className="glass-card p-5 sm:p-8 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm bg-white dark:bg-slate-900/40 order-2 lg:order-1">
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 sm:mb-8 flex items-center gap-3">
+            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6 sm:mb-8 flex items-center gap-3">
               <Lock size={16} className="text-rose-500" /> Security Credentials
             </h3>
             <form onSubmit={handleChangePassword} className="space-y-6">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Current Password</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Current Password</label>
                 <div className="relative">
                   <input type={showCurrentPassword ? 'text' : 'password'} value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="••••••••" className="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 rounded-lg focus:border-rose-500 outline-none font-bold text-sm" />
                   <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -155,7 +155,7 @@ export default function SettingsPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">New Password</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">New Password</label>
                 <div className="relative">
                   <input type={showPassword ? 'text' : 'password'} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="••••••••" className="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 rounded-lg focus:border-rose-500 outline-none font-bold text-sm" />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -168,11 +168,11 @@ export default function SettingsPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Confirm New Password</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Confirm New Password</label>
                 <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" className="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 rounded-lg focus:border-rose-500 outline-none font-bold text-sm" />
               </div>
 
-              <button disabled={loading || !currentPassword} className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:scale-[1.01] transition-all disabled:opacity-50">
+              <button disabled={loading || !currentPassword} className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold text-xs uppercase tracking-[0.2em] shadow-xl hover:scale-[1.01] transition-all disabled:opacity-50">
                 {loading ? <Loader2 className="animate-spin mx-auto" size={18} /> : 'Update Security Key'}
               </button>
             </form>
@@ -181,7 +181,7 @@ export default function SettingsPage() {
           <div className="space-y-6 sm:space-y-8 order-1 lg:order-2">
             {/* Visual Interface - REFINED */}
             <div className="glass-card p-5 sm:p-8 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm bg-white dark:bg-slate-900/40">
-              <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
+              <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
                 <Moon size={16} className="text-indigo-500" /> Workspace Theme
               </h3>
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -191,7 +191,7 @@ export default function SettingsPage() {
                 >
                   {!darkMode && <div className="absolute top-2 right-2 w-4 h-4 sm:w-5 sm:h-5 bg-cyan-500 text-white rounded-full flex items-center justify-center shadow-lg animate-in"><Check size={10} strokeWidth={4} /></div>}
                   <Sun size={20} className={`sm:w-6 sm:h-6 ${!darkMode ? 'text-cyan-600' : 'text-slate-400'}`} />
-                  <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${!darkMode ? 'text-cyan-600' : 'text-slate-500'}`}>Light Mode</span>
+                  <span className={`text-[9px] sm:text-[10px] font-bold uppercase tracking-wider ${!darkMode ? 'text-cyan-600' : 'text-slate-500'}`}>Light Mode</span>
                 </button>
                 <button 
                   onClick={() => toggleDarkMode(true)} 
@@ -199,14 +199,14 @@ export default function SettingsPage() {
                 >
                   {darkMode && <div className="absolute top-2 right-2 w-4 h-4 sm:w-5 sm:h-5 bg-cyan-500 text-white rounded-full flex items-center justify-center shadow-lg animate-in"><Check size={10} strokeWidth={4} /></div>}
                   <Moon size={20} className={`sm:w-6 sm:h-6 ${darkMode ? 'text-cyan-400' : 'text-slate-400'}`} />
-                  <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${darkMode ? 'text-cyan-400' : 'text-slate-500'}`}>Dark Mode</span>
+                  <span className={`text-[9px] sm:text-[10px] font-bold uppercase tracking-wider ${darkMode ? 'text-cyan-400' : 'text-slate-500'}`}>Dark Mode</span>
                 </button>
               </div>
             </div>
 
             {/* Notifications */}
             <div className="glass-card p-5 sm:p-8 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm bg-white dark:bg-slate-900/40">
-              <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 sm:mb-8 flex items-center gap-3">
+              <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6 sm:mb-8 flex items-center gap-3">
                 <Bell size={16} className="text-cyan-500" /> Delivery Channels
               </h3>
               <div className="space-y-4">
@@ -219,14 +219,14 @@ export default function SettingsPage() {
                       <div className="w-8 h-8 sm:w-9 sm:h-9 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-100 dark:border-white/5 shadow-sm">
                         <item.icon size={16} className="sm:w-[18px] sm:h-[18px] text-slate-400" />
                       </div>
-                      <span className="text-[9px] sm:text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">{item.label}</span>
+                      <span className="text-[9px] sm:text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">{item.label}</span>
                     </div>
                     <button onClick={() => item.set(!item.checked)} className={`w-10 sm:w-12 h-5 sm:h-6 rounded-full relative transition-all ${item.checked ? 'bg-cyan-500 shadow-lg shadow-cyan-500/20' : 'bg-slate-200 dark:bg-slate-700'}`}>
                       <div className={`absolute top-0.5 sm:top-1 w-4 h-4 bg-white rounded-full transition-all ${item.checked ? 'right-0.5 sm:right-1' : 'left-0.5 sm:left-1'}`} />
                     </button>
                   </div>
                 ))}
-                <button onClick={saveNotificationPrefs} className="w-full py-4 bg-cyan-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-cyan-700 transition-all shadow-xl shadow-cyan-900/10 active:scale-95 transition-transform">
+                <button onClick={saveNotificationPrefs} className="w-full py-4 bg-cyan-600 text-white rounded-xl font-bold text-xs uppercase tracking-[0.2em] hover:bg-cyan-700 transition-all shadow-xl shadow-cyan-900/10 active:scale-95 transition-transform">
                   Secure Preferences
                 </button>
               </div>

@@ -67,8 +67,8 @@ export default function AdminSettingsPage() {
     <DashboardLayout>
       <div className="max-w-7xl mx-auto pb-20">
         <div className="mb-12">
-          <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter uppercase mb-2">System Settings</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-widest">Global platform configuration and controls</p>
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white tracking-tight uppercase mb-2">System Settings</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Global platform configuration and controls</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -77,15 +77,15 @@ export default function AdminSettingsPage() {
             <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-white/5 shadow-xl">
               <div className="flex flex-col items-center text-center">
                 <div className="relative mb-6">
-                  <div className="w-24 h-24 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-3xl flex items-center justify-center text-white text-3xl font-black shadow-lg">
+                  <div className="w-24 h-24 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-3xl flex items-center justify-center text-white text-3xl font-bold shadow-lg">
                     A
                   </div>
                   <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 border-4 border-white dark:border-slate-900 rounded-full"></div>
                 </div>
-                <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Super Admin</h3>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">master@blueteeth.com</p>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Super Admin</h3>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">master@blueteeth.com</p>
                 <div className="mt-8 pt-8 border-t border-slate-100 dark:border-white/5 w-full">
-                  <button className="w-full py-4 bg-slate-50 dark:bg-white/5 rounded-2xl text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-white/10 transition-all">
+                  <button className="w-full py-4 bg-slate-50 dark:bg-white/5 rounded-2xl text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider hover:bg-slate-100 dark:hover:bg-white/10 transition-all">
                     Security Dashboard
                   </button>
                 </div>
@@ -99,19 +99,19 @@ export default function AdminSettingsPage() {
                   <div className="p-2 bg-white/10 rounded-lg">
                     <CreditCard className="text-cyan-400" size={20} />
                   </div>
-                  <h3 className="text-xs font-black uppercase tracking-[0.2em]">Financial Controls</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-[0.2em]">Financial Controls</h3>
                 </div>
 
                 <div className="space-y-6">
                   <div>
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-3">Min. Withdrawal (INR)</label>
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-3">Min. Withdrawal (INR)</label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400 font-black">₹</span>
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400 font-bold">₹</span>
                       <input 
                         type="number"
                         value={minWithdrawal}
                         onChange={(e) => setMinWithdrawal(Number(e.target.value))}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-lg font-black focus:outline-none focus:border-cyan-500 transition-all"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-lg font-bold focus:outline-none focus:border-cyan-500 transition-all"
                       />
                     </div>
                   </div>
@@ -119,7 +119,7 @@ export default function AdminSettingsPage() {
                   <button 
                     onClick={handleSaveFinancials}
                     disabled={saving}
-                    className="w-full py-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-xl shadow-cyan-500/20"
+                    className="w-full py-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-xl shadow-cyan-500/20"
                   >
                     {saving ? <Loader2 className="animate-spin" size={16} /> : <><Save size={16} /> Update Financials</>}
                   </button>
@@ -144,13 +144,13 @@ export default function AdminSettingsPage() {
                   <div className="w-12 h-12 bg-slate-50 dark:bg-white/5 rounded-2xl flex items-center justify-center text-cyan-500 shadow-inner">
                     <section.icon size={24} />
                   </div>
-                  <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{section.title}</h3>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">{section.title}</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {section.items.map((item) => (
                     <button key={item} className="flex items-center justify-between p-6 bg-slate-50 dark:bg-white/2 border border-slate-100 dark:border-white/5 rounded-2xl group hover:border-cyan-500/30 transition-all text-left">
-                      <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest group-hover:text-slate-900 dark:group-hover:text-white">{item}</span>
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider group-hover:text-slate-900 dark:group-hover:text-white">{item}</span>
                       <ChevronRight size={18} className="text-slate-300 group-hover:text-cyan-500 group-hover:translate-x-1 transition-all" />
                     </button>
                   ))}

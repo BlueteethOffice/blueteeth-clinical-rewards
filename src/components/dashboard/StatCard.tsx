@@ -23,13 +23,13 @@ export default function StatCard({ title, value, icon: Icon, trend, color, class
           <Icon size={18} strokeWidth={2.5} />
         </div>
         {trend && (
-          <span className="text-[9px] sm:text-[10px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400 px-2 py-0.5 sm:py-1 rounded-md uppercase tracking-widest">
+          <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400 px-2 py-0.5 sm:py-1 rounded-md uppercase tracking-wider">
             {trend}
           </span>
         )}
       </div>
-      <p className="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em]">{title}</p>
-      <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight uppercase">{value}</h3>
+      <p className="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em]">{title}</p>
+      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mt-1.5 tracking-tight uppercase">{value}</h3>
     </motion.div>
   );
 }

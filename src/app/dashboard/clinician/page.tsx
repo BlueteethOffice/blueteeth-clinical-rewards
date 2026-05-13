@@ -77,18 +77,18 @@ export default function ClinicianDashboard() {
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10 sm:mb-16">
           <div className="space-y-1 sm:space-y-2">
-            <h1 className="text-2xl min-[400px]:text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter uppercase leading-none whitespace-nowrap">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight uppercase leading-none whitespace-nowrap">
               Clinician <span className="text-cyan-600">Dashboard</span>
             </h1>
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-sm shadow-emerald-200" />
-              <p className="text-[9px] sm:text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] sm:tracking-[0.3em]">
+              <p className="text-[9px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] sm:tracking-[0.3em]">
                 Session: {user?.displayName || user?.name} • Practitioner
               </p>
             </div>
           </div>
           <Link href="/dashboard/clinician/submit-case" className="w-full sm:w-auto">
-            <button className="w-full sm:w-auto justify-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] shadow-xl shadow-slate-200 dark:shadow-none flex items-center gap-3 hover:scale-[1.02] active:scale-95 transition-all">
+            <button className="w-full sm:w-auto justify-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] shadow-xl shadow-slate-200 dark:shadow-none flex items-center gap-3 hover:scale-[1.02] active:scale-95 transition-all">
               <Plus size={16} strokeWidth={3} />
               Submit Own Case
             </button>
@@ -128,10 +128,10 @@ export default function ClinicianDashboard() {
           {/* Assignments Table */}
           <div className="xl:col-span-8 glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-10 bg-white border border-slate-100 shadow-sm overflow-hidden">
             <div className="flex items-center justify-between mb-8 px-1">
-              <h2 className="text-[10px] sm:text-xs font-black text-slate-900 dark:text-white uppercase tracking-[0.2em] flex items-center gap-2">
+              <h2 className="text-[10px] sm:text-xs font-bold text-slate-900 dark:text-white uppercase tracking-[0.2em] flex items-center gap-2">
                 <Activity size={18} className="text-cyan-600" /> Recent Assignments
               </h2>
-              <Link href="/dashboard/clinician/assigned-cases" className="text-cyan-600 font-black text-[9px] sm:text-[10px] uppercase tracking-widest flex items-center gap-1 hover:underline">
+              <Link href="/dashboard/clinician/assigned-cases" className="text-cyan-600 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider flex items-center gap-1 hover:underline">
                 View All <ArrowRight size={14} />
               </Link>
             </div>
@@ -141,10 +141,10 @@ export default function ClinicianDashboard() {
               <table className="w-full text-left whitespace-nowrap min-w-[500px]">
                 <thead>
                   <tr className="border-b border-slate-100 dark:border-white/5">
-                    <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Patient</th>
-                    <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Treatment</th>
-                    <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                    <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Action</th>
+                    <th className="pb-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Patient</th>
+                    <th className="pb-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Treatment</th>
+                    <th className="pb-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status</th>
+                    <th className="pb-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 dark:divide-white/5">
@@ -157,12 +157,12 @@ export default function ClinicianDashboard() {
                   ) : recentCases.length > 0 ? (
                     recentCases.map((c) => (
                       <tr key={c.id} className="group hover:bg-slate-50/50 dark:hover:bg-white/5 transition-all">
-                        <td className="py-5 font-black text-slate-900 dark:text-white text-sm tracking-tight uppercase">
+                        <td className="py-5 font-bold text-slate-900 dark:text-white text-sm tracking-tight uppercase">
                           <div className="truncate max-w-[150px]">{c.patientName}</div>
                         </td>
                         <td className="py-5 text-[11px] font-bold text-slate-500 uppercase tracking-tight">{c.treatmentType}</td>
                         <td className="py-5">
-                          <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${
+                          <span className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider border ${
                             c.status === 'completed' || c.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                             c.status === 'assigned' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                             'bg-amber-50 text-amber-600 border-amber-100'
@@ -172,7 +172,7 @@ export default function ClinicianDashboard() {
                         </td>
                         <td className="py-5 text-right">
                           <Link href={`/dashboard/clinician/assigned-cases/${c.id}`}>
-                            <button className="px-4 py-2 bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-slate-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-cyan-600 hover:text-white transition-all">Manage</button>
+                            <button className="px-4 py-2 bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-slate-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-cyan-600 hover:text-white transition-all">Manage</button>
                           </Link>
                         </td>
                       </tr>
@@ -184,7 +184,7 @@ export default function ClinicianDashboard() {
                           <div className="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
                             <Stethoscope size={28} />
                           </div>
-                          <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">No cases assigned yet</p>
+                          <p className="text-[9px] font-bold text-slate-300 uppercase tracking-wider">No cases assigned yet</p>
                         </div>
                       </td>
                     </tr>
@@ -204,10 +204,10 @@ export default function ClinicianDashboard() {
                   <div key={c.id} className="p-4 bg-slate-50/50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl space-y-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Patient</p>
-                        <h4 className="font-black text-slate-900 dark:text-white text-sm uppercase">{c.patientName}</h4>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Patient</p>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm uppercase">{c.patientName}</h4>
                       </div>
-                      <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${
+                      <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border ${
                         c.status === 'completed' || c.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                         c.status === 'assigned' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                         'bg-amber-50 text-amber-600 border-amber-100'
@@ -216,11 +216,11 @@ export default function ClinicianDashboard() {
                       </span>
                     </div>
                     <div>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Treatment</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Treatment</p>
                       <p className="text-[11px] font-bold text-slate-500 uppercase">{c.treatmentType}</p>
                     </div>
                     <Link href={`/dashboard/clinician/assigned-cases/${c.id}`} className="block">
-                      <button className="w-full py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 text-slate-900 dark:text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm">
+                      <button className="w-full py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 text-slate-900 dark:text-white rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-sm">
                         Manage Case
                       </button>
                     </Link>
@@ -232,7 +232,7 @@ export default function ClinicianDashboard() {
                     <div className="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
                       <Stethoscope size={28} />
                     </div>
-                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">No cases assigned yet</p>
+                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-wider">No cases assigned yet</p>
                   </div>
                 </div>
               )}
@@ -243,23 +243,23 @@ export default function ClinicianDashboard() {
           <div className="xl:col-span-4 glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-slate-900 text-white flex flex-col justify-between shadow-2xl relative overflow-hidden h-full min-h-[350px] sm:min-h-[400px]">
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -mr-16 -mt-16" />
             <div className="relative z-10">
-              <h3 className="text-[10px] font-black text-cyan-500 uppercase tracking-[0.2em] mb-8">Payout Intel</h3>
+              <h3 className="text-[10px] font-bold text-cyan-500 uppercase tracking-[0.2em] mb-8">Payout Intel</h3>
               <div className="space-y-6">
                 <div className="p-5 sm:p-6 bg-white/5 border border-white/5 rounded-2xl backdrop-blur-md">
-                  <p className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Accumulated Balance</p>
+                  <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Accumulated Balance</p>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-black tracking-tighter">₹{stats.earnings}</span>
-                    <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Unlocked</span>
+                    <span className="text-3xl font-bold tracking-tight">₹{stats.earnings}</span>
+                    <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-wider">Unlocked</span>
                   </div>
                   <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-                    <span className="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest">Status</span>
-                    <span className="px-2 py-0.5 bg-amber-500/20 text-amber-500 text-[8px] font-black rounded uppercase tracking-widest">Awaiting Payout</span>
+                    <span className="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-wider">Status</span>
+                    <span className="px-2 py-0.5 bg-amber-500/20 text-amber-500 text-[8px] font-bold rounded uppercase tracking-wider">Awaiting Payout</span>
                   </div>
                 </div>
               </div>
             </div>
             
-            <button className="w-full py-4 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all mt-8 sm:mt-10 shadow-lg shadow-cyan-900/20">
+            <button className="w-full py-4 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all mt-8 sm:mt-10 shadow-lg shadow-cyan-900/20">
               Request Payout
             </button>
           </div>
