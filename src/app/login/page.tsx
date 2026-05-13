@@ -114,8 +114,21 @@ export default function LoginPage() {
         }).catch(() => {});
 
         sessionStorage.setItem('2fa_verified', 'true');
+        
+        // ⚡ NITRO CACHE: Immediate caching for micro-second dashboard load
+        const cachedUser = {
+          uid: userCredential.user.uid,
+          name: userData.name,
+          email: userCredential.user.email,
+          role: userData.role,
+          displayName: userData.name 
+        };
+        localStorage.setItem('cached_user', JSON.stringify(cachedUser));
+
         toast.success('Login Successful');
-        router.push('/dashboard');
+        
+        // 🚀 BULLET REDIRECT: Go straight to the role-specific hub
+        router.push(`/dashboard/${userData.role}`);
       }
     } catch (error: any) {
       const code = error?.code || '';

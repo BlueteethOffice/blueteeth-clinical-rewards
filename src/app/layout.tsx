@@ -61,27 +61,39 @@ export default function RootLayout({
             {children}
             <Toaster 
               position="top-right"
+              containerStyle={{ top: 40, right: 20 }}
               toastOptions={{
                 duration: 4000,
+                className: 'premium-toast',
                 style: {
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(12px)',
-                  color: '#0f172a',
-                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-                  borderRadius: '16px',
-                  padding: '16px 24px',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  maxWidth: '450px',
+                  background: 'rgba(255, 255, 255, 0.85)',
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  color: '#1e293b',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+                  borderRadius: '20px',
+                  padding: '16px 20px',
+                  border: '1px solid rgba(255, 255, 255, 0.5)',
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  letterSpacing: '0.025em',
+                  textTransform: 'uppercase',
+                  maxWidth: '400px',
                 },
                 success: {
+                  style: {
+                    borderLeft: '4px solid #0891b2',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                  },
                   iconTheme: {
                     primary: '#0891b2',
                     secondary: '#fff',
                   },
                 },
                 error: {
+                  style: {
+                    borderLeft: '4px solid #e11d48',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                  },
                   iconTheme: {
                     primary: '#e11d48',
                     secondary: '#fff',
