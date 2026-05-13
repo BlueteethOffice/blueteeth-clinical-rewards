@@ -41,28 +41,9 @@ export function middleware(request: NextRequest) {
   }
   */
 
-  // 🛡️ RBAC Enforcement
-  if (isProtectedRoute && session) {
-    try {
-      // In a real app, the role should be in the session cookie as a custom claim
-      // for microsecond performance. Here we'll check the path as a proxy 
-      // or assume the role-specific route protection is handled by components if session is opaque.
-      // But let's add a basic check:
-      const role = request.cookies.get('user_role')?.value; // Insecure if used alone, but good for UI routing
-      
-      if (pathname.startsWith('/dashboard/admin') && role !== 'admin') {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
-      }
-      if (pathname.startsWith('/dashboard/clinician') && role !== 'clinician' && role !== 'admin') {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
-      }
-      if (pathname.startsWith('/dashboard/associate') && role !== 'associate' && role !== 'admin') {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
-      }
-    } catch (e) {
-      console.error('Middleware RBAC Error:', e);
-    }
-  }
+  // ✅ RBAC is handled at component level (DashboardLayout) and API routes.
+  // The user_role cookie-based middleware RBAC was removed as it was never set,
+  // causing infinite redirect loops to /dashboard.
 
   return response;
 }
