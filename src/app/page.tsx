@@ -109,24 +109,14 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            {user ? (
-              <Link href={`/dashboard/${user.role}`}>
-                <button className="px-4 md:px-6 py-2 premium-gradient text-white rounded-full text-[10px] md:text-xs font-black shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all uppercase tracking-widest">
-                  Dashboard
-                </button>
-              </Link>
-            ) : (
-              <>
-                <Link href="/login" className="hidden sm:block text-[10px] font-black text-slate-600 hover:text-slate-900 transition-all px-3 uppercase tracking-widest">
-                  Login
-                </Link>
-                <Link href="/signup">
-                  <button className="px-4 md:px-5 py-2 premium-gradient text-white rounded-full text-[10px] md:text-xs font-black shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all uppercase tracking-widest">
-                    Join Now
-                  </button>
-                </Link>
-              </>
-            )}
+            <Link href="/login" className="hidden sm:block text-[10px] font-black text-slate-600 hover:text-slate-900 transition-all px-3 uppercase tracking-widest">
+              Login
+            </Link>
+            <Link href="/signup">
+              <button className="px-4 md:px-5 py-2 premium-gradient text-white rounded-full text-[10px] md:text-xs font-black shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all uppercase tracking-widest">
+                Join Now
+              </button>
+            </Link>
           </div>
         </div>
       </nav>
