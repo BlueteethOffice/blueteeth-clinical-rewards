@@ -39,7 +39,7 @@ export default function MyCasesPage() {
   const itemsPerPage = 5;
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.uid) return;
 
     // ⚡ PERFORMANCE FIX: Limit rendered cases to prevent UI lag
     const q = query(
@@ -53,14 +53,14 @@ export default function MyCasesPage() {
         ...doc.data()
       })) as Case[];
       
-      // Sort newest first, cap at 50
+      // Sort newest first: Handle null timestamps (pending sync) by treating them as current time
       casesData.sort((a, b) => {
-        const dateA = (a as any).createdAt?.toDate ? (a as any).createdAt.toDate().getTime() : 0;
-        const dateB = (b as any).createdAt?.toDate ? (b as any).createdAt.toDate().getTime() : 0;
+        const dateA = (a as any).createdAt?.toMillis ? (a as any).createdAt.toMillis() : Date.now();
+        const dateB = (b as any).createdAt?.toMillis ? (b as any).createdAt.toMillis() : Date.now();
         return dateB - dateA;
       });
 
-      setCases(casesData.slice(0, 50));
+      setCases(casesData);
       setLoading(false);
     }, (error) => {
       console.error("Firestore Error:", error);

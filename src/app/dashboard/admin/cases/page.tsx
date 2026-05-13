@@ -263,7 +263,8 @@ export default function AdminCasesPage() {
   };
 
   return (
-    <DashboardLayout hideNavbar={showAssignModal || showSyncModal}>
+    <>
+    <DashboardLayout>
       <div className="max-w-7xl mx-auto px-1 sm:px-4 py-4 sm:py-8">
         
         {/* 🔥 Clean Executive Header */}
@@ -332,6 +333,7 @@ export default function AdminCasesPage() {
                   <option value="assigned">Assigned</option>
                   <option value="completed">Done</option>
                   <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
                 </select>
                 <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               </div>
@@ -361,16 +363,26 @@ export default function AdminCasesPage() {
         </div>
 
         {/* 📋 Data Rendering */}
-        {loading ? (
-          <div className="py-24 flex flex-col items-center justify-center gap-6">
-            <div className="relative">
-              <div className="w-14 h-14 border-4 border-cyan-100 dark:border-white/5 rounded-full" />
-              <div className="absolute inset-0 border-4 border-t-cyan-500 rounded-full animate-spin" />
-            </div>
-            <div className="text-center space-y-2">
-              <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.3em] animate-pulse">Syncing Intel...</p>
-              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Accessing Clinical Ledger</p>
-            </div>
+        {loading && cases.length === 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white dark:bg-slate-900 h-48 rounded-2xl border border-slate-100 dark:border-white/5 p-6 space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className="flex gap-3">
+                    <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg" />
+                    <div className="space-y-2">
+                      <div className="h-4 w-24 bg-slate-200 dark:bg-slate-800 rounded" />
+                      <div className="h-3 w-16 bg-slate-100 dark:bg-slate-900 rounded" />
+                    </div>
+                  </div>
+                  <div className="h-6 w-16 bg-slate-100 dark:bg-slate-800 rounded" />
+                </div>
+                <div className="space-y-3 pt-4">
+                  <div className="h-4 w-full bg-slate-100 dark:bg-slate-900 rounded" />
+                  <div className="h-4 w-2/3 bg-slate-50 dark:bg-slate-800/50 rounded" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : viewMode === 'table' ? (
           <div className="bg-white dark:bg-slate-900 rounded-t-2xl overflow-hidden border border-slate-100 dark:border-white/5 shadow-sm mx-1 sm:mx-0">
@@ -596,125 +608,123 @@ export default function AdminCasesPage() {
             </div>
           </div>
         )}
+      </div>
+    </DashboardLayout>
 
-        {/* 🛑 Assign Modal */}
-        {showAssignModal && (
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => setShowAssignModal(false)} className="absolute inset-0 bg-slate-950/95 backdrop-blur-xl" />
-            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-lg shadow-2xl overflow-hidden border border-slate-100 dark:border-white/5 flex flex-col max-h-[85vh]">
-              <div className="p-5 flex-1 flex flex-col min-h-0">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-base font-black uppercase tracking-tight leading-none text-slate-900 dark:text-white">Assign Specialist</h3>
-                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">Select clinician for this case</p>
-                  </div>
-                  <button onClick={() => setShowAssignModal(false)} className="w-7 h-7 flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800 text-slate-400 hover:bg-slate-900 hover:text-white transition-all text-xs">✕</button>
+    {/* 🛑 Modals moved OUTSIDE DashboardLayout to ensure they cover the WHOLE SCREEN */}
+    <AnimatePresence>
+      {showAssignModal && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowAssignModal(false)} className="absolute inset-0 bg-slate-950/90 backdrop-blur-md" />
+          <motion.div initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }} className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-100 dark:border-white/5 flex flex-col max-h-[85vh]">
+            <div className="p-6 flex-1 flex flex-col min-h-0">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-lg font-black uppercase tracking-tight leading-none text-slate-900 dark:text-white">Assign Specialist</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Select clinician for this case</p>
                 </div>
+                <button onClick={() => setShowAssignModal(false)} className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800 text-slate-400 hover:bg-slate-900 hover:text-white transition-all text-sm">✕</button>
+              </div>
 
-                {/* 💰 Consultation Fee Input - More Compact */}
-                <div className="mb-4 p-3 bg-emerald-50 dark:bg-emerald-500/5 rounded-lg border border-emerald-100 dark:border-emerald-500/10">
-                  <label className="text-[9px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest mb-1.5 block">Consultation Fee (INR)</label>
-                  <div className="relative">
-                    <IndianRupee className="absolute left-2.5 top-1/2 -translate-y-1/2 text-emerald-600" size={14} />
-                    <input 
-                      type="number" 
-                      placeholder="Amount"
-                      max="100000"
-                      value={assignmentFee}
-                      onChange={(e) => setAssignmentFee(e.target.value)}
-                      className="w-full pl-8 pr-3 py-2 bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-500/20 rounded-md outline-none focus:ring-2 focus:ring-emerald-500/20 text-xs font-bold text-slate-900 dark:text-white transition-all"
-                    />
-                  </div>
+              <div className="mb-6 p-4 bg-emerald-50 dark:bg-emerald-500/5 rounded-xl border border-emerald-100 dark:border-emerald-500/10">
+                <label className="text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest mb-2 block">Consultation Fee (INR)</label>
+                <div className="relative">
+                  <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-600" size={16} />
+                  <input 
+                    type="number" 
+                    placeholder="Enter amount"
+                    max="100000"
+                    value={assignmentFee}
+                    onChange={(e) => setAssignmentFee(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-950 border border-emerald-200 dark:border-emerald-500/20 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500/20 text-sm font-bold text-slate-900 dark:text-white transition-all"
+                  />
                 </div>
+              </div>
 
-                <div className="overflow-y-auto no-scrollbar flex-1 min-h-0 mb-4">
-                <div className="space-y-1.5 pb-2">
+              <div className="overflow-y-auto custom-scrollbar flex-1 min-h-0 mb-6">
+                <div className="space-y-2 pb-2">
                   {clinicians.map((clinician) => (
                     <button 
                       key={clinician.id}
                       onClick={() => setSelectedClinician(clinician)}
-                      className={`w-full p-2 rounded-lg text-left transition-all group flex items-center justify-between border ${
+                      className={`w-full p-3 rounded-xl text-left transition-all group flex items-center justify-between border ${
                         selectedClinician?.id === clinician.id 
-                        ? 'bg-slate-900 text-white border-slate-900 shadow-lg' 
+                        ? 'bg-slate-900 text-white border-slate-900 shadow-xl' 
                         : 'bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 border-transparent text-slate-900 dark:text-slate-300'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-7 h-7 rounded flex items-center justify-center transition-colors ${
+                      <div className="flex items-center gap-4">
+                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
                           selectedClinician?.id === clinician.id ? 'bg-white/10 text-white' : 'bg-white dark:bg-slate-700 text-slate-400'
                         }`}>
-                          <Stethoscope size={14} />
+                          <Stethoscope size={18} />
                         </div>
                         <div>
-                          <p className="text-[11px] font-black uppercase tracking-tight">{clinician.name}</p>
-                          <p className={`text-[8px] font-bold uppercase ${
+                          <p className="text-xs font-black uppercase tracking-tight">{clinician.name}</p>
+                          <p className={`text-[9px] font-bold uppercase ${
                             selectedClinician?.id === clinician.id ? 'text-slate-400' : 'text-slate-400 group-hover:text-slate-400/60'
                           }`}>{clinician.registrationNumber || 'No Registration'}</p>
                         </div>
                       </div>
-                      {selectedClinician?.id === clinician.id && <CheckCircle2 size={14} className="text-emerald-500" />}
+                      {selectedClinician?.id === clinician.id && <CheckCircle2 size={18} className="text-emerald-500" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* 🚀 Action Button */}
               <button 
                 disabled={!selectedClinician || !assignmentFee}
                 onClick={handleAssign}
-                className={`w-full py-3 rounded-lg font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${
+                className={`w-full py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${
                   selectedClinician && assignmentFee 
                   ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-xl shadow-emerald-500/20' 
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
                 }`}
               >
-                <UserCheck size={16} /> Confirm Assignment
+                <UserCheck size={18} /> Confirm Assignment
               </button>
             </div>
           </motion.div>
         </div>
-        )}
+      )}
 
-        {/* 🔄 Sync Contacts Modal */}
-        <AnimatePresence>
-          {showSyncModal && (
-            <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowSyncModal(false)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" />
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0, y: 20 }} 
-                animate={{ scale: 1, opacity: 1, y: 0 }} 
-                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-100 dark:border-white/5 p-8"
-              >
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 rounded-full flex items-center justify-center mb-6">
-                    <Database size={32} />
-                  </div>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">Sync Contacts?</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium leading-relaxed">
-                    This will backfill missing associate contact information for all legacy case records in the database.
-                  </p>
-                  
-                  <div className="grid grid-cols-2 gap-3 w-full mt-8">
-                    <button 
-                      onClick={() => setShowSyncModal(false)}
-                      className="py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all"
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={handleSyncContacts}
-                      className="py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all"
-                    >
-                      Start Sync
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
+      {showSyncModal && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowSyncModal(false)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" />
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0, y: 20 }} 
+            animate={{ scale: 1, opacity: 1, y: 0 }} 
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-100 dark:border-white/5 p-10"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 rounded-full flex items-center justify-center mb-8">
+                <Database size={40} />
+              </div>
+              <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Sync Contacts?</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-3 font-medium leading-relaxed">
+                This will backfill missing associate contact information for all legacy case records.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4 w-full mt-10">
+                <button 
+                  onClick={() => setShowSyncModal(false)}
+                  className="py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleSyncContacts}
+                  className="py-4 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all"
+                >
+                  Start Sync
+                </button>
+              </div>
             </div>
-          )}
-        </AnimatePresence>
-      </div>
-    </DashboardLayout>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+    </>
   );
 }

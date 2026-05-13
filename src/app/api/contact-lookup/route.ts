@@ -39,16 +39,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Forbidden: Privacy protection' }, { status: 403 });
     }
 
-    if (!adminDb) {
+    if (!db) {
       return NextResponse.json({ error: 'Database connection failed. Please contact Admin to set FIREBASE_PRIVATE_KEY.' }, { status: 500 });
     }
 
     // Server-side Admin SDK bypasses client security rules
-    let userSnap = await adminDb.collection('users').doc(userId).get();
+    let userSnap = await db.collection('users').doc(userId).get();
     
     // Secondary search: If doc ID isn't UID, search by uid field
     if (!userSnap.exists) {
-      const q = await adminDb.collection('users').where('uid', '==', userId).limit(1).get();
+      const q = await db.collection('users').where('uid', '==', userId).limit(1).get();
       if (!q.empty) {
         userSnap = q.docs[0];
       }

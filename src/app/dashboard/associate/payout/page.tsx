@@ -27,7 +27,7 @@ export default function AssociatePayoutPage() {
   const earnings = (user?.totalPoints || 0) * 50;
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.uid) return;
 
     const q = query(
       collection(db, 'payouts'),

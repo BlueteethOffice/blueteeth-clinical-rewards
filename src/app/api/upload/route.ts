@@ -40,25 +40,61 @@ export async function POST(request: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // ✅ CLOUDINARY CONFIG CHECK
+    // ✅ SECURITY FIX: Validate file signature (magic bytes)
+    const fileSignature = buffer.slice(0, 4);
+    const isValidSignature = ALLOWED_SIGNATURES.some(sig => {
+      return sig.bytes.every((byte, i) => fileSignature[i] === byte);
+    });
+
+    if (!isValidSignature) {
+      return NextResponse.json({ success: false, error: 'Invalid file content: Signature mismatch' }, { status: 400 });
+    }
+
+    // ✅ CLOUDINARY CONFIG CHECK & INITIALIZATION
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const apiKey = process.env.CLOUDINARY_API_KEY;
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
     if (!cloudName || !apiKey || !apiSecret) {
-      return NextResponse.json({ success: false, error: 'Cloudinary configuration missing on server.' }, { status: 500 });
+      return NextResponse.json({ 
+        success: false, 
+        error: `Cloudinary configuration missing: ${!cloudName ? 'CloudName ' : ''}${!apiKey ? 'ApiKey ' : ''}${!apiSecret ? 'ApiSecret' : ''}` 
+      }, { status: 500 });
     }
 
-    cloudinary.config({ cloud_name: cloudName, api_key: apiKey, api_secret: apiSecret });
-
-    const base64File = `data:${file.type || 'application/octet-stream'};base64,${buffer.toString('base64')}`;
-    
-    const uploadResponse = await cloudinary.uploader.upload(base64File, {
-      folder: 'blueteeth_proofs',
-      resource_type: 'auto',
-    }).catch(err => {
-      throw new Error(`Cloudinary Error: ${err.message}`);
+    // Initialize config explicitly for this request
+    cloudinary.config({
+      cloud_name: cloudName,
+      api_key: apiKey,
+      api_secret: apiSecret,
+      secure: true
     });
+
+    // Detect file type for correct Cloudinary resource_type
+    // PDFs MUST use 'raw' so they get a raw/upload URL browsers can open directly
+    const isPdfUpload = file.name.toLowerCase().endsWith('.pdf') || 
+                        file.type === 'application/pdf';
+    const cloudinaryResourceType = isPdfUpload ? 'raw' : 'auto';
+
+    // 🚀 HIGH-SPEED STREAM UPLOAD
+    const uploadResponse = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'blueteeth_proofs',
+          resource_type: cloudinaryResourceType,
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
+      uploadStream.end(buffer);
+    }).catch(err => {
+      if (err.message?.includes('Signature')) {
+        throw new Error(`Cloudinary Error: Invalid Signature. Please check if CLOUDINARY_API_SECRET in .env.local is correct.`);
+      }
+      throw new Error(`Cloudinary Error: ${err.message || 'Upload failed'}`);
+    }) as any;
 
     const fileId = uploadResponse.public_id.split('/').pop() || uploadResponse.public_id;
     const storagePath = uploadResponse.secure_url;

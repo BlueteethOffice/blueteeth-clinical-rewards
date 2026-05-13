@@ -81,10 +81,14 @@ export default function Sidebar({
           {currentMenu.map((item) => {
             const isActive = pathname === item.href;
             return (
-              <Link key={item.name} href={item.href} onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}>
-                <motion.div
-                  whileHover={{ x: 5 }}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+              <Link 
+                key={item.name} 
+                href={item.href} 
+                prefetch={false} // ⚡ PERFORMANCE: Don't clog network with background fetches
+                onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}
+              >
+                <div
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-100 ${
                     isActive 
                       ? 'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm' 
                       : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100'
@@ -92,7 +96,7 @@ export default function Sidebar({
                 >
                   <item.icon size={20} className={`shrink-0 ${isActive ? 'text-cyan-600' : 'text-slate-400'}`} />
                   <span className="text-sm tracking-tight">{item.name}</span>
-                </motion.div>
+                </div>
               </Link>
             );
           })}

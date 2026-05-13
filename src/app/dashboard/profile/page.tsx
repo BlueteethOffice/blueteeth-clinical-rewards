@@ -352,7 +352,13 @@ export default function ProfilePage() {
 
               {isEditing && (
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button type="button" onClick={handleCancelEdit} className="py-4 bg-rose-500/10 text-rose-600 border border-rose-500/20 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center gap-2">Cancel</button>
+                  <button 
+                    type="button" 
+                    onClick={handleCancelEdit} 
+                    className="px-8 py-4 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-600 transition-all flex items-center justify-center gap-2 border border-slate-200 dark:border-white/5 active:scale-[0.98]"
+                  >
+                    <X size={16} /> Cancel
+                  </button>
                   <button type="submit" disabled={loading} className="flex-1 py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-3">{loading ? <Loader2 className="animate-spin" size={20} /> : 'Save Profile'}</button>
                 </div>
               )}

@@ -27,197 +27,157 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TREATMENT_POINTS } from '@/types';
 import { sendSystemNotification } from '@/lib/notifications';
 
-// ✅ Robust PDF detection — handles API links, Data URLs, and direct paths
-const isPdf = (url: string): boolean => {
-  if (!url) return false;
-  const lowerUrl = url.toLowerCase();
-  return (
-    lowerUrl.includes('.pdf') || 
-    lowerUrl.includes('%2fpdf') || 
-    lowerUrl.includes('/pdf') || 
-    lowerUrl.startsWith('data:application/pdf') ||
-    lowerUrl.includes('/api/view-file') // Assume API served files might be PDFs if image load fails
-  );
-};
 
-// ✅ Secure file opener - Robust version with data URL support
-const openFile = (url: string) => {
-  try {
-    // For base64 data URLs — decode in browser RAM
-    if (url.startsWith('data:')) {
-      const [header, base64Data] = url.split(',');
-      const mimeType = header.split(':')[1].split(';')[0];
-      const byteChars = atob(base64Data);
-      const byteArray = new Uint8Array(byteChars.length);
-      for (let i = 0; i < byteChars.length; i++) byteArray[i] = byteChars.charCodeAt(i);
-      const blob = new Blob([byteArray], { type: mimeType });
-      const blobUrl = URL.createObjectURL(blob);
-      window.open(blobUrl, '_blank');
-      return;
-    }
-
-    // For /api/view-file links
-    if (url.includes('/api/view-file')) {
-      window.open(url, '_blank');
-      return;
-    }
-
-    // Fallback for legacy /uploads/ paths
-    if (url.startsWith('/uploads/')) {
-      const fileId = url.split('/').pop()?.split('.')[0] || 'legacy';
-      window.open(`/api/view-file?id=${fileId}`, '_blank');
-      return;
-    }
-
-    // Default: open directly
-    window.open(url, '_blank', 'noopener,noreferrer');
-  } catch (err) {
-    console.error("File Open Error:", err);
-    toast.error("Could not open file.");
-  }
-};
-
-export default function CaseDetailPage() {
+export default function ClinicianCasePage() {
+  const { user, firebaseUser } = useAuth();
   const { caseId } = useParams();
   const router = useRouter();
-  const { user, firebaseUser } = useAuth();
+  
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [clinicianNotes, setClinicianNotes] = useState('');
   const [isCompleting, setIsCompleting] = useState(false);
+  const [clinicianNotes, setClinicianNotes] = useState('');
   const [associatePhone, setAssociatePhone] = useState<string | null>(null);
-  const [associatePhoneError, setAssociatePhoneError] = useState<string | null>(null);
+
+  const [pdfViewer, setPdfViewer] = useState<string | null>(null);
+  const [currentOriginalUrl, setCurrentOriginalUrl] = useState<string | null>(null);
+  const [viewerMimeType, setViewerMimeType] = useState<string>('application/pdf');
+
+  // ✅ Robust PDF detection — includes raw/upload for new PDFs
+  const isPdfFile = (url: string): boolean => {
+    if (!url) return false;
+    const lower = url.toLowerCase();
+    return (
+      lower.includes('.pdf') || 
+      lower.startsWith('data:application/pdf') ||
+      lower.includes('/raw/upload/')
+    );
+  };
+
 
   useEffect(() => {
-    if (!caseId || !user?.uid) return;
-    
-    const unsubscribe = onSnapshot(doc(db, 'cases', caseId as string), async (snapshot) => {
-      try {
-        if (!snapshot.exists()) {
-          toast.error('Case not found');
-          router.push('/dashboard/clinician/assigned-cases');
-          return;
-        }
+    if (!caseId) return;
 
-        const data = { id: snapshot.id, ...snapshot.data() } as Case;
-        setCaseData(data);
-        if (data.clinicianNotes) setClinicianNotes(data.clinicianNotes);
-        
-        // Fetch associate phone if it's a referred case (has associateId)
-        // Use optional chaining and double check user existence
-        if (data.associateId && user?.uid && data.associateId !== user.uid) {
-          try {
-            const associateDoc = await getDoc(doc(db, 'users', data.associateId));
-            if (associateDoc.exists()) {
-              const associateData = associateDoc.data();
-              const phone = associateData.phone || associateData.mobile || associateData.phoneNumber;
-              if (phone) {
-                setAssociatePhone(phone);
-                setAssociatePhoneError(null);
-              } else {
-                setAssociatePhoneError('Contact number missing in associate profile');
-              }
-            } else {
-              setAssociatePhoneError(`Associate profile not found.`);
-            }
-          } catch (err: any) {
-            console.warn('⚠️ Client-side Contact Lookup Failed:', err.message);
-            // Fallback to whatever was saved in the case if possible
-            if (!(data as any).associateMobile) {
-              setAssociatePhoneError('Permission denied to read associate contact.');
-            }
-          }
-        }
-      } catch (err) {
-        console.error('Snapshot processing error:', err);
-      } finally {
+
+    const unsub = onSnapshot(doc(db, 'cases', caseId as string), (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data() as Case;
+        setCaseData({ ...data, id: snapshot.id });
+        setClinicianNotes(data.clinicianNotes || '');
         setLoading(false);
+
+        // Also fetch associate phone if not present
+        if (data.associateId && !associatePhone) {
+          getDoc(doc(db, 'users', data.associateId)).then(uSnap => {
+            if (uSnap.exists()) {
+              setAssociatePhone(uSnap.data().phone || uSnap.data().mobile);
+            }
+          });
+        }
+      } else {
+        toast.error('Case not found');
+        router.push('/dashboard/clinician/assigned-cases');
       }
     });
 
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, [caseId, user?.uid]); // Removed router to keep size stable and constant
+    return () => unsub();
+  }, [caseId, router]);
 
   const handleFileUpload = async (file: File) => {
-    if (!file) return;
+    if (!file || !caseId) return;
+    if (!firebaseUser) {
+      toast.error('Please login again to upload proof');
+      return;
+    }
+
     setUploading(true);
+
     try {
+      const token = await firebaseUser.getIdToken();
       const formData = new FormData();
       formData.append('file', file);
-      // 🛡️ SECURITY: Fetch token
-      const token = await firebaseUser?.getIdToken();
-      const headers: Record<string, string> = {};
-      if (token) headers['Authorization'] = `Bearer ${token}`;
+      formData.append('caseId', caseId as string);
 
-      const res = await fetch('/api/upload', { 
-        method: 'POST', 
-        headers,
-        body: formData 
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
       });
-      if (!res.ok) throw new Error('Upload failed');
-      const uploadData = await res.json();
+
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Upload failed');
+      }
+      
       await updateDoc(doc(db, 'cases', caseId as string), {
-        finalProof: [uploadData.url],
+        finalProof: [data.url],
         updatedAt: serverTimestamp()
       });
-      toast.success('Final Proof Uploaded');
-    } catch {
-      toast.error('Upload failed');
+      toast.success('Final proof uploaded!');
+    } catch (err: any) {
+      console.error('Final proof upload failed:', err);
+      toast.error(err.message || 'Upload failed');
     } finally {
       setUploading(false);
     }
   };
 
   const handleMarkCompleted = async () => {
-    if (!caseData?.finalProof || caseData.finalProof.length === 0) {
-      return toast.error('Bhai, please upload Final Proof first! 📄');
-    }
-    
+    if (!caseId || !clinicianNotes.trim()) return;
     setIsCompleting(true);
     try {
-      // 1. Core database update (Primary task)
       await updateDoc(doc(db, 'cases', caseId as string), {
         status: 'completed',
         clinicianNotes,
         updatedAt: serverTimestamp()
       });
       
-      // 2. Background tasks: Notify admins (Async Parallel)
-      const notifyAdmins = async () => {
-        try {
-          const adminQuery = query(collection(db, 'users'), where('role', '==', 'admin'));
-          const adminSnapshot = await getDocs(adminQuery);
-          
-          const notificationPromises = adminSnapshot.docs.map(adminDoc => 
-            sendSystemNotification(adminDoc.id, {
-              title: 'Case Ready for Approval',
-              message: `Dr. ${user?.name} completed treatment for ${caseData.patientName}.`,
-              type: 'info',
-              link: `/dashboard/admin/cases/${caseId}`
-            })
-          );
-          
-          await Promise.all(notificationPromises);
-        } catch (e) {
-          console.error("Background notification failed:", e);
-        }
-      };
+      // Notify associate
+      if (caseData?.associateId) {
+        await sendSystemNotification(
+          caseData.associateId,
+          {
+            title: 'Case Completed',
+            message: `Dr. ${user?.name} has completed treatment for ${caseData.patientName}.`,
+            type: 'success',
+            link: `/dashboard/associate/my-cases/${caseId}`
+          }
+        );
+      }
 
-      // Fire and forget (optional) or await it? Let's await for reliability but in parallel
-      // To make it feel "Turbo", we can show success immediately after the updateDoc
-      toast.success('Treatment Completed Successfully! 🎉');
-      notifyAdmins(); // Start this in background
-      
-    } catch (error: any) {
-      toast.error('Submission failed: ' + error.message);
+      toast.success('Case marked as completed!');
+    } catch (err) {
+      toast.error('Failed to update case');
     } finally {
       setIsCompleting(false);
+    }
+  };
+
+  const openFileInternal = (url: string) => {
+    if (!url) return;
+    try {
+      const isPdf = isPdfFile(url);
+      if (isPdf) {
+        window.open(`/api/view-pdf?url=${encodeURIComponent(url)}`, '_blank');
+      } else {
+        // Direct opening for images to ensure speed and bypass hangs
+        const newTab = window.open();
+        if (newTab) {
+          newTab.location.href = url;
+        } else {
+          // Fallback if popup blocked
+          window.open(url, '_blank');
+        }
+      }
+    } catch (err) {
+      console.error("Open file failed:", err);
+      window.open(url, '_blank');
     }
   };
 
@@ -237,6 +197,7 @@ export default function CaseDetailPage() {
   const points = TREATMENT_POINTS[caseData.treatmentType] || 0;
 
   return (
+    <>
     <DashboardLayout>
       <div className="max-w-7xl mx-auto pb-8 px-2 sm:px-0">
         {/* Header */}
@@ -364,9 +325,9 @@ export default function CaseDetailPage() {
                 <div>
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Initial Proof</p>
                   {caseData.initialProof && caseData.initialProof[0] ? (
-                    isPdf(caseData.initialProof[0]) ? (
+                    isPdfFile(caseData.initialProof[0]) ? (
                       <a
-                        onClick={(e) => { e.preventDefault(); openFile(caseData.initialProof![0]); }}
+                        onClick={(e) => { e.preventDefault(); openFileInternal(caseData.initialProof![0]); }}
                         href="#"
                         className="aspect-video bg-rose-50 dark:bg-rose-500/10 border-2 border-rose-100 dark:border-rose-500/20 rounded-xl flex flex-col items-center justify-center gap-3 hover:border-rose-400 active:scale-95 transition-all group cursor-pointer"
                       >
@@ -401,7 +362,7 @@ export default function CaseDetailPage() {
                             if (container) container.innerHTML += iconHtml;
                           }}
                         />
-                        <a href={caseData.initialProof[0]} target="_blank" rel="noopener noreferrer" className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10">
+                        <a onClick={(e) => { e.preventDefault(); openFileInternal(caseData.initialProof![0]); }} href="#" className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10">
                           <ExternalLink className="text-white" size={24} />
                         </a>
                       </div>
@@ -417,10 +378,10 @@ export default function CaseDetailPage() {
                 <div>
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Final Proof</p>
                   {caseData.finalProof && caseData.finalProof[0] ? (
-                    isPdf(caseData.finalProof[0]) ? (
+                    isPdfFile(caseData.finalProof[0]) ? (
                       <div className="aspect-video bg-blue-50 dark:bg-blue-500/10 border-2 border-blue-100 dark:border-blue-500/20 rounded-xl flex flex-col items-center justify-center gap-3 group relative overflow-hidden">
                         <a
-                          onClick={(e) => { e.preventDefault(); openFile(caseData.finalProof![0]); }}
+                          onClick={(e) => { e.preventDefault(); openFileInternal(caseData.finalProof![0]); }}
                           href="#"
                           className="flex flex-col items-center gap-3 hover:scale-105 active:scale-95 transition-transform cursor-pointer"
                         >
@@ -469,7 +430,7 @@ export default function CaseDetailPage() {
                             </label>
                           </div>
                         )}
-                        <a href={caseData.finalProof[0]} target="_blank" rel="noopener noreferrer" className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10 pointer-events-none group-hover:pointer-events-auto">
+                        <a onClick={(e) => { e.preventDefault(); openFileInternal(caseData.finalProof![0]); }} href="#" className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10 pointer-events-none group-hover:pointer-events-auto">
                            {/* Empty clickable area if not replacing */}
                         </a>
                       </div>
@@ -682,5 +643,81 @@ export default function CaseDetailPage() {
         </div>
       </div>
     </DashboardLayout>
+
+    {/* ───── In-Page PDF Viewer Modal ───── */}
+    <AnimatePresence>
+      {pdfViewer && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[200] flex flex-col bg-slate-900/95 backdrop-blur-sm outline-none"
+          onKeyDown={(e) => e.key === 'Escape' && setPdfViewer(null)}
+          tabIndex={0}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 bg-slate-900 border-b border-slate-700 shrink-0 relative z-50">
+            <div className="flex items-center gap-3">
+              <FileText size={20} className="text-red-400" />
+              <span className="text-sm font-black text-white uppercase tracking-widest">Clinical Evidence Viewer</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <a
+                href={`/api/view-pdf?url=${encodeURIComponent(currentOriginalUrl!)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-cyan-600 text-white rounded-md text-xs font-black uppercase tracking-widest hover:bg-cyan-500 transition-all flex items-center gap-2"
+              >
+                <ExternalLink size={16} /> Open Full PDF
+              </a>
+              <button
+                onClick={() => setPdfViewer(null)}
+                className="w-9 h-9 bg-white/10 hover:bg-rose-500 text-white rounded-md flex items-center justify-center transition-all font-black relative z-[60] pointer-events-auto"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+          {/* Content: centered image or robust PDF object */}
+          <div 
+            className="flex-1 overflow-auto flex items-center justify-center bg-slate-950 relative"
+            onClick={(e) => e.target === e.currentTarget && setPdfViewer(null)}
+          >
+            {viewerMimeType.startsWith('image/') ? (
+              <img
+                src={pdfViewer!}
+                alt="Clinical Evidence"
+                className="max-w-full max-h-full object-contain"
+              />
+            ) : (
+              <>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-500 z-0">
+                  <Loader2 className="animate-spin mb-2" />
+                  <p className="text-[10px] font-bold uppercase tracking-widest">Loading Document...</p>
+                </div>
+                <object
+                  data={pdfViewer!}
+                  type="application/pdf"
+                  className="w-full h-full border-none relative z-10"
+                >
+                  <div className="flex flex-col items-center justify-center text-white p-10 text-center">
+                    <FileText size={48} className="mb-4 text-slate-500" />
+                    <p className="text-sm font-bold mb-4">Browser can't display this PDF directly.</p>
+                    <a 
+                      href={currentOriginalUrl!} 
+                      target="_blank" 
+                      className="px-6 py-3 bg-cyan-600 rounded-xl font-black text-xs uppercase tracking-widest"
+                    >
+                      Open in New Tab
+                    </a>
+                  </div>
+                </object>
+              </>
+            )}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </>
   );
 }

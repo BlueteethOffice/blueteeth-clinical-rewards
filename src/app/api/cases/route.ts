@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminDb } from '@/lib/firebase-admin';
+import { getAdminDb, adminAuth } from '@/lib/firebase-admin';
 import { rateLimit } from '@/lib/security';
 
 export async function GET(request: NextRequest) {
@@ -7,28 +7,47 @@ export async function GET(request: NextRequest) {
     const { success: rateOk } = await rateLimit(request, 50, 60000);
     if (!rateOk) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
 
+    // ✅ SECURITY FIX: Verify token and get UID/Role from it
+    const authHeader = request.headers.get('authorization');
+    const sessionCookie = request.cookies.get('session')?.value;
+    
+    let decodedToken;
+    try {
+      const auth = adminAuth;
+      if (!auth) throw new Error('Auth unavailable');
+
+      if (authHeader?.startsWith('Bearer ')) {
+        decodedToken = await auth.verifyIdToken(authHeader.split('Bearer ')[1]);
+      } else if (sessionCookie) {
+        decodedToken = await auth.verifySessionCookie(sessionCookie);
+      } else {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    } catch (e) {
+      return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    const role = searchParams.get('role');
     const limit = parseInt(searchParams.get('limit') || '10');
     const lastId = searchParams.get('lastId');
-
-    if (!userId || !role) {
-      return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
-    }
 
     const db = getAdminDb();
     if (!db) return NextResponse.json({ error: 'DB error' }, { status: 500 });
 
+    // Fetch user role from DB for strict check
+    const userDoc = await db.collection('users').doc(decodedToken.uid).get();
+    const role = userDoc.data()?.role;
+
     let q = db.collection('cases');
 
-    // Role-based filtering
+    // Role-based filtering (Strictly enforced by server state)
     if (role === 'associate') {
-      q = q.where('associateId', '==', userId) as any;
+      q = q.where('associateId', '==', decodedToken.uid) as any;
     } else if (role === 'clinician') {
-      q = q.where('clinicianId', '==', userId) as any;
+      q = q.where('clinicianId', '==', decodedToken.uid) as any;
+    } else if (role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-    // Admins see all
 
     q = q.orderBy('createdAt', 'desc') as any;
 

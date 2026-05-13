@@ -36,8 +36,21 @@ export default function Navbar({ setIsMobileMenuOpen }: { setIsMobileMenuOpen?: 
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
+      // 1. Fire and forget server-side cleanup
+      fetch('/api/auth/session', { method: 'DELETE' }).catch(() => {});
+      
+      // 2. Clear Firebase client-side auth
       await signOut(auth);
-      toast.success('Signed out successfully');
+      
+      // 3. Clean all caches (Unified)
+      localStorage.removeItem('cached_user');
+      localStorage.removeItem('user_role_hint');
+      localStorage.removeItem('user_name_hint');
+      sessionStorage.removeItem('2fa_verified');
+      
+      toast.success('Signed out');
+      
+      // 4. FAST REDIRECT: SPA transition instead of full reload
       router.push('/login');
     } catch (error) {
       toast.error('Logout failed. Please try again.');
@@ -57,7 +70,7 @@ export default function Navbar({ setIsMobileMenuOpen }: { setIsMobileMenuOpen?: 
 
   useEffect(() => {
     const performSearch = async () => {
-      if (!user) return;
+      if (!user?.uid) return;
       const qText = searchQuery.trim().toLowerCase();
       if (qText.length < 2) {
         setSearchResults({ cases: [], users: [], pages: [] });
@@ -152,7 +165,7 @@ export default function Navbar({ setIsMobileMenuOpen }: { setIsMobileMenuOpen?: 
         </button>
 
         {/* 🔎 SHARP SEARCH BAR */}
-        <div className="relative flex-1 lg:flex-none max-w-[28rem]" ref={searchRef}>
+        <div className="relative flex-none w-[16rem] sm:w-[22rem] lg:w-[28rem]" ref={searchRef}>
           <div className={`flex items-center gap-2 sm:gap-4 bg-slate-100/50 dark:bg-slate-900/50 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl w-full border transition-all duration-300 ${
             showSearchResults ? 'border-cyan-500 bg-white dark:bg-slate-900 shadow-xl' : 'border-slate-200 dark:border-slate-800'
           }`}>

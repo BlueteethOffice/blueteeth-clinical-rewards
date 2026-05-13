@@ -20,6 +20,8 @@ import {
   Plus
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const Testimonials = [
   {
@@ -43,13 +45,34 @@ const Testimonials = [
 ];
 
 export default function LandingPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // Removed auto-redirect to allow viewing landing page while logged in
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Remove the full screen loading state for logged in users
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-[#020617]">
+        <div className="flex flex-col items-center gap-6">
+          <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center border border-white/5 shadow-2xl animate-pulse">
+            <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="text-xl font-black text-white tracking-[0.3em] uppercase">Blueteeth</h1>
+            <div className="h-0.5 w-12 bg-cyan-500 rounded-full animate-all duration-1000" style={{ width: '40px' }} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-50 text-slate-900 dark:text-slate-900 selection:bg-cyan-100 selection:text-cyan-900 font-sans antialiased">
@@ -86,14 +109,24 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            <Link href="/login" className="hidden sm:block text-xs font-bold text-slate-600 hover:text-slate-900 transition-all px-3">
-              Login
-            </Link>
-            <Link href="/signup">
-              <button className="px-4 md:px-5 py-1.5 md:py-2 premium-gradient text-white rounded-full text-[10px] md:text-xs font-bold shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all">
-                Join Now
-              </button>
-            </Link>
+            {user ? (
+              <Link href={`/dashboard/${user.role}`}>
+                <button className="px-4 md:px-6 py-2 premium-gradient text-white rounded-full text-[10px] md:text-xs font-black shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all uppercase tracking-widest">
+                  Dashboard
+                </button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="hidden sm:block text-[10px] font-black text-slate-600 hover:text-slate-900 transition-all px-3 uppercase tracking-widest">
+                  Login
+                </Link>
+                <Link href="/signup">
+                  <button className="px-4 md:px-5 py-2 premium-gradient text-white rounded-full text-[10px] md:text-xs font-black shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all uppercase tracking-widest">
+                    Join Now
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -136,16 +169,26 @@ export default function LandingPage() {
             </motion.p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link href="/signup" className="w-full sm:w-auto">
-                <button className="group w-full px-7 py-3 premium-gradient text-white rounded-xl font-bold text-sm shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
-                  Join as Practitioner <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </button>
-              </Link>
-              <Link href="/login" className="w-full sm:w-auto">
-                <button className="w-full px-7 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.03]">
-                  Admin Access
-                </button>
-              </Link>
+              {user ? (
+                <Link href={`/dashboard/${user.role}`} className="w-full sm:w-auto">
+                  <button className="group w-full px-10 py-4 premium-gradient text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
+                    Enter Workspace <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </Link>
+              ) : (
+                <>
+                  <Link href="/signup" className="w-full sm:w-auto">
+                    <button className="group w-full px-7 py-3 premium-gradient text-white rounded-xl font-bold text-sm shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
+                      Join as Practitioner <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </Link>
+                  <Link href="/login" className="w-full sm:w-auto">
+                    <button className="w-full px-7 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.03]">
+                      Admin Access
+                    </button>
+                  </Link>
+                </>
+              )}
             </div>
           </motion.div>
 
@@ -198,81 +241,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Solutions */}
-        <section id="solutions" className="pt-12 pb-12 px-6 bg-slate-900 text-white relative overflow-hidden">
-          <div className="max-w-7xl mx-auto relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div>
-                <h2 className="text-3xl md:text-5xl font-bold mb-8 leading-tight">One Platform <br /><span className="text-cyan-400">Every Role.</span></h2>
-                <div className="space-y-6">
-                  {[
-                    { title: "Associates", desc: "Monetize clinical excellence with verified proof submission.", icon: <Users size={18} /> },
-                    { title: "Clinicians", desc: "Streamline patient management and consultations.", icon: <Stethoscope size={18} /> },
-                    { title: "Admins", desc: "Full-scale governance and automated financial payouts.", icon: <Lock size={18} /> }
-                  ].map((item, i) => (
-                    <div key={i} className="flex gap-5">
-                      <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-cyan-400 shrink-0">
-                        {item.icon}
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-bold mb-1">{item.title}</h4>
-                        <p className="text-slate-400 text-sm font-medium leading-relaxed">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="bg-white/5 backdrop-blur-2xl rounded-3xl p-4 border border-white/10 shadow-2xl relative group">
-                <div className="aspect-[4/3] bg-slate-800 rounded-2xl overflow-hidden flex shadow-inner">
-                  {/* Sidebar */}
-                  <div className="w-16 border-r border-white/5 p-4 flex flex-col gap-4">
-                    {[1, 2, 3, 4].map(i => (
-                      <div key={i} className={`w-8 h-8 rounded-lg ${i === 1 ? 'bg-cyan-500/20' : 'bg-white/5'}`} />
-                    ))}
-                  </div>
-                  {/* Content */}
-                  <div className="flex-1 p-6 flex flex-col gap-6">
-                    <div className="flex justify-between items-center">
-                      <div className="w-32 h-4 bg-white/10 rounded-full" />
-                      <div className="w-8 h-8 rounded-full bg-white/10" />
-                    </div>
-                    <div className="grid grid-cols-3 gap-4">
-                      {[
-                        { color: 'bg-cyan-500/20', border: 'border-cyan-500/30' },
-                        { color: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-                        { color: 'bg-purple-500/10', border: 'border-purple-500/20' }
-                      ].map((s, i) => (
-                        <div key={i} className={`h-16 ${s.color} rounded-xl border ${s.border} p-3 flex flex-col gap-2`}>
-                          <div className="w-1/2 h-1.5 bg-white/20 rounded-full" />
-                          <div className="w-3/4 h-2.5 bg-white/40 rounded-full" />
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex-1 bg-white/5 rounded-xl border border-white/10 p-6 flex flex-col gap-4">
-                      <div className="w-40 h-4 bg-white/10 rounded-full" />
-                      <div className="space-y-3">
-                        {[70, 45, 85, 60].map((w, i) => (
-                          <div key={i} className="h-2 bg-white/5 rounded-full overflow-hidden">
-                            <motion.div 
-                              initial={{ width: 0 }}
-                              whileInView={{ width: `${w}%` }}
-                              transition={{ duration: 1, delay: i * 0.1 }}
-                              className="h-full bg-cyan-500/40 rounded-full" 
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* Glow effects */}
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-cyan-500/20 rounded-full blur-[80px] pointer-events-none" />
-                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 rounded-full blur-[80px] pointer-events-none" />
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Testimonials */}
         <section id="testimonials" className="pt-12 pb-10 px-6 bg-white">
           <div className="max-w-7xl mx-auto">
@@ -321,32 +289,32 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="bg-white border-t border-slate-100 pt-10 pb-10 px-6">
+      <footer className="bg-white border-t border-slate-100 py-6 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex flex-col items-center md:items-start gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col items-center md:items-start gap-3">
               <div className="flex items-center gap-2">
-                <div className="w-11 h-11 bg-white rounded-lg flex items-center justify-center shadow-[0_3px_10px_rgba(8,145,178,0.12)] border border-cyan-100">
+                <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-[0_3px_10px_rgba(8,145,178,0.12)] border border-cyan-100">
                   <img 
                     src="/logo.png" 
                     alt="Logo" 
-                    className="h-7 w-auto object-contain" 
+                    className="h-6 w-auto object-contain" 
                   />
                 </div>
-                <span className="text-lg font-bold text-cyan-600">Blueteeth</span>
+                <span className="text-base font-bold text-cyan-600">Blueteeth</span>
               </div>
-              <p className="text-slate-500 text-xs font-medium">© 2026 Blueteeth Clinical Ecosystem. All rights reserved.</p>
+              <p className="text-slate-500 text-[10px] font-medium">© 2026 Blueteeth Clinical Ecosystem. All rights reserved.</p>
             </div>
             
-            <div className="flex flex-col items-center md:items-end gap-4">
-              <div className="flex items-center gap-6 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex flex-col items-center md:items-end gap-3">
+              <div className="flex items-center gap-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 <Link href="#" className="hover:text-cyan-600 transition-colors">Privacy</Link>
                 <Link href="#" className="hover:text-cyan-600 transition-colors">Terms</Link>
                 <Link href="#" className="hover:text-cyan-600 transition-colors">Compliance</Link>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-full border border-emerald-100">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">System Operational</span>
+              <div className="flex items-center gap-2 px-2.5 py-1 bg-emerald-50 rounded-full border border-emerald-100">
+                <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[9px] font-bold text-emerald-700 uppercase tracking-wider">System Operational</span>
               </div>
             </div>
           </div>
@@ -355,3 +323,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

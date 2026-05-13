@@ -55,7 +55,7 @@ export default function AssociateEarningsPage() {
   });
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.uid) return;
 
     const fetchConfig = async () => {
       try {

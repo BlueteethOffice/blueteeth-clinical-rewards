@@ -33,7 +33,7 @@ export default function AssignedCasesPage() {
   const casesPerPage = 5;
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.uid) return;
 
     // ⚡ PERFORMANCE FIX: Added client-side slice to prevent rendering lag with large case history.
     const q = query(

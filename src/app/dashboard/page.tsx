@@ -10,24 +10,14 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Safety timeout: If auth takes more than 5s, redirect to login
-    const safetyTimeout = setTimeout(() => {
-      if (loading) {
-        console.warn("Auth check timed out, redirecting to login...");
-        router.push('/login');
-      }
-    }, 5000);
-
+    // If we're done loading and have no user/role, go to login
     if (!loading) {
-      clearTimeout(safetyTimeout);
       if (user && user.role) {
         router.push(`/dashboard/${user.role}`);
-      } else {
+      } else if (!user) {
         router.push('/login');
       }
     }
-
-    return () => clearTimeout(safetyTimeout);
   }, [user, loading, router]);
 
   return (

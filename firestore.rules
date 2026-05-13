@@ -23,12 +23,14 @@ service cloud.firestore {
       // Allow update if it's the user's own profile (but prevent role changes) OR if requester is an admin
       allow update: if isAuthenticated() && (
         isAdmin() || 
-        (request.auth.uid == userId && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])))
+        (request.auth.uid == userId && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'totalEarnings'])))
       );
       
-      // Allow creation during signup - Ensure uid matches
-      allow create: if isAuthenticated() && request.auth.uid == userId && 
-                    request.resource.data.uid == request.auth.uid;
+      // Allow creation during signup - Ensure uid matches and ROLE IS NOT ADMIN
+      allow create: if isAuthenticated() && 
+                    request.auth.uid == userId && 
+                    request.resource.data.uid == request.auth.uid &&
+                    (request.resource.data.role == 'associate' || request.resource.data.role == 'clinician');
       
       allow delete: if isAdmin();
     }
@@ -44,7 +46,9 @@ service cloud.firestore {
       );
 
       // Only associates can create cases, and must own them
+      // Added role check: Must be an associate to create
       allow create: if isAuthenticated() && 
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'associate' &&
                     request.resource.data.associateId == request.auth.uid;
       
       // Only Admins or the assigned Clinician can update

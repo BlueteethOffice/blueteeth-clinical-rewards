@@ -27,7 +27,7 @@ export default function ClinicianPayoutPage() {
   const earnings = user?.totalEarnings || 0;
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.uid) return;
 
     // 🚀 NO-INDEX QUERY: Removed 'orderBy' to prevent index errors
     const q = query(

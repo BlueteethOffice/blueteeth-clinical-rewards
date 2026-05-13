@@ -84,26 +84,33 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    overflow: hidden !important;
+    height: 100% !important;
   }
-  * {
-    border-color: hsl(var(--border));
-  }
+
   body {
     background-color: hsl(var(--background)) !important;
     color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.1s ease, color 0.1s ease;
     overscroll-behavior: none;
     -webkit-tap-highlight-color: transparent;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: 100% !important;
   }
-  
-  /* Faster Click Response Feedback */
+
+  /* No custom scrollbar styles - use browser default */
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  /* Instant Click Response Feedback */
   button:active, 
   a:active,
   [role="button"]:active {
-    transform: scale(0.97);
-    transition: transform 0.1s ease;
+    transform: scale(0.98);
+    transition: transform 0.05s ease;
   }
 }
 

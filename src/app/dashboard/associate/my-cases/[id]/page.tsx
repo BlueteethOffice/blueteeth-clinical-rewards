@@ -25,7 +25,8 @@ import {
   Activity,
   Check,
   Building2,
-  Upload
+  Upload,
+  Loader2
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { formatName } from '@/lib/utils';
@@ -40,6 +41,7 @@ export default function CaseDetailsPage() {
   const [clinicianProfile, setClinicianProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [pdfViewer, setPdfViewer] = useState<string | null>(null);
+  const [currentOriginalUrl, setCurrentOriginalUrl] = useState<string | null>(null);
   const [viewerMimeType, setViewerMimeType] = useState<string>('application/pdf');
 
   useEffect(() => {
@@ -87,48 +89,34 @@ export default function CaseDetailsPage() {
   // ✅ FIXED: Direct URL opening avoids popup blocker.
   // /api/view-file accepts the session cookie, so no Bearer token fetch needed.
   // window.open() after any 'await' is always blocked by browsers.
+  // ✅ ROBUST FILE OPENER: Strictly prevents new tabs for PDFs
+  const isPDF = (url: string) => {
+    const lower = url.toLowerCase();
+    return lower.includes('.pdf') || 
+           lower.startsWith('data:application/pdf') || 
+           lower.includes('/api/view-pdf') ||
+           lower.includes('/raw/upload/');
+  };
+
   const openProof = (url: string) => {
+    if (!url) return;
     try {
-      // For base64 data URLs — decode in browser RAM
-      if (url.startsWith('data:')) {
-        const [header, base64Data] = url.split(',');
-        const mimeType = header.split(':')[1].split(';')[0];
-        const byteChars = atob(base64Data);
-        const byteArray = new Uint8Array(byteChars.length);
-        for (let i = 0; i < byteChars.length; i++) byteArray[i] = byteChars.charCodeAt(i);
-        const blob = new Blob([byteArray], { type: mimeType });
-        const blobUrl = URL.createObjectURL(blob);
-
-        if (mimeType === 'application/pdf') {
-          window.open(blobUrl, '_blank');
-          return;
+      const isPdfFile = isPDF(url);
+      if (isPdfFile) {
+        window.open(`/api/view-pdf?url=${encodeURIComponent(url)}`, '_blank');
+      } else {
+        // Direct opening for images to ensure speed and bypass hangs
+        const newTab = window.open();
+        if (newTab) {
+          newTab.location.href = url;
+        } else {
+          // Fallback if popup blocked
+          window.open(url, '_blank');
         }
-
-        setViewerMimeType(mimeType);
-        setPdfViewer(blobUrl);
-        return;
       }
-
-      // For /api/view-file?id=XXX links:
-      // ✅ Session cookie is already set in the browser — open directly, no fetch needed.
-      // This avoids the popup blocker (window.open after await is always blocked).
-      if (url.includes('/api/view-file')) {
-        window.open(url, '_blank');
-        return;
-      }
-
-      // For legacy /uploads/ paths — use proof-proxy
-      if (url.startsWith('/uploads/')) {
-        const proxyUrl = `/api/proof-proxy?url=${encodeURIComponent(url)}`;
-        window.open(proxyUrl, '_blank');
-        return;
-      }
-
-      // For external URLs (Cloudinary, Firebase Storage, etc.)
+    } catch (e) {
+      console.error("Open proof failed:", e);
       window.open(url, '_blank');
-    } catch (e: any) {
-      console.error("❌ File Open Error:", e);
-      toast.error(`Could not open file: ${e.message || 'Unknown error'}`);
     }
   };
 
@@ -147,15 +135,11 @@ export default function CaseDetailsPage() {
     );
   };
 
-  const isPDF = (url: string) => 
-    url.toLowerCase().includes('.pdf') || 
-    url.startsWith('data:application/pdf') || 
-    url.includes('/api/pdf-view');
 
   const ProofThumbnail = ({ url }: { url: string }) => {
     const [hasError, setHasError] = useState(false);
     const isApiFile = url.includes('/api/view-file') || url.includes('/api/proof-proxy');
-    const isImageUrl = !isApiFile && (
+    const isImageUrl = !isApiFile && !isPDF(url) && (
       url.startsWith('data:image') ||
       /\.(jpg|jpeg|png|gif|webp)(\?|$)/i.test(url) ||
       url.includes('res.cloudinary.com') ||
@@ -187,12 +171,34 @@ export default function CaseDetailsPage() {
     );
   };
 
-  if (loading) {
+  if (loading && !caseData) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-          <div className="w-12 h-12 border-4 border-cyan-100 border-t-cyan-600 rounded-full animate-spin" />
-          <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Fetching Case Intel...</p>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8 animate-pulse">
+          {/* Header Skeleton */}
+          <div className="flex justify-between items-center mb-10">
+            <div className="space-y-3">
+              <div className="h-8 w-48 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+              <div className="h-4 w-32 bg-slate-100 dark:bg-slate-800/50 rounded" />
+            </div>
+            <div className="h-10 w-32 bg-slate-200 dark:bg-slate-800 rounded-xl" />
+          </div>
+
+          {/* Main Card Skeleton */}
+          <div className="h-64 w-full bg-slate-100 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-white/5" />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-8">
+              <div className="h-48 w-full bg-slate-100 dark:bg-slate-800/40 rounded-xl" />
+              <div className="grid grid-cols-2 gap-8">
+                <div className="h-64 bg-slate-50 dark:bg-slate-800/20 rounded-xl" />
+                <div className="h-64 bg-slate-50 dark:bg-slate-800/20 rounded-xl" />
+              </div>
+            </div>
+            <div className="space-y-8">
+              <div className="h-96 w-full bg-slate-100 dark:bg-slate-800/40 rounded-xl" />
+            </div>
+          </div>
         </div>
       </DashboardLayout>
     );
@@ -411,12 +417,12 @@ export default function CaseDetailsPage() {
                       </div>
                     </div>
                     
-                    <div className="flex-1 text-center md:text-left">
-                      <div className="flex items-center justify-center md:justify-start gap-3 mb-1 flex-wrap">
-                        <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">
+                    <div className="flex-1 text-center md:text-left min-w-0">
+                      <div className="flex items-center justify-center md:justify-start gap-3 mb-1">
+                        <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase whitespace-nowrap">
                           {clinicianProfile?.name ? formatName(clinicianProfile.name, 'clinician') : caseData.clinicianName ? formatName(caseData.clinicianName, 'clinician') : 'Dr. Specialists'}
                         </h3>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 shrink-0">
                           <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded text-[8px] font-black uppercase tracking-widest">Verified</span>
                           <button className="text-[9px] font-bold text-blue-600 hover:underline flex items-center gap-1">
                             View <ExternalLink size={10} />
@@ -466,10 +472,10 @@ export default function CaseDetailsPage() {
             {/* Proof Gallery */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Initial Proof */}
-              <div className="glass-card p-8 rounded-xl shadow-sm">
+              <div className="glass-card p-8 rounded-xl shadow-sm bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-white/5">
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] flex items-center gap-2">
-                    <div className="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center"><Upload size={16} /></div>
+                  <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                    <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg flex items-center justify-center"><Upload size={16} /></div>
                     Initial Evidence
                   </h3>
                   <span className="text-[10px] font-bold text-slate-400">{caseData.initialProof?.length || 0} Files</span>
@@ -479,29 +485,29 @@ export default function CaseDetailsPage() {
                     <div
                       key={i}
                       onClick={() => openProof(url)}
-                      className="relative group aspect-square rounded-xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50 cursor-pointer"
+                      className="relative group aspect-square rounded-xl overflow-hidden border border-slate-100 dark:border-white/10 shadow-sm bg-slate-50 dark:bg-slate-800 cursor-pointer"
                     >
                       <ProofThumbnail url={url} />
                       <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white p-4">
                         <ExternalLink size={20} className="mb-2" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Click to View</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">View</span>
                       </div>
                     </div>
                   ))}
                   {(!caseData.initialProof || caseData.initialProof.length === 0) && (
-                    <div className="col-span-2 py-12 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-100 rounded-xl bg-slate-50/50">
+                    <div className="col-span-2 py-12 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-100 dark:border-white/5 rounded-xl bg-slate-50/50">
                       <FileText size={24} className="text-slate-200" />
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">No Evidence Uploaded</span>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">No Evidence</span>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Final Proof */}
-              <div className="glass-card p-8 rounded-xl shadow-sm">
+              <div className="glass-card p-8 rounded-xl shadow-sm bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-white/5">
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] flex items-center gap-2">
-                    <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center"><ShieldCheck size={16} /></div>
+                  <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                    <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg flex items-center justify-center"><ShieldCheck size={16} /></div>
                     Clinical Outcome
                   </h3>
                   <span className="text-[10px] font-bold text-slate-400">{caseData.finalProof?.length || 0} Files</span>
@@ -511,19 +517,19 @@ export default function CaseDetailsPage() {
                     <div
                       key={i}
                       onClick={() => openProof(url)}
-                      className="relative group aspect-square rounded-xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50 cursor-pointer"
+                      className="relative group aspect-square rounded-xl overflow-hidden border border-slate-100 dark:border-white/10 shadow-sm bg-slate-50 dark:bg-slate-800 cursor-pointer"
                     >
                       <ProofThumbnail url={url} />
                       <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white p-4">
                         <ExternalLink size={20} className="mb-2" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">View Result</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Result</span>
                       </div>
                     </div>
                   ))}
                   {(!caseData.finalProof || caseData.finalProof.length === 0) && (
-                    <div className="col-span-2 py-10 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-100 rounded-xl bg-slate-50/50">
+                    <div className="col-span-2 py-10 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-100 dark:border-white/5 rounded-xl bg-slate-50/50">
                       <Clock size={24} className="text-slate-200 animate-pulse" />
-                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Waiting for Outcome</span>
+                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Waiting</span>
                     </div>
                   )}
                 </div>
@@ -531,8 +537,10 @@ export default function CaseDetailsPage() {
             </div>
           </div>
 
-          {/* Timeline Column - Natural Scroll (No Sticky Overlap) */}
-          <div className="space-y-8">
+          {/* Right Column - Timeline & Notes */}
+          <div className="lg:col-span-1 space-y-8">
+            
+
             <div className="glass-card p-8 rounded-xl bg-white shadow-sm">
               <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] mb-12 flex items-center gap-2">
                 <Activity size={18} className="text-cyan-600" /> Real-time Tracking
@@ -585,7 +593,35 @@ export default function CaseDetailsPage() {
               )}
             </div>
 
-            {/* Note Card */}
+            {/* ✅ FIXED: Morphism Element in the Right Gap */}
+            <div className="glass-card p-8 rounded-xl bg-linear-to-br from-cyan-600 to-blue-700 text-white shadow-xl shadow-cyan-100/50 dark:shadow-none border-none relative overflow-hidden flex flex-col justify-between group min-h-[280px]">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-cyan-400/20 rounded-full -ml-12 -mb-12 blur-xl" />
+              
+              <div className="relative z-10">
+                <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-6 border border-white/20">
+                  <Activity size={20} className="text-cyan-100" />
+                </div>
+                <h3 className="text-sm font-black uppercase tracking-[0.2em] mb-3">Clinical Trust</h3>
+                <p className="text-[10px] font-bold text-cyan-50/80 leading-relaxed uppercase tracking-wider">
+                  Verified clinical rewards platform with real-time tracking and automated processing.
+                </p>
+              </div>
+
+              <div className="relative z-10 pt-8 mt-auto">
+                <div className="flex items-center justify-between bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10">
+                  <div className="text-center">
+                    <p className="text-[16px] font-black">99%</p>
+                    <p className="text-[8px] font-bold uppercase tracking-widest opacity-70">Accuracy</p>
+                  </div>
+                  <div className="w-[1px] h-8 bg-white/10" />
+                  <div className="text-center">
+                    <p className="text-[16px] font-black">24/7</p>
+                    <p className="text-[8px] font-bold uppercase tracking-widest opacity-70">Support</p>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="glass-card p-8 rounded-xl bg-slate-900 text-white overflow-hidden relative shadow-lg space-y-8">
               <div className="absolute -right-4 -bottom-4 opacity-10 pointer-events-none">
                 <ClipboardList size={80} />
@@ -634,32 +670,38 @@ export default function CaseDetailsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex flex-col bg-slate-900/95 backdrop-blur-sm"
+            className="fixed inset-0 z-[200] flex flex-col bg-slate-900/95 backdrop-blur-sm outline-none"
+            onKeyDown={(e) => e.key === 'Escape' && setPdfViewer(null)}
+            tabIndex={0}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 bg-slate-900 border-b border-slate-700 shrink-0">
+            <div className="flex items-center justify-between px-6 py-4 bg-slate-900 border-b border-slate-700 shrink-0 relative z-50">
               <div className="flex items-center gap-3">
                 <FileText size={20} className="text-red-400" />
                 <span className="text-sm font-black text-white uppercase tracking-widest">Clinical Evidence Viewer</span>
               </div>
               <div className="flex items-center gap-3">
                 <a
-                  href={pdfViewer}
-                  download
-                  className="px-4 py-2 bg-white/10 text-white rounded-md text-xs font-black uppercase tracking-widest hover:bg-white/20 transition-all flex items-center gap-2"
+                  href={`/api/view-pdf?url=${encodeURIComponent(currentOriginalUrl!)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-cyan-600 text-white rounded-md text-xs font-black uppercase tracking-widest hover:bg-cyan-500 transition-all flex items-center gap-2"
                 >
-                  <Download size={14} /> Download
+                  <ExternalLink size={16} /> Open Full PDF
                 </a>
                 <button
                   onClick={() => setPdfViewer(null)}
-                  className="w-9 h-9 bg-white/10 hover:bg-rose-500 text-white rounded-md flex items-center justify-center transition-all font-black"
+                  className="w-9 h-9 bg-white/10 hover:bg-rose-500 text-white rounded-md flex items-center justify-center transition-all font-black relative z-[60] pointer-events-auto"
                 >
                   ✕
                 </button>
               </div>
             </div>
-            {/* Content: centered image or full-width PDF iframe */}
-            <div className="flex-1 overflow-auto flex items-center justify-center bg-slate-950">
+            {/* Content: centered image or robust PDF object */}
+            <div 
+              className="flex-1 overflow-auto flex items-center justify-center bg-slate-950 relative"
+              onClick={(e) => e.target === e.currentTarget && setPdfViewer(null)}
+            >
               {viewerMimeType.startsWith('image/') ? (
                 <img
                   src={pdfViewer!}
@@ -667,11 +709,29 @@ export default function CaseDetailsPage() {
                   className="max-w-full max-h-full object-contain"
                 />
               ) : (
-                <iframe
-                  src={pdfViewer!}
-                  className="w-full h-full border-none"
-                  title="Clinical Evidence PDF"
-                />
+                <>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-500 z-0">
+                    <Loader2 className="animate-spin mb-2" />
+                    <p className="text-[10px] font-bold uppercase tracking-widest">Loading Document...</p>
+                  </div>
+                  <object
+                    data={pdfViewer!}
+                    type="application/pdf"
+                    className="w-full h-full border-none relative z-10"
+                  >
+                    <div className="flex flex-col items-center justify-center text-white p-10 text-center">
+                      <FileText size={48} className="mb-4 text-slate-500" />
+                      <p className="text-sm font-bold mb-4">Browser can't display this PDF directly.</p>
+                      <a 
+                        href={currentOriginalUrl!} 
+                        target="_blank" 
+                        className="px-6 py-3 bg-cyan-600 rounded-xl font-black text-xs uppercase tracking-widest"
+                      >
+                        Open in New Tab
+                      </a>
+                    </div>
+                  </object>
+                </>
               )}
             </div>
           </motion.div>

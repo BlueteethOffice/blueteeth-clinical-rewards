@@ -178,8 +178,9 @@ export default function LoginPage() {
       // Set verification flag FIRST
       sessionStorage.setItem('2fa_verified', 'true');
       
-      // HARD REDIRECT for microsecond performance and reliability
-      window.location.href = '/dashboard';
+      // ⚡ FAST REDIRECT: Use router.push for SPA transition instead of full reload
+      toast.success('Login Successful');
+      router.push('/dashboard');
       
       // Secondary actions in background (don't await)
       fetch('/api/auth/login-alert', {

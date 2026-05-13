@@ -94,7 +94,7 @@ export default function ClinicianEarningsPage() {
   });
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.uid) return;
 
     const casesQuery = query(collection(db, 'cases'), where('clinicianId', '==', user.uid));
     const unsubCases = onSnapshot(casesQuery, (snap) => {

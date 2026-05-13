@@ -141,44 +141,111 @@ export default function AdminReportsPage() {
     <DashboardLayout>
       <style>{`
         @media print {
-          nav, aside, button, header, .no-print {
+          /* Hide non-report elements */
+          nav, aside, button, .no-print, header, [role="navigation"], .mobile-nav {
             display: none !important;
           }
+          
+          /* Full width layout */
           body {
             background: white !important;
-            color: black !important;
+            color: #000 !important;
             margin: 0 !important;
-            padding: 20px !important;
+            padding: 0 !important;
           }
+          
+          @page {
+            margin: 20mm;
+            size: auto;
+          }
+
           .max-w-7xl {
             max-width: 100% !important;
             width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
           }
-          .glass-card, .bg-white, .dark\:bg-slate-900\/50, .bg-slate-900 {
-            background: white !important;
-            border: 2px solid #000 !important;
+
+          /* Show Print-only Header */
+          .print-header {
+            display: flex !important;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+          }
+
+          /* Force high quality printing */
+          .glass-card, div[class*="bg-white"], div[class*="dark:bg-slate-900"], .bg-white, .dark\\:bg-slate-900\\/50 {
+            background: #fff !important;
+            border: 2px solid #f1f5f9 !important;
             box-shadow: none !important;
-            color: black !important;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin-bottom: 25px !important;
+            border-radius: 12px !important;
           }
-          h1, h2, h3, h4, p, span {
-            color: black !important;
-            -webkit-print-color-adjust: exact;
+
+          h1, h2, h3, p, span {
+            color: #000 !important;
           }
+
           .grid {
-            display: block !important;
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 20px !important;
           }
-          .grid > div {
-            margin-bottom: 30px !important;
-            page-break-inside: avoid !important;
+
+          .lg\\:grid-cols-4 {
+            grid-template-columns: repeat(2, 1fr) !important;
           }
+
+          .lg\\:grid-cols-2 {
+            grid-template-columns: 1fr !important;
+          }
+
           .recharts-responsive-container {
             width: 100% !important;
-            height: 450px !important;
+            height: 400px !important;
+          }
+
+          .print-footer {
+            display: block !important;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 8px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #94a3b8;
+            padding: 20px;
+            border-top: 1px solid #eee;
           }
         }
+
+        .print-header, .print-footer {
+          display: none;
+        }
       `}</style>
+      
       <div className="max-w-7xl mx-auto px-1 sm:px-4">
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-1 sm:px-0">
+        {/* Print-Only Header */}
+        <div className="print-header">
+          <div>
+            <h1 className="text-2xl font-black uppercase tracking-tighter">Blueteeth <span className="text-cyan-600">Clinical Platform</span></h1>
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Enterprise Analytics Report</p>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] font-black uppercase tracking-widest">Generated On</p>
+            <p className="text-sm font-bold">{format(new Date(), 'dd MMMM yyyy, HH:mm')}</p>
+          </div>
+        </div>
+
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-1 sm:px-0 no-print">
           <div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Analytics & Reports</h1>
             <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">Real-time platform performance and financial flow.</p>
@@ -263,6 +330,11 @@ export default function AdminReportsPage() {
               </ResponsiveContainer>
             </div>
           </div>
+        </div>
+
+        {/* Print-Only Footer */}
+        <div className="print-footer">
+          Confidential Enterprise Analytics Report — Blueteeth Clinical Reward Platform — Internal Use Only
         </div>
       </div>
     </DashboardLayout>

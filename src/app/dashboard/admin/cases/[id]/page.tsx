@@ -50,7 +50,9 @@ const isPdf = (url: string): boolean => {
     lowerUrl.includes('%2fpdf') || 
     lowerUrl.includes('/pdf') || 
     lowerUrl.startsWith('data:application/pdf') ||
-    lowerUrl.includes('/api/view-file') // Assume API served files might be PDFs if image load fails
+    lowerUrl.includes('/api/view-file') ||
+    lowerUrl.includes('/raw/upload/') || // Cloudinary raw = PDF in our system
+    lowerUrl.includes('/api/view-pdf')
   );
 };
 
@@ -151,8 +153,9 @@ export default function AdminCaseDetailPage() {
   };
 
   const openProof = (url: string) => {
+    if (!url) return;
     try {
-      // 1. For base64 data URLs — decode in browser RAM
+      // 1. For base64 data URLs — show in built-in viewer
       if (url.startsWith('data:')) {
         const [header, base64Data] = url.split(',');
         const mimeType = header.split(':')[1].split(';')[0];
@@ -165,27 +168,47 @@ export default function AdminCaseDetailPage() {
         return;
       }
 
-      // 2. For /api/view-file links — Open directly (Auth cookie will handle it)
-      if (url.includes('/api/view-file')) {
-        window.open(url, '_blank');
-        return;
+      // 2. Determine if it's a PDF or Image
+      const isPdfFile = isPdf(url);
+      if (isPdfFile) {
+        window.open(`/api/view-pdf?url=${encodeURIComponent(url)}`, '_blank');
+      } else {
+        // Direct opening for images to ensure speed and bypass hangs
+        const newTab = window.open();
+        if (newTab) {
+          newTab.location.href = url;
+        } else {
+          // Fallback if popup blocked
+          window.open(url, '_blank');
+        }
       }
-
-      // 3. For external URLs (Cloudinary, etc.) — Use proxy to avoid browser blocking
-      const proxyUrl = `/api/proof-proxy?url=${encodeURIComponent(url)}`;
-      window.open(proxyUrl, '_blank');
     } catch (e) {
-      console.error("File Open Error:", e);
-      toast.error("Could not open file");
+      console.error("Open proof failed:", e);
+      window.open(url, '_blank');
     }
   };
 
-  if (loading) {
+  if (loading && !caseData) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-          <Loader2 className="animate-spin text-cyan-600" size={40} />
-          <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Accessing Clinical Records...</p>
+        <div className="max-w-7xl mx-auto pb-10 px-1 sm:px-4 animate-pulse">
+          <div className="flex justify-between items-center mb-10">
+            <div className="space-y-3">
+              <div className="h-8 w-48 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+              <div className="h-4 w-32 bg-slate-100 dark:bg-slate-900 rounded" />
+            </div>
+            <div className="h-12 w-32 bg-slate-200 dark:bg-slate-800 rounded-xl" />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-8 space-y-6">
+              <div className="h-64 bg-slate-100 dark:bg-slate-900 rounded-2xl" />
+              <div className="grid grid-cols-2 gap-6">
+                <div className="h-32 bg-slate-100 dark:bg-slate-900 rounded-2xl" />
+                <div className="h-32 bg-slate-100 dark:bg-slate-900 rounded-2xl" />
+              </div>
+            </div>
+            <div className="lg:col-span-4 h-96 bg-slate-100 dark:bg-slate-900 rounded-2xl" />
+          </div>
         </div>
       </DashboardLayout>
     );

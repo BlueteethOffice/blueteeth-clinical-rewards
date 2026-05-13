@@ -165,7 +165,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-fit sm:min-h-screen bg-slate-50 flex items-start sm:items-center justify-center px-4 pt-6 pb-3 sm:py-12 mesh-bg relative overflow-y-auto overflow-x-hidden">
+    <div className="min-h-fit sm:min-h-screen bg-slate-50 flex items-start sm:items-center justify-center px-4 pt-6 pb-3 sm:py-12 mesh-bg relative">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-cyan-400/5 rounded-full blur-[120px]" />

@@ -43,7 +43,7 @@ export default function AssociateDashboard() {
   const [lastId, setLastId] = useState<string | null>(null);
 
   const fetchCases = async (isNext = false) => {
-    if (!user) return;
+    if (!user?.uid) return;
     setLoading(true);
     try {
       const url = `/api/cases?userId=${user.uid}&role=associate&limit=${itemsPerPage}${isNext && lastId ? `&lastId=${lastId}` : ''}`;
@@ -76,7 +76,7 @@ export default function AssociateDashboard() {
     fetchCases();
     
     // Still keep payout listener as it's usually smaller
-    if (!user) return;
+    if (!user?.uid) return;
     const qPayouts = query(
       collection(db, 'payouts'),
       where('associateId', '==', user.uid)

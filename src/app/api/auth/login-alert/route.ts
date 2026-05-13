@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 import { formatName } from '@/lib/utils';
 import nodemailer from 'nodemailer';
+import * as admin from 'firebase-admin';
 import { adminAuth, getAdminDb } from '@/lib/firebase-admin';
 import { rateLimit, logAuditAction } from '@/lib/security';
 
@@ -81,20 +82,21 @@ export async function POST(req: Request) {
 
     try {
       // 🔔 CREATE FIRESTORE NOTIFICATION
-      const q = query(collection(db, 'users'), where('email', '==', email));
-      const snap = await getDocs(q);
-      if (!snap.empty) {
-        const uid = snap.docs[0].id;
-        const { addDoc } = await import('firebase/firestore');
-        await addDoc(collection(db, 'notifications'), {
-          userId: uid,
-          title: 'Security Alert: New Login',
-          message: `A new login was detected on ${userAgent || 'a new device'} at ${date}.`,
-          type: 'security',
-          isRead: false,
-          createdAt: new Date(),
-          link: '/dashboard/settings'
-        });
+      const db = getAdminDb();
+      if (db) {
+        const userQuery = await db.collection('users').where('email', '==', email).limit(1).get();
+        if (!userQuery.empty) {
+          const uid = userQuery.docs[0].id;
+          await db.collection('notifications').add({
+            userId: uid,
+            title: 'Security Alert: New Login',
+            message: `A new login was detected on ${userAgent || 'a new device'} at ${date}.`,
+            type: 'security',
+            isRead: false,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            link: '/dashboard/settings'
+          });
+        }
       }
 
       const mailPromise = (async () => {

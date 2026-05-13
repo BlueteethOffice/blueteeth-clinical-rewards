@@ -45,7 +45,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
+    if (!user?.uid) {
       setNotifications([]);
       setUnreadCount(0);
       setLoading(false);
