@@ -102,7 +102,20 @@ export default function LoginPage() {
 
         setStep('otp');
       } else {
-        // Trigger Login Alert in background
+        // Non-2FA login flow
+        // 🔑 SET SESSION COOKIE FIRST (required for middleware to allow dashboard access)
+        try {
+          const idToken = await userCredential.user.getIdToken();
+          await fetch('/api/auth/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken }),
+          });
+        } catch (sessionErr) {
+          console.error('Session cookie error:', sessionErr);
+        }
+
+        // Trigger Login Alert in background (fire and forget)
         fetch('/api/auth/login-alert', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -116,7 +129,7 @@ export default function LoginPage() {
 
         sessionStorage.setItem('2fa_verified', 'true');
         
-        // ⚡ NITRO CACHE: Immediate caching for micro-second dashboard load
+        // ⚡ NITRO CACHE
         const cachedUser = {
           uid: userCredential.user.uid,
           name: userData.name,
@@ -127,8 +140,6 @@ export default function LoginPage() {
         localStorage.setItem('cached_user', JSON.stringify(cachedUser));
 
         toast.success('Login Successful');
-        
-        // 🚀 BULLET REDIRECT: Go straight to the role-specific hub
         router.push(`/dashboard/${userData.role}`);
       }
     } catch (error: any) {
@@ -192,9 +203,24 @@ export default function LoginPage() {
       // Set verification flag FIRST
       sessionStorage.setItem('2fa_verified', 'true');
       
-      // ⚡ FAST REDIRECT: Use router.push for SPA transition instead of full reload
+      // 🔑 SET SESSION COOKIE for 2FA users too
+      try {
+        const { auth: firebaseAuth } = await import('@/lib/firebase');
+        const currentUser = firebaseAuth.currentUser;
+        if (currentUser) {
+          const idToken = await currentUser.getIdToken();
+          await fetch('/api/auth/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken }),
+          });
+        }
+      } catch (sessionErr) {
+        console.error('Session cookie error (2FA):', sessionErr);
+      }
+
       toast.success('Login Successful');
-      router.push('/dashboard');
+      router.push(`/dashboard/${tempUser.role}`);
       
       // Secondary actions in background (don't await)
       fetch('/api/auth/login-alert', {

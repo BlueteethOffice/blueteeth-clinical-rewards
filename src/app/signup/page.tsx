@@ -132,7 +132,19 @@ export default function SignupPage() {
       };
       localStorage.setItem('cached_user', JSON.stringify(cachedUser));
       sessionStorage.setItem('2fa_verified', 'true');
-      
+
+      // 🔑 SET SESSION COOKIE (required for middleware to allow dashboard access)
+      try {
+        const idToken = await user.getIdToken();
+        await fetch('/api/auth/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+        });
+      } catch (sessionErr) {
+        console.error('Session cookie error (signup):', sessionErr);
+      }
+
       // ✅ SECURITY: Pass token for authenticated welcome email
       const token = await user.getIdToken();
       fetch('/api/auth/welcome', {
@@ -145,7 +157,7 @@ export default function SignupPage() {
       }).catch((e) => console.error("Welcome email trigger failed:", e));
 
       setStep('success');
-      // 🚀 BULLET REDIRECT: Go straight to the role hub to bypass middle-man redirects
+      // 🚀 BULLET REDIRECT: Go straight to the role hub
       setTimeout(() => router.replace(`/dashboard/${formData.role}`), 1500);
     } catch (error: any) {
       let msg = error.message || 'Signup failed';
