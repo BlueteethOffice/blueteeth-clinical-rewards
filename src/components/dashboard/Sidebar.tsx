@@ -49,8 +49,9 @@ export default function Sidebar({
     ],
   };
 
-  const cachedRole = typeof window !== 'undefined' ? localStorage.getItem('cached_user_role') : null;
-  const activeRole = user?.role || cachedRole;
+  const cachedUser = typeof window !== 'undefined' ? localStorage.getItem('cached_user') : null;
+  const parsedCachedUser = cachedUser ? JSON.parse(cachedUser) : null;
+  const activeRole = user?.role || parsedCachedUser?.role;
   const currentMenu = activeRole ? menuItems[activeRole as keyof typeof menuItems] : [];
 
   return (
