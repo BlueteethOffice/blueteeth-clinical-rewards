@@ -59,7 +59,11 @@ export default function AdminUsersPage() {
       setUsers(data);
       setLoading(false);
     }, (error) => {
-      console.error("User Sync Error:", error);
+      if (error.code === 'permission-denied') {
+        console.log("[ADMIN] User sync listener detached (Auth required)");
+      } else {
+        console.error("User Sync Error:", error);
+      }
       setLoading(false);
     });
 

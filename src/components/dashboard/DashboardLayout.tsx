@@ -7,7 +7,7 @@ import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import Breadcrumb from '../shared/Breadcrumb';
 import { Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DashboardLayout({ children, hideNavbar = false }: { children: React.ReactNode, hideNavbar?: boolean }) {
   const { user, loading } = useAuth();
@@ -35,9 +35,11 @@ export default function DashboardLayout({ children, hideNavbar = false }: { chil
     }
   }, [user, loading, router]);
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   if (!mounted) return <div className="h-screen bg-slate-50 dark:bg-[#020617]" />;
 
-  // ⚡ ANTI-STUCK: Show a premium pulse shell instead of a blank white screen
+  // ⚡ ANTI-STUCK: Only show loader if we have NO user AND we are still loading
   if (!user && loading && mounted) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
@@ -53,10 +55,23 @@ export default function DashboardLayout({ children, hideNavbar = false }: { chil
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex">
-      <Sidebar />
+      {/* Mobile Backdrop */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-60 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      <Sidebar isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
       
       <div className="flex-1 flex flex-col min-h-screen relative overflow-x-hidden">
-        {!hideNavbar && <Navbar />}
+        {!hideNavbar && <Navbar setIsMobileMenuOpen={setIsMobileMenuOpen} />}
         
         <main className={`flex-1 ${hideNavbar ? '' : 'p-3 sm:p-6'} relative z-10`}>
           {!hideNavbar && <Breadcrumb />}

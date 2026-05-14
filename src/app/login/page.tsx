@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, ShieldCheck, Mail, ArrowLeft, KeyRound } from 'lucide-react';
+import { Loader2, ShieldCheck, Mail, ArrowLeft, KeyRound, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 const ColorfulLoginIcon = () => (
@@ -34,6 +34,7 @@ export default function LoginPage() {
   const [resetEmail, setResetEmail] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
   const [showReset, setShowReset] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   // 🛡️ SECURITY: Auto-redirect disabled as requested to prevent "automatic" login
@@ -63,12 +64,40 @@ export default function LoginPage() {
     const cleanEmail = email.trim().toLowerCase();
     try {
       const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
-      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+      
+      // ⚡ NITRO PARALLEL: Fetch profile and get ID token simultaneously
+      const [userDoc, idToken] = await Promise.all([
+        getDoc(doc(db, 'users', userCredential.user.uid)),
+        userCredential.user.getIdToken()
+      ]);
       
       if (!userDoc.exists()) throw new Error("User record not found. Please contact support.");
       
       const userData = userDoc.data();
       const is2FA = !!userData.twoFAEnabled;
+
+      // 🔑 CRITICAL: Must await session cookie before redirecting to allow Middleware to pass
+      try {
+        await fetch('/api/auth/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+        });
+      } catch (sessionErr) {
+        console.error('Session cookie error:', sessionErr);
+      }
+
+      // Background task (don't await)
+      fetch('/api/auth/login-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: userCredential.user.email,
+          name: userData.name,
+          role: userData.role,
+          userAgent: window.navigator.userAgent
+        }),
+      }).catch(() => {});
 
       if (is2FA) {
         setTempUser({
@@ -78,59 +107,27 @@ export default function LoginPage() {
           role: userData.role
         });
         
-        // Prefetch dashboard while user waits for OTP
         router.prefetch('/dashboard');
-
-        // Send OTP
-        try {
-          const res = await fetch('/api/auth/otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              email: userCredential.user.email || email.trim(), 
-              name: userData.name, 
-              action: 'send' 
-            })
-          });
-          
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
-          toast.success('Security Code Sent');
-        } catch (otpErr: any) {
-          console.error("OTP send failed:", otpErr);
-          toast.error(otpErr.message || "Could not send code.");
-        }
-
         setStep('otp');
-      } else {
-        // Non-2FA login flow
-        // 🔑 SET SESSION COOKIE FIRST (required for middleware to allow dashboard access)
-        try {
-          const idToken = await userCredential.user.getIdToken();
-          await fetch('/api/auth/session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken }),
-          });
-        } catch (sessionErr) {
-          console.error('Session cookie error:', sessionErr);
-        }
-
-        // Trigger Login Alert in background (fire and forget)
-        fetch('/api/auth/login-alert', {
+        
+        // Send OTP
+        fetch('/api/auth/otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            email: userCredential.user.email,
-            name: userData.name,
-            role: userData.role,
-            userAgent: window.navigator.userAgent
-          }),
-        }).catch(() => {});
+            email: userCredential.user.email || email.trim(), 
+            name: userData.name, 
+            action: 'send' 
+          })
+        }).then(res => res.json()).then(data => {
+          if (data.error) toast.error(data.error);
+          else toast.success('Security Code Sent');
+        }).catch(() => toast.error("Could not send code."));
 
+      } else {
         sessionStorage.setItem('2fa_verified', 'true');
         
-        // ⚡ NITRO CACHE
+        // ⚡ NITRO CACHE: Set cache BEFORE redirect
         const cachedUser = {
           uid: userCredential.user.uid,
           name: userData.name,
@@ -144,7 +141,7 @@ export default function LoginPage() {
         
         // ⚡ SPEED BOOST: Prefetch and then push
         router.prefetch(`/dashboard/${userData.role}`);
-        router.push(`/dashboard/${userData.role}`);
+        router.replace(`/dashboard/${userData.role}`);
       }
     } catch (error: any) {
       const code = error?.code || '';
@@ -340,13 +337,20 @@ export default function LoginPage() {
                     <div className="relative">
                       <KeyRound size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400" />
                       <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-slate-900 dark:text-white font-medium"
+                        className="w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-slate-900 dark:text-white font-medium"
                         placeholder="••••••••"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
                     </div>
                   </div>
 

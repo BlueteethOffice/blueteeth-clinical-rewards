@@ -88,6 +88,12 @@ export default function AssociateDashboard() {
         ...doc.data()
       })) as Payout[];
       setPayouts(payoutsData);
+    }, (err) => {
+      if (err.code === 'permission-denied') {
+        console.log("[ASSOCIATE] Payouts listener detached (Auth required)");
+      } else {
+        console.error("Payouts stream error:", err);
+      }
     });
 
     return () => unsubPayouts();

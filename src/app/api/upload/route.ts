@@ -3,16 +3,61 @@ import { adminAuth, getAdminDb } from '@/lib/firebase-admin';
 import { rateLimit, registerFile, logAuditAction } from '@/lib/security';
 import { v2 as cloudinary } from 'cloudinary';
 
-// ✅ SECURITY FIX: Allowed file types by magic bytes
-const ALLOWED_SIGNATURES = [
-  { mime: 'application/pdf', bytes: [0x25, 0x50, 0x44, 0x46] },
-  { mime: 'image/jpeg', bytes: [0xFF, 0xD8, 0xFF] },
-  { mime: 'image/png', bytes: [0x89, 0x50, 0x4E, 0x47] },
-  { mime: 'image/webp', bytes: [0x52, 0x49, 0x46, 0x46] },
+// ✅ PDF-ONLY magic byte check (strict security for documents)
+const PDF_SIGNATURE = [0x25, 0x50, 0x44, 0x46]; // %PDF
+
+// ✅ All allowed image MIME types (browsers reliably detect these)
+const ALLOWED_IMAGE_MIMES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/heic',
+  'image/heif',
+  'image/gif',
+  'image/bmp',
+  'image/tiff',
 ];
 
-const ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png', 'webp'];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png', 'webp', 'heic', 'heif', 'gif', 'bmp', 'tiff'];
+const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB for high-res medical photos
+
+// ✅ Validates a file is safe to upload
+function validateFile(file: File, buffer: Buffer): { valid: boolean; error?: string } {
+  const ext = (file.name.toLowerCase().split('.').pop() || '');
+  const mime = file.type.toLowerCase();
+
+  // Check extension is in allowlist
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    return { valid: false, error: `File type .${ext} is not supported. Please upload JPG, PNG, WEBP, HEIC, or PDF.` };
+  }
+
+  // PDFs: Strict magic byte validation (prevent malicious files disguised as PDFs)
+  if (mime === 'application/pdf' || ext === 'pdf') {
+    const sig = buffer.slice(0, 4);
+    const isPdf = PDF_SIGNATURE.every((byte, i) => sig[i] === byte);
+    if (!isPdf) {
+      return { valid: false, error: 'Invalid PDF file. The file does not appear to be a valid PDF document.' };
+    }
+    return { valid: true };
+  }
+
+  // Images: Trust the browser MIME type + extension (browsers are reliable for images)
+  // This covers JPEG, PNG, WEBP, HEIC (iPhone), HEIF, GIF, BMP, TIFF
+  const isImageMime = ALLOWED_IMAGE_MIMES.includes(mime);
+  const isImageExt = ALLOWED_EXTENSIONS.filter(e => e !== 'pdf').includes(ext);
+
+  if (!isImageMime && !isImageExt) {
+    return { valid: false, error: 'Unsupported file type. Please upload a JPG, PNG, WEBP, HEIC, or PDF file.' };
+  }
+
+  // Basic size sanity (buffer must not be empty)
+  if (buffer.length < 10) {
+    return { valid: false, error: 'The uploaded file appears to be empty or corrupted.' };
+  }
+
+  return { valid: true };
+}
 
 export async function POST(request: Request) {
   try {
@@ -28,72 +73,61 @@ export async function POST(request: Request) {
 
     const decodedToken = await adminAuth.verifyIdToken(token);
 
-    const { success: rateOk } = await rateLimit(request as any, 5, 60000);
-    if (!rateOk) return NextResponse.json({ success: false, error: 'Too many uploads.' }, { status: 429 });
+    const { success: rateOk } = await rateLimit(request as any, 10, 60000); // Relaxed rate limit
+    if (!rateOk) return NextResponse.json({ success: false, error: 'Too many uploads. Please wait.' }, { status: 429 });
 
     const data = await request.formData();
     const file: File | null = data.get('file') as any;
     const caseId = data.get('caseId') as string;
 
-    if (!file) return NextResponse.json({ success: false, error: 'No file' }, { status: 400 });
+    if (!file) return NextResponse.json({ success: false, error: 'No file provided' }, { status: 400 });
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // ✅ SECURITY FIX: Validate file signature (magic bytes)
-    const fileSignature = buffer.slice(0, 4);
-    const isValidSignature = ALLOWED_SIGNATURES.some(sig => {
-      return sig.bytes.every((byte, i) => fileSignature[i] === byte);
-    });
-
-    if (!isValidSignature) {
-      return NextResponse.json({ success: false, error: 'Invalid file content: Signature mismatch' }, { status: 400 });
+    // ✅ VALIDATION: Check file type and content
+    const validation = validateFile(file, buffer);
+    if (!validation.valid) {
+      console.warn(`[UPLOAD] Rejected file: ${file.name} (${file.type}) — ${validation.error}`);
+      return NextResponse.json({ success: false, error: validation.error }, { status: 400 });
     }
 
-    // ✅ CLOUDINARY CONFIG CHECK & INITIALIZATION
+    // ✅ CLOUDINARY CONFIG
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const apiKey = process.env.CLOUDINARY_API_KEY;
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
     if (!cloudName || !apiKey || !apiSecret) {
-      return NextResponse.json({ 
-        success: false, 
-        error: `Cloudinary configuration missing: ${!cloudName ? 'CloudName ' : ''}${!apiKey ? 'ApiKey ' : ''}${!apiSecret ? 'ApiSecret' : ''}` 
-      }, { status: 500 });
+      return NextResponse.json({ success: false, error: 'Storage provider not configured' }, { status: 500 });
     }
 
-    // Initialize config explicitly for this request
-    cloudinary.config({
-      cloud_name: cloudName,
-      api_key: apiKey,
-      api_secret: apiSecret,
-      secure: true
-    });
+    cloudinary.config({ cloud_name: cloudName, api_key: apiKey, api_secret: apiSecret, secure: true });
 
-    // Detect file type for correct Cloudinary resource_type
-    // PDFs MUST use 'raw' so they get a raw/upload URL browsers can open directly
-    const isPdfUpload = file.name.toLowerCase().endsWith('.pdf') || 
-                        file.type === 'application/pdf';
-    const cloudinaryResourceType = isPdfUpload ? 'raw' : 'auto';
+    // PDFs MUST use 'raw' to avoid conversion issues; images should use 'image' or 'auto'
+    const isPdf = file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
+    const resourceType = isPdf ? 'raw' : 'image'; // Explicitly use 'image' for non-PDFs to ensure processing
 
-    // 🚀 HIGH-SPEED STREAM UPLOAD
+    // 🚀 UPLOAD — no format conversion to ensure maximum compatibility
     const uploadResponse = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: 'blueteeth_proofs',
-          resource_type: cloudinaryResourceType,
+          resource_type: resourceType,
+          // ⚠️ Do NOT add format/quality transforms here — they cause silent failures
+          // for HEIC, certain JPEG variants, and low-memory environments.
         },
         (error, result) => {
-          if (error) return reject(error);
+          if (error) {
+            console.error('[CLOUDINARY] Upload stream error:', error);
+            return reject(error);
+          }
           resolve(result);
         }
       );
       uploadStream.end(buffer);
     }).catch(err => {
-      if (err.message?.includes('Signature')) {
-        throw new Error(`Cloudinary Error: Invalid Signature. Please check if CLOUDINARY_API_SECRET in .env.local is correct.`);
-      }
-      throw new Error(`Cloudinary Error: ${err.message || 'Upload failed'}`);
+      console.error('[CLOUDINARY] Upload failed:', err.message);
+      throw new Error(`Upload failed: ${err.message || 'Check Cloudinary credentials'}`);
     }) as any;
 
     const fileId = uploadResponse.public_id.split('/').pop() || uploadResponse.public_id;

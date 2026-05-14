@@ -12,7 +12,8 @@ import {
   BarChart3, 
   Settings, 
   ClipboardList,
-  Activity
+  Activity,
+  X
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import SupportCard from './SupportCard';
@@ -57,11 +58,11 @@ export default function Sidebar({
   return (
     <div className={`
       w-64 sm:w-72 md:w-80 h-screen inset-y-0 bg-[hsl(var(--sidebar))] border-r border-[hsl(var(--sidebar-border))] 
-      flex flex-col shrink-0 transition-transform duration-300 ease-in-out z-70
+      flex flex-col shrink-0 transition-transform duration-300 ease-in-out z-[70]
       fixed lg:sticky top-0 left-0
       ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
     `}>
-      <div className="p-6 sm:p-8 md:p-10 pb-4 sm:pb-6 shrink-0 flex items-center justify-between">
+      <div className="p-6 sm:p-8 md:p-10 pb-4 sm:pb-6 shrink-0 flex items-center justify-between relative">
         <Link href="/dashboard" className="flex items-center gap-2.5 sm:gap-3.5 group" onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}>
           <div className="shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-900 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-700 p-2 shadow-sm transition-colors">
             <img 
@@ -75,6 +76,14 @@ export default function Sidebar({
             <span className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-cyan-600 tracking-[0.3em] uppercase leading-none">CLINICAL PLATFORM</span>
           </div>
         </Link>
+
+        {/* Close Button for Mobile */}
+        <button 
+          onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}
+          className="lg:hidden p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+        >
+          <X size={20} />
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto no-scrollbar px-4 py-2 space-y-4 sm:space-y-6">

@@ -33,7 +33,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return null;
   });
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !localStorage.getItem('cached_user');
+    }
+    return true;
+  });
 
   const fetchUserData = async (uid: string) => {
     try {
@@ -94,6 +99,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           localStorage.setItem('cached_user', JSON.stringify(fullUser));
           setLoading(false);
         }
+      }, (error) => {
+        // 🛡️ SILENT PERMISSION ERRORS: Handle auth revocation during logout/token expiry
+        if (error.code === 'permission-denied') {
+          console.log("[AUTH] Profile listener detached (User signed out or expired)");
+        } else {
+          console.error("[AUTH] Profile sync error:", error);
+        }
+        setLoading(false);
       });
     });
 

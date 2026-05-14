@@ -63,7 +63,11 @@ export default function MyCasesPage() {
       setCases(casesData);
       setLoading(false);
     }, (error) => {
-      console.error("Firestore Error:", error);
+      if (error.code === 'permission-denied') {
+        console.log("[CASES] Case list listener detached (Auth required)");
+      } else {
+        console.error("Firestore Error:", error);
+      }
       setLoading(false);
     });
 

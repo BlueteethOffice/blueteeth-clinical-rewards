@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import { useAuth } from '@/context/AuthContext';
 import { db } from '@/lib/firebase';
-import { doc, onSnapshot, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot, getDoc, updateDoc } from 'firebase/firestore';
 import { Case } from '@/types';
 import { 
   User, 
@@ -26,7 +27,9 @@ import {
   Check,
   Building2,
   Upload,
-  Loader2
+  Loader2,
+  RefreshCw,
+  ImagePlus
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { formatName } from '@/lib/utils';
@@ -36,6 +39,7 @@ import toast from 'react-hot-toast';
 export default function CaseDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
+  const { firebaseUser } = useAuth();
 
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [clinicianProfile, setClinicianProfile] = useState<any>(null);
@@ -43,6 +47,8 @@ export default function CaseDetailsPage() {
   const [pdfViewer, setPdfViewer] = useState<string | null>(null);
   const [currentOriginalUrl, setCurrentOriginalUrl] = useState<string | null>(null);
   const [viewerMimeType, setViewerMimeType] = useState<string>('application/pdf');
+  const [uploading, setUploading] = useState(false);
+  const reuploadRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -75,10 +81,63 @@ export default function CaseDetailsPage() {
         router.push('/dashboard/associate/my-cases');
       }
       setLoading(false);
+    }, (error) => {
+      if (error.code === 'permission-denied') {
+        console.log("[CASE] Case listener detached (Auth required)");
+      } else {
+        console.error("[CASE] Case sync error:", error);
+      }
+      setLoading(false);
     });
 
     return () => unsubscribe();
   }, [id]);
+
+  // ✅ RE-UPLOAD: Allows associates to fix cases where background sync failed
+  const handleReupload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !id || !firebaseUser) return;
+
+    // Validate file type
+    const ext = file.name.toLowerCase().split('.').pop() || '';
+    const allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif', 'gif', 'bmp', 'pdf'];
+    if (!allowedExts.includes(ext)) {
+      toast.error('Only JPG, PNG, WEBP, HEIC, or PDF files are allowed');
+      return;
+    }
+
+    setUploading(true);
+    const loadingToast = toast.loading('Uploading evidence...');
+    try {
+      const token = await firebaseUser.getIdToken();
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('caseId', id as string);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'Upload failed');
+
+      // Save to Firestore
+      await updateDoc(doc(db, 'cases', id as string), {
+        initialProof: [data.url],
+      });
+
+      toast.success('Evidence uploaded successfully!', { id: loadingToast });
+    } catch (err: any) {
+      console.error('Re-upload failed:', err);
+      toast.error(err.message || 'Upload failed. Please try again.', { id: loadingToast });
+    } finally {
+      setUploading(false);
+      // Reset the input so the same file can be re-selected if needed
+      if (reuploadRef.current) reuploadRef.current.value = '';
+    }
+  };
 
   const copyCaseId = () => {
     const shortId = `BTC-${(id as string).slice(-6).toUpperCase()}`;
@@ -141,9 +200,10 @@ export default function CaseDetailsPage() {
     const isApiFile = url.includes('/api/view-file') || url.includes('/api/proof-proxy');
     const isImageUrl = !isApiFile && !isPDF(url) && (
       url.startsWith('data:image') ||
-      /\.(jpg|jpeg|png|gif|webp)(\?|$)/i.test(url) ||
-      url.includes('res.cloudinary.com') ||
-      url.includes('firebasestorage.googleapis.com')
+      /\.(jpg|jpeg|png|gif|webp|heic|heif)(\?|$)/i.test(url) ||
+      url.includes('res.cloudinary.com/image/') ||
+      url.includes('firebasestorage.googleapis.com') ||
+      url.includes('cloudinary.com') // Fallback for any cloudinary link not explicitly raw
     );
 
     // API-served files and PDFs always show the document icon
@@ -221,24 +281,42 @@ export default function CaseDetailsPage() {
     <DashboardLayout>
       <style jsx global>{`
         @media print {
-          /* Aggressively hide all UI elements */
-          nav, aside, header, .no-print, button, .breadcrumb, .search-bar, 
-          .flex.gap-2, [class*="sidebar"], .glass-card:has(p:contains("Questions?")),
-          [class*="support-card"], .fixed, .sticky, .fixed-bottom {
+          /* 🚫 Hide all UI/Navigation elements */
+          nav, aside, header, footer, [role="navigation"], .no-print, button, 
+          .breadcrumb-container, .search-bar, .sidebar-container,
+          [class*="Sidebar"], [class*="Navbar"], [class*="Breadcrumb"],
+          .flex.gap-2, .fixed, .sticky, .fixed-bottom,
+          .z-50, .z-70, #sidebar, #navbar {
             display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            width: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
           }
 
+          /* 📄 Force Page Layout */
           @page { 
-            margin: 10mm; 
+            margin: 15mm 10mm; 
             size: A4; 
           }
           
-          body { 
-            background: white !important; 
-            color: #000 !important; 
+          html, body, #__next, .min-h-screen, [class*="Layout"] {
+            overflow: visible !important;
+            height: auto !important;
+            min-height: 0 !important;
+            background: white !important;
+            color: #000 !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            display: block !important;
           }
+
+          /* Reset Layout Flexbox */
+          .min-h-screen { min-height: 0 !important; }
+          .flex { display: block !important; }
+          .flex-1 { width: 100% !important; flex: none !important; }
+          main { padding: 0 !important; margin: 0 !important; }
 
           .max-w-6xl { 
             max-width: 100% !important; 
@@ -251,28 +329,29 @@ export default function CaseDetailsPage() {
             display: flex !important;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid #0891b2;
-            padding-bottom: 20px;
-            margin-bottom: 40px;
+            border-bottom: 2px solid #0891b2;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
           }
 
           .glass-card {
             border: 1px solid #e2e8f0 !important;
             box-shadow: none !important;
-            padding: 24px !important;
-            margin-bottom: 24px !important;
+            padding: 20px !important;
+            margin-bottom: 20px !important;
             break-inside: avoid;
             background: #fff !important;
-            border-radius: 12px !important;
+            border-radius: 8px !important;
+            display: block !important;
           }
 
-          .grid { 
-            display: grid !important; 
-            grid-template-cols: repeat(2, 1fr) !important; 
-            gap: 20px !important; 
+          /* Force Grid for Info Sections */
+          .print-grid {
+            display: grid !important;
+            grid-template-cols: repeat(2, 1fr) !important;
+            gap: 20px !important;
           }
-          
-          /* Force columns to 1 on print if they are too cramped */
+
           .lg\:grid-cols-3 { 
             display: block !important; 
           }
@@ -283,17 +362,24 @@ export default function CaseDetailsPage() {
 
           .print-footer {
             display: block !important;
-            margin-top: 60px;
-            padding-top: 20px;
+            margin-top: 40px;
+            padding-top: 15px;
             border-top: 1px solid #e2e8f0;
             text-align: center;
-            font-size: 10px;
+            font-size: 9px;
             color: #64748b;
           }
           
-          /* Ensure images don't break across pages */
+          /* Optimization for Images */
           img, .aspect-square {
+            max-width: 100% !important;
             break-inside: avoid;
+          }
+
+          /* Remove Dark Mode background forces */
+          .dark {
+            background-color: white !important;
+            color: black !important;
           }
         }
         .print-header, .print-footer { display: none; }
@@ -363,7 +449,7 @@ export default function CaseDetailsPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 pt-6 sm:pt-8 border-t border-slate-50 dark:border-white/5">
+                  <div className="grid print-grid grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 pt-6 sm:pt-8 border-t border-slate-50 dark:border-white/5">
                     <div className="space-y-1">
                       <label className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest">Clinic Branch</label>
                       <div className="flex items-center gap-2 font-black text-slate-800 dark:text-slate-200 text-[11px] sm:text-sm whitespace-nowrap uppercase tracking-tight">
@@ -470,7 +556,7 @@ export default function CaseDetailsPage() {
             </AnimatePresence>
 
             {/* Proof Gallery */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid print-grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Initial Proof */}
               <div className="glass-card p-8 rounded-xl shadow-sm bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-white/5">
                 <div className="flex items-center justify-between mb-8">
@@ -480,7 +566,7 @@ export default function CaseDetailsPage() {
                   </h3>
                   <span className="text-[10px] font-bold text-slate-400">{caseData.initialProof?.length || 0} Files</span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid print-grid grid-cols-2 gap-4">
                   {caseData.initialProof?.map((url, i) => (
                     <div
                       key={i}
@@ -494,10 +580,45 @@ export default function CaseDetailsPage() {
                       </div>
                     </div>
                   ))}
+
+                  {/* 🔴 NO EVIDENCE — Show re-upload button if pending */}
                   {(!caseData.initialProof || caseData.initialProof.length === 0) && (
-                    <div className="col-span-2 py-12 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-100 dark:border-white/5 rounded-xl bg-slate-50/50">
-                      <FileText size={24} className="text-slate-200" />
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">No Evidence</span>
+                    <div className="col-span-2">
+                      {caseData.status === 'pending' || caseData.status === 'assigned' ? (
+                        <label className="cursor-pointer group block">
+                          <input
+                            ref={reuploadRef}
+                            type="file"
+                            accept="image/*,.pdf"
+                            className="hidden"
+                            onChange={handleReupload}
+                            disabled={uploading}
+                          />
+                          <div className="py-10 flex flex-col items-center justify-center gap-4 border-2 border-dashed border-amber-200 dark:border-amber-500/30 rounded-xl bg-amber-50/50 dark:bg-amber-500/5 hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all">
+                            {uploading ? (
+                              <>
+                                <Loader2 size={28} className="text-amber-500 animate-spin" />
+                                <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Uploading...</span>
+                              </>
+                            ) : (
+                              <>
+                                <div className="w-12 h-12 bg-amber-100 dark:bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-600 group-hover:scale-110 transition-transform">
+                                  <ImagePlus size={24} />
+                                </div>
+                                <div className="text-center">
+                                  <p className="text-[11px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest">Upload Missing Proof</p>
+                                  <p className="text-[9px] font-bold text-amber-500 mt-1 uppercase tracking-wider">Tap to select image or PDF</p>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </label>
+                      ) : (
+                        <div className="py-12 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-100 dark:border-white/5 rounded-xl bg-slate-50/50">
+                          <FileText size={24} className="text-slate-200" />
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">No Evidence</span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -512,7 +633,7 @@ export default function CaseDetailsPage() {
                   </h3>
                   <span className="text-[10px] font-bold text-slate-400">{caseData.finalProof?.length || 0} Files</span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid print-grid grid-cols-2 gap-4">
                   {caseData.finalProof?.map((url, i) => (
                     <div
                       key={i}
@@ -529,7 +650,8 @@ export default function CaseDetailsPage() {
                   {(!caseData.finalProof || caseData.finalProof.length === 0) && (
                     <div className="col-span-2 py-10 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-100 dark:border-white/5 rounded-xl bg-slate-50/50">
                       <Clock size={24} className="text-slate-200 animate-pulse" />
-                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Waiting</span>
+                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Waiting for Clinician</span>
+                      <span className="text-[9px] font-bold text-slate-300 uppercase tracking-wider">Outcome uploaded after treatment</span>
                     </div>
                   )}
                 </div>

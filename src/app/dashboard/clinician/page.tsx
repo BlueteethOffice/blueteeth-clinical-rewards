@@ -44,7 +44,11 @@ export default function ClinicianDashboard() {
       setCases(casesData);
       setLoading(false);
     }, (error) => {
-      console.error("Clinician Dashboard Fetch Error:", error);
+      if (error.code === 'permission-denied') {
+        console.log("[CLINICIAN] Dashboard listener detached (Auth required)");
+      } else {
+        console.error("Clinician Dashboard Fetch Error:", error);
+      }
       setLoading(false);
     });
 

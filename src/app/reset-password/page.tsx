@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { confirmPasswordReset, verifyPasswordResetCode } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { motion } from 'framer-motion';
-import { KeyRound, ShieldCheck, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { KeyRound, ShieldCheck, Loader2, CheckCircle2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 
@@ -20,6 +20,8 @@ function ResetPasswordContent() {
   const [isValidCode, setIsValidCode] = useState(false);
   const [email, setEmail] = useState('');
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const code = searchParams.get('oobCode');
@@ -128,14 +130,21 @@ function ResetPasswordContent() {
           <div className="relative">
             <KeyRound size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
               minLength={6}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-slate-900 dark:text-white font-medium"
+              className="w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-slate-900 dark:text-white font-medium"
               placeholder="••••••••"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 
@@ -144,14 +153,21 @@ function ResetPasswordContent() {
           <div className="relative">
             <KeyRound size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500/50" />
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               required
               minLength={6}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-slate-900 dark:text-white font-medium"
+              className="w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-slate-900 dark:text-white font-medium"
               placeholder="••••••••"
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
+            >
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 

@@ -124,36 +124,59 @@ export default function SubmitCasePage() {
       // 3. BACKGROUND SYNC (The heavy lifting)
       (async () => {
         try {
-          await savePromise; // Ensure initial meta is saved
+          // Wait for the main doc to be created first
+          await savePromise;
+          
+          console.log(`[SYNC] Starting background upload for case: ${caseId}`);
+          
           const uploadPromises = files.map(async (f) => {
-            const formData = new FormData();
-            formData.append('file', f.file);
-            formData.append('caseId', caseId);
+            const upFormData = new FormData();
+            upFormData.append('file', f.file);
+            upFormData.append('caseId', caseId);
+            
             const res = await fetch('/api/upload', {
               method: 'POST',
               headers: { 'Authorization': `Bearer ${token}` },
-              body: formData,
+              body: upFormData,
             });
-            if (!res.ok) throw new Error("Upload failed");
+
+            if (!res.ok) {
+              const errData = await res.json().catch(() => ({ error: 'Unknown upload error' }));
+              throw new Error(errData.error || `Upload failed with status ${res.status}`);
+            }
+
             const resData = await res.json();
             return resData.url;
           });
 
           const proofUrls = await Promise.all(uploadPromises);
+          
+          // Verify we have URLs
+          const validUrls = proofUrls.filter(u => !!u);
+          if (validUrls.length === 0) throw new Error("No valid URLs returned from upload");
 
           // Update doc with real URLs
           await updateDoc(newCaseRef, {
-            initialProof: proofUrls
+            initialProof: validUrls
           });
 
+          console.log(`[SYNC] Successfully updated case ${caseId} with ${validUrls.length} proofs`);
+
           sendSystemNotification(user.uid, {
-            title: 'Upload Complete',
-            message: `Proof for ${formattedPatientName} uploaded successfully.`,
+            title: 'Case Verified',
+            message: `Evidence for ${formattedPatientName} processed successfully.`,
             type: 'success',
-            link: '/dashboard/associate/my-cases'
+            link: `/dashboard/associate/my-cases?id=${caseId}`
           });
-        } catch (bgErr) {
-          console.error("Background sync failed:", bgErr);
+        } catch (bgErr: any) {
+          console.error("🔥 [SYNC_CRITICAL] Background sync failed:", bgErr);
+          
+          sendSystemNotification(user.uid, {
+            title: 'Upload Issue',
+            message: `Evidence upload for ${formattedPatientName} failed. Please edit the case and re-upload.`,
+            type: 'error',
+            link: `/dashboard/associate/my-cases`
+          });
         }
       })();
 
@@ -168,15 +191,15 @@ export default function SubmitCasePage() {
     <DashboardLayout>
       <div className="max-w-5xl mx-auto pb-4 px-1 sm:px-0">
         <div className="mb-6 sm:mb-10">
-          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 tracking-tight uppercase">Submit New Case</h1>
-          <p className="text-[10px] sm:text-base text-slate-500 mt-1 sm:mt-2 font-bold uppercase tracking-wide italic">Instant Clinical Submission Mode</p>
+          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight uppercase transition-colors">Submit New Case</h1>
+          <p className="text-[10px] sm:text-base text-slate-500 dark:text-cyan-500/60 mt-1 sm:mt-2 font-bold uppercase tracking-wide italic transition-colors">Instant Clinical Submission Mode</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-8 relative z-20">
           <div className="glass-card p-6 sm:p-10 rounded-xl relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1.5 sm:w-2 h-full bg-cyan-500" />
-            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-6 sm:mb-8 flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-cyan-200">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-6 sm:mb-8 flex items-center gap-3 transition-colors">
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-cyan-200 dark:shadow-cyan-900/20">
                 <User size={22} strokeWidth={2.5} />
               </div>
               Patient Information
@@ -184,7 +207,7 @@ export default function SubmitCasePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Patient Full Name</label>
+                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Patient Full Name</label>
                 <input 
                   {...register('patientName')} 
                   placeholder="Rahul Sharma" 
@@ -192,29 +215,29 @@ export default function SubmitCasePage() {
                     const val = e.currentTarget.value;
                     e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
                   }}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium" 
+                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium text-slate-900 dark:text-white" 
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Mobile</label>
+                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Mobile</label>
                 <div className="relative">
                   <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500" strokeWidth={2.5} />
-                  <input {...register('mobile')} maxLength={10} placeholder="9876543210" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium" />
+                  <input {...register('mobile')} maxLength={10} placeholder="9876543210" className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium text-slate-900 dark:text-white" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Age</label>
+                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Age</label>
                 <div className="relative">
                   <Activity size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-500" strokeWidth={2.5} />
-                  <input {...register('age')} type="number" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium" />
+                  <input {...register('age')} type="number" className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium text-slate-900 dark:text-white" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Gender</label>
-                <select {...register('gender')} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg outline-none font-medium appearance-none cursor-pointer">
+                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Gender</label>
+                <select {...register('gender')} className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg outline-none font-medium appearance-none cursor-pointer text-slate-900 dark:text-white transition-all">
                   <option value="" disabled>Select</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -223,8 +246,8 @@ export default function SubmitCasePage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Date</label>
-                <input {...register('bookingDate')} type="date" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg outline-none font-medium" />
+                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Date</label>
+                <input {...register('bookingDate')} type="date" className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg outline-none font-medium text-slate-900 dark:text-white transition-all" />
               </div>
             </div>
           </div>
@@ -232,24 +255,24 @@ export default function SubmitCasePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="glass-card p-6 sm:p-10 rounded-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500" />
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-400 to-purple-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3 transition-colors">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-400 to-purple-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20">
                   <Stethoscope size={22} strokeWidth={2.5} />
                 </div>
                 Clinical Details
               </h3>
               <div className="space-y-6">
                 <div className="relative">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Treatment Type</label>
-                  <button type="button" onClick={() => setShowTreatments(!showTreatments)} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-left flex items-center justify-between font-medium">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Treatment Type</label>
+                  <button type="button" onClick={() => setShowTreatments(!showTreatments)} className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg text-left flex items-center justify-between font-medium text-slate-900 dark:text-white transition-all">
                     <span>{watch('treatmentType') || 'Select Treatment'}</span>
                     <ChevronDown size={18} className={showTreatments ? 'rotate-180' : ''} />
                   </button>
                   <AnimatePresence>
                     {showTreatments && (
-                      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute z-50 left-0 right-0 mt-2 bg-white rounded-lg shadow-2xl border border-slate-100 max-h-60 overflow-y-auto">
+                      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute z-50 left-0 right-0 mt-2 bg-white dark:bg-slate-900 rounded-lg shadow-2xl border border-slate-100 dark:border-white/10 max-h-60 overflow-y-auto transition-colors">
                         {Object.keys(TREATMENT_POINTS).map(type => (
-                          <button key={type} type="button" onClick={() => { setValue('treatmentType', type, { shouldValidate: true }); setShowTreatments(false); }} className="w-full px-5 py-3 text-left hover:bg-slate-50 text-sm font-medium border-b border-slate-50 flex items-center justify-between">
+                          <button key={type} type="button" onClick={() => { setValue('treatmentType', type, { shouldValidate: true }); setShowTreatments(false); }} className="w-full px-5 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium border-b border-slate-50 dark:border-white/5 flex items-center justify-between text-slate-900 dark:text-white transition-all">
                             <span>{type}</span>
                             <span className="text-[10px] font-bold text-slate-400">{TREATMENT_POINTS[type]} PTS</span>
                           </button>
@@ -259,14 +282,14 @@ export default function SubmitCasePage() {
                   </AnimatePresence>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Charge (₹)</label>
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Charge (₹)</label>
                   <div className="relative">
                     <IndianRupee size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-500" strokeWidth={2.5} />
-                    <input {...register('treatmentCharge')} className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg outline-none font-medium" />
+                    <input {...register('treatmentCharge')} className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg outline-none font-medium text-slate-900 dark:text-white transition-all" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Location</label>
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Location</label>
                   <div className="relative">
                     <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-rose-500" strokeWidth={2.5} />
                     <input 
@@ -275,17 +298,17 @@ export default function SubmitCasePage() {
                         const val = e.currentTarget.value;
                         e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
                       }}
-                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg outline-none font-medium" 
+                      className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg outline-none font-medium text-slate-900 dark:text-white transition-all" 
                     />
                   </div>
                 </div>
                 <div className="space-y-2 mt-4">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Clinical Notes (Optional)</label>
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Clinical Notes (Optional)</label>
                   <textarea 
                     {...register('notes')} 
                     rows={3}
                     placeholder="Any specific instructions or clinical details..." 
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg outline-none font-medium resize-none"
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg outline-none font-medium resize-none text-slate-900 dark:text-white transition-all"
                   />
                 </div>
               </div>
@@ -293,16 +316,16 @@ export default function SubmitCasePage() {
 
             <div className="glass-card p-6 sm:p-10 rounded-xl relative overflow-hidden flex flex-col">
               <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500" />
-              <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3 transition-colors">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-emerald-900/20">
                   <Upload size={22} strokeWidth={2.5} />
                 </div>
                 Proof Upload
               </h3>
-              <div className="flex-1 border-2 border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center p-8 relative hover:bg-slate-50 transition-all">
+              <div className="flex-1 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-lg flex flex-col items-center justify-center p-8 relative hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all">
                 <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileChange} accept="image/*,.pdf" />
-                <Plus size={32} className="text-emerald-600 mb-2" />
-                <p className="text-slate-900 font-bold text-sm">Upload Proof</p>
+                <Plus size={32} className="text-emerald-600 dark:text-emerald-500 mb-2" />
+                <p className="text-slate-900 dark:text-slate-300 font-bold text-sm transition-colors">Upload Proof</p>
               </div>
               {files.length > 0 && (
                 <div className="mt-4 flex gap-4">

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
-import { doc, setDoc, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -20,7 +20,9 @@ import {
   ShieldCheck,
   ArrowRight,
   ChevronLeft,
-  Timer
+  Timer,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { UserRole } from '@/types';
 import { cleanName } from '@/lib/utils';
@@ -42,6 +44,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   // Handle OTP countdown
@@ -56,10 +59,17 @@ export default function SignupPage() {
   const sendOTP = async () => {
     setLoading(true);
     try {
-      // 🛡️ Pre-check: Is email already taken?
       const cleanEmail = formData.email.trim().toLowerCase();
-      const methods = await fetchSignInMethodsForEmail(auth, cleanEmail).catch(() => []);
-      if (methods.length > 0) {
+
+      // ✅ RELIABLE CHECK: Use server-side Firestore query (Admin SDK)
+      // fetchSignInMethodsForEmail is deprecated in Firebase v9+ and returns [] always
+      const checkRes = await fetch('/api/auth/otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, action: 'check' }),
+      });
+      const checkData = await checkRes.json();
+      if (checkData.exists) {
         throw new Error('This email is already registered. Please login instead.');
       }
 
@@ -311,13 +321,20 @@ export default function SignupPage() {
                       <div className="relative group">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-rose-500 transition-colors" size={18} />
                         <input
-                          type="password" required
+                          type={showPassword ? "text" : "password"} required
                           minLength={6}
                           value={formData.password}
                           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                          className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 border border-slate-100 rounded-lg focus:border-cyan-600/50 focus:bg-white focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm"
+                          className="w-full pl-12 pr-12 py-3.5 sm:py-4 bg-slate-50 border border-slate-100 rounded-lg focus:border-cyan-600/50 focus:bg-white focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm"
                           placeholder="Min 6 characters"
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                       </div>
                       {formData.password && formData.password.length < 6 && (
                         <p className="text-[9px] text-amber-600 font-bold uppercase tracking-tight pl-1">Security: Use 6 or more characters</p>

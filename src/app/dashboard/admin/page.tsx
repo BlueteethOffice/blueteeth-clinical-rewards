@@ -40,7 +40,11 @@ export default function AdminDashboard() {
       setCases(casesData);
       setLoading(false); // Shell is now ready
     }, (err) => {
-      console.error("Cases stream error:", err);
+      if (err.code === 'permission-denied') {
+        console.log("[ADMIN] Cases listener detached (Auth required)");
+      } else {
+        console.error("Cases stream error:", err);
+      }
       setLoading(false);
     });
 
@@ -52,6 +56,12 @@ export default function AdminDashboard() {
         ...doc.data()
       })) as Payout[];
       setPayouts(payoutData);
+    }, (err) => {
+      if (err.code === 'permission-denied') {
+        console.log("[ADMIN] Payouts listener detached (Auth required)");
+      } else {
+        console.error("Payouts stream error:", err);
+      }
     });
 
     // 🚀 LIGHTNING FIX: Remove blocking user count fetch
