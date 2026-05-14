@@ -14,10 +14,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Email required' }, { status: 400 });
     }
 
-    // ✅ UNIFIED RATE LIMITING
-    const { success: rateOk } = await rateLimit(req as any, 5, 5 * 60000);
+    // ✅ UNIFIED RATE LIMITING (Per-email basis to avoid blocking valid attempts on different accounts)
+    const { success: rateOk } = await rateLimit(req as any, 15, 5 * 60000, email);
     if (!rateOk) {
-      return NextResponse.json({ error: 'Too many requests. Please wait.' }, { status: 429 });
+      return NextResponse.json({ error: 'Too many requests for this email. Please wait 5 minutes.' }, { status: 429 });
     }
 
     const db = getAdminDb();
@@ -57,17 +57,21 @@ export async function POST(req: Request) {
 
       if (!emailSent && process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
         try {
+          console.log(`[OTP] Attempting Gmail send to ${email} via ${process.env.GMAIL_USER}...`);
           const t = nodemailer.createTransport({
             host: 'smtp.gmail.com', port: 587, secure: false,
             auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD }
           });
           await t.sendMail({ from: `"Blueteeth" <${process.env.GMAIL_USER}>`, to: email, subject, html });
           emailSent = true;
-          console.log('✅ Email sent via Gmail');
-        } catch (e: any) { console.error('❌ Gmail error:', e.message); }
+          console.log(`✅ [OTP] Email successfully delivered to ${email}`);
+        } catch (e: any) { 
+          console.error(`❌ [OTP] Gmail Delivery Error: ${e.message}`); 
+        }
       }
 
       if (!emailSent) {
+        console.error(`❌ [OTP] Failed to deliver email to ${email}. No providers succeeded.`);
         return NextResponse.json({ error: 'Failed to deliver verification email. Contact admin.' }, { status: 500 });
       }
 

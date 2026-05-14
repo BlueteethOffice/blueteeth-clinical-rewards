@@ -5,10 +5,10 @@ import { NextRequest, NextResponse } from 'next/server';
 // In-memory fallback for development; in production, use Redis (Upstash/ioredis)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
-export async function rateLimit(req: NextRequest, limit: number = 10, windowMs: number = 60000) {
+export async function rateLimit(req: NextRequest, limit: number = 10, windowMs: number = 60000, customKey?: string) {
   const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
   const now = Date.now();
-  const key = `${ip}:${req.nextUrl.pathname}`;
+  const key = customKey ? `${customKey}:${req.nextUrl.pathname}` : `${ip}:${req.nextUrl.pathname}`;
   
   const entry = rateLimitMap.get(key);
   

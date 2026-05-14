@@ -63,17 +63,17 @@ export default function Sidebar({
       ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
     `}>
       <div className="p-6 sm:p-8 md:p-10 pb-4 sm:pb-6 shrink-0 flex items-center justify-between relative">
-        <Link href="/dashboard" className="flex items-center gap-2.5 sm:gap-3.5 group" onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}>
-          <div className="shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-900 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-700 p-2 shadow-sm transition-colors">
+        <Link href="/dashboard" className="flex items-center gap-4 group" onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}>
+          <div className="shrink-0 w-14 h-14 sm:w-16 sm:h-16 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center border-2 border-cyan-500/20 p-2.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] group-hover:border-cyan-500/40 transition-all duration-300">
             <img 
               src="/logo.png" 
               alt="Logo" 
-              className="w-full h-full object-contain transition-transform group-hover:scale-110 duration-300" 
+              className="w-full h-full object-contain transition-transform group-hover:scale-110 duration-500" 
             />
           </div>
           <div className="flex flex-col justify-center">
-            <span className="text-[20px] sm:text-[24px] md:text-[28px] font-bold bg-linear-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none pb-1">BLUETEETH</span>
-            <span className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-cyan-600 tracking-[0.3em] uppercase leading-none">CLINICAL PLATFORM</span>
+            <span className="text-[22px] sm:text-[26px] font-black bg-linear-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tighter leading-none pb-1">BLUETEETH</span>
+            <span className="text-[9px] font-black text-cyan-600/60 tracking-[0.4em] uppercase leading-none">Clinical Elite</span>
           </div>
         </Link>
 

@@ -66,17 +66,20 @@ export default function LandingPage() {
           : 'py-3 md:py-5 bg-white/5 backdrop-blur-md border-b border-white/10'
       }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-1.5 md:gap-2 group">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(8,145,178,0.12)] border border-cyan-100 group-hover:border-cyan-200 group-hover:-translate-y-0.5 transition-all duration-300">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center shadow-[0_8px_30px_rgba(8,145,178,0.15)] border border-cyan-100 group-hover:border-cyan-300 group-hover:-translate-y-0.5 transition-all duration-300 p-1.5">
               <img 
                 src="/logo.png" 
                 alt="Logo" 
-                className="h-5 md:h-7 w-auto object-contain transition-transform group-hover:scale-110" 
+                className="h-full w-full object-contain transition-transform group-hover:scale-110" 
               />
             </div>
-            <span className="text-base md:text-lg font-bold tracking-tight text-cyan-600">
-              Blueteeth
-            </span>
+            <div className="flex flex-col">
+              <span className="text-lg md:text-xl font-black tracking-tighter text-cyan-600 leading-none">
+                Blueteeth
+              </span>
+              <span className="text-[7px] md:text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] leading-none mt-1">Clinical Elite</span>
+            </div>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
