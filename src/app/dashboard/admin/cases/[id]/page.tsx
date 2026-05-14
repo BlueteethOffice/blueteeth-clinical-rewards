@@ -63,6 +63,7 @@ export default function AdminCaseDetailPage() {
   const [associate, setAssociate] = useState<AppUser | null>(null);
   const [clinician, setClinician] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [feeInput, setFeeInput] = useState<string>('0');
   const [pdfViewer, setPdfViewer] = useState<string | null>(null);
   const [viewerMimeType, setViewerMimeType] = useState<string>('application/pdf');
 
@@ -83,6 +84,7 @@ export default function AdminCaseDetailPage() {
 
         const newCaseData = { id: snapshot.id, ...data, sourceType } as Case;
         setCaseData(newCaseData);
+        setFeeInput(data.consultationFee?.toString() || '0');
 
         // Fetch associate details if available
         if (data.associateId) {
@@ -107,6 +109,11 @@ export default function AdminCaseDetailPage() {
 
   const handleStatusUpdate = async (newStatus: CaseStatus) => {
     if (!id) return;
+
+    if (newStatus === 'approved' && caseData?.sourceType === 'clinician_self' && (!feeInput || isNaN(Number(feeInput)))) {
+      return toast.error('Please enter a valid consultation fee');
+    }
+
     try {
       const token = await auth.currentUser?.getIdToken();
       const res = await fetch('/api/cases/update', {
@@ -115,7 +122,11 @@ export default function AdminCaseDetailPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ caseId: id, status: newStatus }),
+        body: JSON.stringify({ 
+          caseId: id, 
+          status: newStatus,
+          consultationFee: Number(feeInput)
+        }),
       });
 
       const data = await res.json();
@@ -270,7 +281,24 @@ export default function AdminCaseDetailPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              {/* ✅ Fee Input for Clinician Self-Cases */}
+              {caseData.sourceType === 'clinician_self' && (caseData.status !== 'approved' && caseData.status !== 'rejected') && (
+                <div className="flex flex-col gap-1 w-full sm:w-40 mb-2 sm:mb-0">
+                  <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest ml-1">Consultation Fee</label>
+                  <div className="relative">
+                    <IndianRupee size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-600" />
+                    <input 
+                      type="number"
+                      value={feeInput}
+                      onChange={(e) => setFeeInput(e.target.value)}
+                      placeholder="0"
+                      className="w-full pl-8 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 text-xs font-bold text-slate-900 dark:text-white transition-all shadow-sm"
+                    />
+                  </div>
+                </div>
+              )}
+
               {(caseData.status !== 'approved' && caseData.status !== 'rejected') && (
                 <>
                   {/* ✅ Enforce Rule: Associate cases must be 'completed' or 'treatment_completed' before approval */}

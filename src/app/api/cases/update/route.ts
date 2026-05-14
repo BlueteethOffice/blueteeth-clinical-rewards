@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { caseId, status } = await request.json();
+    const { caseId, status, consultationFee } = await request.json();
     if (status !== 'approved' && status !== 'rejected') {
       return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
     }
@@ -38,10 +38,16 @@ export async function POST(request: NextRequest) {
 
     // --- ATOMIC TRANSACTION ---
     await db.runTransaction(async (transaction) => {
-      transaction.update(caseRef, {
+      const updates: any = {
         status,
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
-      });
+      };
+
+      if (consultationFee !== undefined) {
+        updates.consultationFee = Number(consultationFee);
+      }
+
+      transaction.update(caseRef, updates);
 
       if (status === 'approved') {
         const points = caseData?.points || 0;

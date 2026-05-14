@@ -72,7 +72,7 @@ export default function Breadcrumb() {
       {!isHubPage && (
         <button 
           onClick={() => router.back()}
-          className="group flex items-center gap-2 px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl text-[10px] font-black text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-200 dark:hover:border-cyan-500/30 transition-all shadow-sm hover:shadow-md active:scale-95 uppercase tracking-widest shrink-0"
+          className="hidden sm:flex group items-center gap-2 px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl text-[10px] font-black text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-200 dark:hover:border-cyan-500/30 transition-all shadow-sm hover:shadow-md active:scale-95 uppercase tracking-widest shrink-0"
         >
           <span>Go Back</span>
           <div className="w-4 h-4 bg-cyan-50 dark:bg-cyan-500/15 rounded flex items-center justify-center group-hover:bg-cyan-100 dark:group-hover:bg-cyan-500/25 transition-colors">

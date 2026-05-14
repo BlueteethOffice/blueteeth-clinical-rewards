@@ -90,25 +90,24 @@ export interface Payout {
 }
 
 export const TREATMENT_POINTS: Record<string, number> = {
-  'RCT (Root Canal)': 5,
-  'Dental Implant': 10,
-  'Zirconia Crown': 4,
-  'Fixed Braces': 8,
-  'Clear Aligners': 15,
-  'Cosmetic Veneers': 7,
-  'Smile Makeover': 12,
-  'Simple Extraction': 1,
-  'Surgical Wisdom Removal': 4,
-  'Professional Cleaning': 2,
-  'Teeth Whitening': 3,
+  'Braces & Aligners': 15,
   'Complete Denture': 5,
-  'Composite Filling': 1,
-  'Gum Treatment (Laser)': 6,
+  'Cosmetic Dentistry': 7,
+  'Crowns & Bridges': 4,
+  'Dental Fillings': 1,
+  'Dental Implants': 10,
+  'Dentures': 3,
+  'Gum Treatment': 6,
   'Pediatric Dentistry': 2,
-  'Full Mouth Rehab': 20,
+  'Root Canal Treatment (RCT)': 5,
   'Scaling & Polishing': 2,
-  'Dental X-Ray (RVG)': 1,
-  'Clinical Consultation': 1,
+  'Smile Makeover': 12,
+  'Teeth Cleaning': 2,
+  'Teeth Whitening': 3,
+  'Tooth Extraction': 1,
+  'Wisdom Tooth Removal': 4,
+  'X-Ray & Diagnosis': 1,
+  'Zirconia Crown': 4
 };
 
 export interface AppNotification {

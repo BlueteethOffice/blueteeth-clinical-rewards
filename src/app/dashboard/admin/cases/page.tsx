@@ -57,6 +57,7 @@ export default function AdminCasesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<CaseStatus | 'all'>('all');
   const [filterType, setFilterType] = useState<CaseSourceType | 'all'>('all');
+  const [associateFilter, setAssociateFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [showSyncModal, setShowSyncModal] = useState(false);
@@ -66,17 +67,24 @@ export default function AdminCasesPage() {
   const [selectedClinician, setSelectedClinician] = useState<AppUser | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+  
+  // Dynamic list for filtering
+  const associatesList = useMemo(() => {
+    const names = new Set<string>();
+    cases.forEach(c => {
+      if (c.associateName) names.add(c.associateName);
+    });
+    return Array.from(names).sort();
+  }, [cases]);
 
   // Real-time Fetch
   useEffect(() => {
     if (!user || user.role !== 'admin') return;
 
-    // ⚡ PERFORMANCE FIX: Limit initial fetch and order by date
-    // Fetching all cases at once causes significant lag as the DB grows.
     const q = query(
       collection(db, 'cases'), 
       orderBy('createdAt', 'desc'), 
-      limit(50) 
+      limit(100) // ⚡ Increased limit for better filtering
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -96,7 +104,6 @@ export default function AdminCasesPage() {
           else sourceType = 'associate';
         }
 
-        // Fix Dr. Dr. issue in data mapping
         const clinicianName = data.clinicianName?.replace(/^Dr\.\s+/i, '').replace(/^Dr\s+/i, '');
         const associateName = data.associateName?.replace(/^Dr\.\s+/i, '').replace(/^Dr\s+/i, '');
 
@@ -109,7 +116,6 @@ export default function AdminCasesPage() {
       setLoading(false);
     });
 
-    // Fetch Clinicians for Assignment
     const fetchClinicians = async () => {
       const q = query(collection(db, 'users'), where('role', '==', 'clinician'));
       const snap = await getDocs(q);
@@ -123,19 +129,32 @@ export default function AdminCasesPage() {
   // Filter Logic
   const filteredCases = useMemo(() => {
     return cases.filter(c => {
+      // 🛡️ CRITICAL FIX: Safe string checks to prevent crashes on missing data
+      const pName = c.patientName?.toString() || '';
+      const cId = c.id?.toString() || '';
+      const cMob = c.mobile?.toString() || '';
+      const clinName = c.clinicianName?.toString() || '';
+      const assocName = c.associateName?.toString() || '';
+      const sTerm = searchTerm.toLowerCase();
+
       const matchesSearch = 
-        c.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.mobile?.includes(searchTerm) ||
-        c.clinicianName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.associateName?.toLowerCase().includes(searchTerm.toLowerCase());
+        pName.toLowerCase().includes(sTerm) ||
+        cId.toLowerCase().includes(sTerm) ||
+        cMob.includes(searchTerm) ||
+        clinName.toLowerCase().includes(sTerm) ||
+        assocName.toLowerCase().includes(sTerm);
       
       const matchesStatus = filterStatus === 'all' || c.status === filterStatus;
       const matchesType = filterType === 'all' || c.sourceType === filterType;
+      const matchesAssociate = associateFilter === 'all' || c.associateName === associateFilter;
       
-      return matchesSearch && matchesStatus && matchesType;
-    }).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-  }, [cases, searchTerm, filterStatus, filterType]);
+      return matchesSearch && matchesStatus && matchesType && matchesAssociate;
+    }).sort((a, b) => {
+      const timeA = a.createdAt?.seconds || a.createdAt?.toMillis?.() || 0;
+      const timeB = b.createdAt?.seconds || b.createdAt?.toMillis?.() || 0;
+      return timeB - timeA;
+    });
+  }, [cases, searchTerm, filterStatus, filterType, associateFilter]);
 
   // Pagination Logic
   const totalPages = Math.ceil(filteredCases.length / itemsPerPage);
@@ -147,7 +166,7 @@ export default function AdminCasesPage() {
   // Reset to page 1 on search/filter
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, filterStatus, filterType]);
+  }, [searchTerm, filterStatus, filterType, associateFilter]);
 
   // Smart Lookup for missing Reg IDs
   const getRegNo = (c: Case) => {
@@ -349,6 +368,21 @@ export default function AdminCasesPage() {
                   <option value="associate">Associate</option>
                   <option value="clinician_self">Self</option>
                   <option value="assigned">Assigned</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              </div>
+
+              {/* Specific Associate Filter */}
+              <div className="relative flex-1 sm:w-48">
+                <select 
+                  value={associateFilter}
+                  onChange={(e) => setAssociateFilter(e.target.value)}
+                  className="w-full appearance-none pl-4 pr-10 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/10 rounded-lg outline-none text-[10px] font-bold uppercase tracking-wider cursor-pointer hover:bg-slate-50 transition-all shadow-xs"
+                >
+                  <option value="all">Filter By Associate</option>
+                  {associatesList.map(name => (
+                    <option key={name} value={name}>{name}</option>
+                  ))}
                 </select>
                 <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               </div>
