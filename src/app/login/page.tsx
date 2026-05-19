@@ -283,11 +283,8 @@ export default function LoginPage() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-10">
-          <div className="inline-flex w-20 h-20 bg-white dark:bg-slate-900 rounded-3xl items-center justify-center border-2 border-cyan-500/20 shadow-2xl mb-6 p-3.5">
-            <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
-          </div>
-          <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tighter drop-shadow-sm">
-            Blueteeth
+          <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tighter drop-shadow-sm uppercase">
+            BLUETEETH
           </h1>
           <p className="text-cyan-800/80 dark:text-cyan-500/60 font-black tracking-[0.3em] uppercase text-[10px] mt-2 transition-colors">
             Enterprise Reward Portal

@@ -64,13 +64,22 @@ export default function AdminDashboard() {
       }
     });
 
-    // 🚀 LIGHTNING FIX: Remove blocking user count fetch
-    // Instead of scanning all users, we'll set a placeholder or fetch in background
-    setUsersCount(500); // Placeholder for instant UI, real app should use a metadata counter doc
+    // ⚡ REAL-TIME USER COUNT: Listen to the entire users collection dynamically
+    const uq = query(collection(db, 'users'));
+    const unsubscribeUsers = onSnapshot(uq, (snapshot) => {
+      setUsersCount(snapshot.size);
+    }, (err) => {
+      if (err.code === 'permission-denied') {
+        console.log("[ADMIN] Users count listener detached (Auth required)");
+      } else {
+        console.error("Users count stream error:", err);
+      }
+    });
     
     return () => {
       unsubscribeCases();
       unsubscribePayouts();
+      unsubscribeUsers();
     };
   }, [user]);
 

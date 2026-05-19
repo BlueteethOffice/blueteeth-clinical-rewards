@@ -71,8 +71,8 @@ export default function ClinicianCasePage() {
         setClinicianNotes(data.clinicianNotes || '');
         setLoading(false);
 
-        // Also fetch associate phone if not present
-        if (data.associateId && !associatePhone) {
+        // Fetch associate phone freshly for this case
+        if (data.associateId) {
           getDoc(doc(db, 'users', data.associateId)).then(uSnap => {
             if (uSnap.exists()) {
               setAssociatePhone(uSnap.data().phone || uSnap.data().mobile);

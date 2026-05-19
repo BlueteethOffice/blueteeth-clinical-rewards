@@ -281,7 +281,7 @@ export default function AdminCaseDetailPage() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-end gap-3">
               {/* ✅ Fee Input for Clinician Self-Cases */}
               {caseData.sourceType === 'clinician_self' && (caseData.status !== 'approved' && caseData.status !== 'rejected') && (
                 <div className="flex flex-col gap-1 w-full sm:w-40 mb-2 sm:mb-0">

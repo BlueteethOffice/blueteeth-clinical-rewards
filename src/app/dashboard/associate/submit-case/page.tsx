@@ -231,7 +231,18 @@ export default function SubmitCasePage() {
                 <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Age</label>
                 <div className="relative">
                   <Activity size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-500" strokeWidth={2.5} />
-                  <input {...register('age')} type="number" className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium text-slate-900 dark:text-white" />
+                  <input 
+                    {...register('age')} 
+                    type="number" 
+                    min="1" 
+                    max="100" 
+                    onInput={(e) => {
+                      const val = e.currentTarget.value;
+                      if (Number(val) > 100) e.currentTarget.value = '100';
+                      if (val.length > 3) e.currentTarget.value = val.slice(0, 3);
+                    }}
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium text-slate-900 dark:text-white" 
+                  />
                 </div>
               </div>
 

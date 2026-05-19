@@ -94,7 +94,7 @@ export default function AssociateEarningsPage() {
     const totalApprovedPoints = approvedCases.reduce((sum, c) => sum + (c.points || 0), 0);
     const totalPendingPoints = pendingCases.reduce((sum, c) => sum + (c.points || 0), 0);
     const totalGrossEarnings = totalApprovedPoints * pointValue;
-    const alreadyWithdrawn = payouts.filter(p => p.status === 'completed' || p.status === 'approved').reduce((sum, p) => sum + p.amount, 0);
+    const alreadyWithdrawn = payouts.filter(p => p.status === 'completed' || p.status === 'approved' || p.status === 'paid').reduce((sum, p) => sum + p.amount, 0);
     const pendingWithdrawal = payouts.filter(p => p.status === 'pending' || p.status === 'processing').reduce((sum, p) => sum + p.amount, 0);
     const withdrawableAmount = totalGrossEarnings - alreadyWithdrawn - pendingWithdrawal;
 
@@ -244,7 +244,7 @@ export default function AssociateEarningsPage() {
                             </td>
                             <td className="px-4 py-4 text-right">
                               <span className={`px-2.5 py-1 rounded text-[9px] font-bold uppercase tracking-wider ${
-                                p.status === 'completed' ? 'bg-emerald-500 text-white' :
+                                (p.status === 'completed' || p.status === 'paid') ? 'bg-emerald-500 text-white' :
                                 p.status === 'pending' ? 'bg-amber-500 text-white' :
                                 'bg-cyan-500 text-white'
                               }`}>
@@ -267,7 +267,7 @@ export default function AssociateEarningsPage() {
                             <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">{p.createdAt?.toDate ? format(p.createdAt.toDate(), 'dd MMM, HH:mm') : 'Just now'}</p>
                           </div>
                           <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-                            p.status === 'completed' ? 'bg-emerald-500 text-white' :
+                            (p.status === 'completed' || p.status === 'paid') ? 'bg-emerald-500 text-white' :
                             p.status === 'pending' ? 'bg-amber-500 text-white' :
                             'bg-cyan-500 text-white'
                           }`}>

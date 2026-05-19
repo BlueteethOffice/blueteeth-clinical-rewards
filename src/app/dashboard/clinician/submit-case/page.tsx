@@ -211,7 +211,19 @@ export default function ClinicianSubmitCasePage() {
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Age</label>
                 <div className="relative">
                   <Activity size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-500" strokeWidth={2.5} />
-                  <input {...register('age')} type="number" required className="w-full pl-10 pr-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" />
+                  <input 
+                    {...register('age')} 
+                    type="number" 
+                    min="1" 
+                    max="100" 
+                    required 
+                    onInput={(e) => {
+                      const val = e.currentTarget.value;
+                      if (Number(val) > 100) e.currentTarget.value = '100';
+                      if (val.length > 3) e.currentTarget.value = val.slice(0, 3);
+                    }}
+                    className="w-full pl-10 pr-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" 
+                  />
                 </div>
               </div>
               <div className="space-y-1.5">

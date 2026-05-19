@@ -457,7 +457,7 @@ export default function AdminUsersPage() {
                             </div>
                           </div>
                           <div className="space-y-1.5 sm:space-y-2.5">
-                            <label className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Clinic Name</label>
+                            <label className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Personal Address</label>
                             <div className="px-4 py-3 sm:px-5 sm:py-4 bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-white/5 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base text-slate-500 dark:text-slate-400 shadow-inner">
                               {selectedUser.clinicName || 'N/A'}
                             </div>

@@ -321,15 +321,27 @@ export default function ProfilePage() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Age</label>
-                    <input {...register('age')} type="number" readOnly={!isEditing} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${!isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} />
+                    <input 
+                      {...register('age')} 
+                      type="number" 
+                      min="1" 
+                      max="100" 
+                      readOnly={!isEditing} 
+                      onInput={(e) => {
+                        const val = e.currentTarget.value;
+                        if (Number(val) > 100) e.currentTarget.value = '100';
+                        if (val.length > 3) e.currentTarget.value = val.slice(0, 3);
+                      }}
+                      className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${!isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} 
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Gender</label>
                     <select {...register('gender')} disabled={!isEditing} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm appearance-none cursor-pointer ${!isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`}><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Clinic / Hospital</label>
-                    <input {...register('clinicName')} readOnly={!isEditing} placeholder="e.g. City Dental Hub" className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${!isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} />
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Personal Address</label>
+                    <input {...register('clinicName')} readOnly={!isEditing} placeholder="e.g. H-45, Lajpat Nagar, New Delhi" className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${!isEditing ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} />
                   </div>
                   {user?.role === 'clinician' && (
                     <div className="space-y-2">

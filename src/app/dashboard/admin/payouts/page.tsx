@@ -61,17 +61,64 @@ export default function AdminPayoutsPage() {
   const [remarks, setRemarks] = useState('');
 
   useEffect(() => {
-    // Listen to both collections or just a unified one
-    // For now, let's listen to clinicianPayouts as per the new system
-    const q = query(collection(db, 'clinicianPayouts'), orderBy('createdAt', 'desc'));
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setPayouts(data);
+    // ✅ FIX: Admin ko DONO collections sunni chahiye
+    // 1. 'clinicianPayouts' → Clinician ke payout requests
+    // 2. 'payouts'          → Associate ke payout requests
+
+    let clinicianData: any[] = [];
+    let associateData: any[] = [];
+
+    const mergeAndSet = () => {
+      // Dono ko merge karo, type field add karo taaki pata chale kaun hai
+      const merged = [
+        ...clinicianData.map(p => ({ ...p, _type: 'clinician' })),
+        ...associateData.map(p => ({
+          ...p,
+          _type: 'associate',
+          // Associate fields ko clinician fields se match karo for consistent UI
+          clinicianName: p.clinicianName || p.userName || 'Associate',
+          clinicianId: p.clinicianId || p.userId || '',
+          method: p.method || 'bank',
+          details: p.details || {},
+          registrationNumber: p.registrationNumber || 'N/A',
+        })),
+      ];
+      // Date ke hisaab se sort karo (newest first)
+      merged.sort((a, b) => {
+        const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 
+                      a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
+        const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 
+                      b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
+        return timeB - timeA;
+      });
+      setPayouts(merged);
+      setLoading(false);
+    };
+
+    // Listener 1: Clinician Payouts
+    const cq = query(collection(db, 'clinicianPayouts'), orderBy('createdAt', 'desc'));
+    const unsubscribeClinician = onSnapshot(cq, (snapshot) => {
+      clinicianData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      mergeAndSet();
+    }, (err) => {
+      console.error("[ADMIN] clinicianPayouts stream error:", err);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Listener 2: Associate Payouts
+    const aq = query(collection(db, 'payouts'), orderBy('createdAt', 'desc'));
+    const unsubscribeAssociate = onSnapshot(aq, (snapshot) => {
+      associateData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      mergeAndSet();
+    }, (err) => {
+      console.error("[ADMIN] payouts (associate) stream error:", err);
+      setLoading(false);
+    });
+
+    return () => {
+      unsubscribeClinician();
+      unsubscribeAssociate();
+    };
   }, []);
 
   const handleUpdateStatus = async (payoutId: string, status: string) => {
@@ -90,7 +137,8 @@ export default function AdminPayoutsPage() {
           payoutId, 
           status, 
           remarks: remarks || '',
-          transactionId: status === 'paid' ? txId : undefined
+          transactionId: status === 'paid' ? txId : undefined,
+          payoutType: selectedPayout?._type
         }),
       });
 
@@ -180,12 +228,15 @@ export default function AdminPayoutsPage() {
                       <motion.tr layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 font-bold text-sm uppercase">
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm uppercase ${p._type === 'associate' ? 'bg-emerald-600' : 'bg-cyan-700'}`}>
                               {p.clinicianName?.[0] || 'C'}
                             </div>
                             <div>
                               <p className="text-sm font-bold text-slate-900 dark:text-white leading-none uppercase">{p.clinicianName}</p>
-                              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1">ID: {p.clinicianId?.slice(-8).toUpperCase()}</p>
+                              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-0.5">ID: {p.clinicianId?.slice(-8).toUpperCase()}</p>
+                              <span className={`mt-1 inline-block px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider ${p._type === 'associate' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-cyan-50 text-cyan-600 border border-cyan-200'}`}>
+                                {p._type === 'associate' ? 'Associate' : 'Clinician'}
+                              </span>
                             </div>
                           </div>
                         </td>
@@ -274,7 +325,7 @@ export default function AdminPayoutsPage() {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="relative w-full max-w-2xl bg-white dark:bg-slate-950 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/10 max-h-[95vh] flex flex-col"
+              className="relative w-full max-w-lg bg-white dark:bg-slate-950 rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border border-white/10 max-h-[95vh] flex flex-col"
             >
               <div className="p-5 sm:p-8 overflow-y-auto custom-scrollbar">
                 <div className="flex items-center justify-between mb-6 sm:mb-8">
@@ -345,9 +396,9 @@ export default function AdminPayoutsPage() {
                     <input 
                       type="text"
                       value={txId}
-                      onChange={(e) => setTxId(e.target.value)}
+                      onChange={(e) => setTxId(e.target.value.toUpperCase())}
                       placeholder="TXN-1234567890"
-                      className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all"
+                      className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-xl text-sm font-bold uppercase text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all"
                     />
                   </div>
                   <div>
@@ -365,22 +416,24 @@ export default function AdminPayoutsPage() {
                 <div className="flex flex-col sm:grid sm:grid-cols-3 gap-3 mt-8">
                   <button 
                     onClick={() => handleUpdateStatus(selectedPayout.id, 'rejected')}
-                    className="order-3 sm:order-1 py-3.5 bg-red-500/10 text-red-600 rounded-xl font-bold text-[9px] uppercase tracking-wider border border-red-500/20 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-1.5"
+                    disabled={selectedPayout.status === 'rejected' || selectedPayout.status === 'paid' || processingId === selectedPayout.id}
+                    className="order-3 sm:order-1 py-3.5 bg-red-500/10 text-red-600 rounded-xl font-bold text-[9px] uppercase tracking-wider border border-red-500/20 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <XCircle size={14} /> Reject
+                    <XCircle size={14} /> {selectedPayout.status === 'rejected' ? 'Rejected' : 'Reject'}
                   </button>
                   <button 
                     onClick={() => handleUpdateStatus(selectedPayout.id, 'approved')}
-                    className="order-2 sm:order-2 py-3.5 bg-blue-500/10 text-blue-600 rounded-xl font-bold text-[9px] uppercase tracking-wider border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-1.5"
+                    disabled={selectedPayout.status === 'approved' || selectedPayout.status === 'paid' || processingId === selectedPayout.id}
+                    className="order-2 sm:order-2 py-3.5 bg-blue-500/10 text-blue-600 rounded-xl font-bold text-[9px] uppercase tracking-wider border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <CheckCircle2 size={14} /> Approve
+                    <CheckCircle2 size={14} /> {selectedPayout.status === 'approved' ? 'Approved' : 'Approve'}
                   </button>
                   <button 
                     onClick={() => handleUpdateStatus(selectedPayout.id, 'paid')}
-                    disabled={!txId}
-                    className="order-1 sm:order-3 py-4 bg-emerald-500 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    disabled={!txId || selectedPayout.status === 'paid' || processingId === selectedPayout.id}
+                    className="order-1 sm:order-3 py-4 bg-emerald-500 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Check size={16} /> Mark Paid
+                    <Check size={16} /> {selectedPayout.status === 'paid' ? 'Settled' : 'Mark Paid'}
                   </button>
                 </div>
               </div>
