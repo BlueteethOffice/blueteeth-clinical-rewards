@@ -47,6 +47,11 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    // Force light mode on signup page to prevent dark theme issues
+    document.documentElement.classList.remove('dark');
+  }, []);
+
   // Handle OTP countdown
   useEffect(() => {
     let timer: any;

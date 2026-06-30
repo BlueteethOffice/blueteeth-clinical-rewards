@@ -52,6 +52,9 @@ export default function LandingPage() {
   // Removed auto-redirect to allow viewing landing page while logged in
 
   useEffect(() => {
+    // Force light mode on landing page to prevent dark mode background issues
+    document.documentElement.classList.remove('dark');
+    
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -109,54 +112,76 @@ export default function LandingPage() {
 
       <main className="mesh-bg">
         {/* Hero Section */}
-        <section className="relative min-h-[350px] sm:min-h-[450px] md:min-h-[70vh] flex items-center justify-center pt-32 sm:pt-36 md:pt-28 pb-8 md:pb-10 px-4 sm:px-6 overflow-hidden">
+        <section className="relative min-h-[500px] md:min-h-[85vh] flex items-center pt-32 sm:pt-36 md:pt-28 pb-12 px-6 overflow-hidden">
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" 
                style={{ backgroundImage: 'radial-gradient(circle, #0891b2 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
           
-          <motion.div 
-            className="max-w-4xl mx-auto text-center relative z-10 w-full"
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-               className="inline-flex max-w-full items-center justify-center gap-2 px-3.5 py-1.5 bg-white/90 backdrop-blur-md border border-cyan-100 text-cyan-600 rounded-full text-[10px] sm:text-[11px] font-bold uppercase mb-5 md:mb-8 shadow-[0_2px_15px_rgba(8,145,178,0.1)]"
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+            {/* Left Column: Text & CTA */}
+            <motion.div 
+              className="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-              <span className="tracking-wider">Trusted by 500+ Dental Practices</span>
-            </motion.div>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-3xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-[1] tracking-tight"
-            >
-              <span className="block drop-shadow-sm">Empowering Dentistry</span>
-              <span className="text-gradient drop-shadow-sm">Smart Rewards.</span>
-            </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-sm sm:text-base md:text-lg text-slate-500 max-w-2xl mx-auto mb-10 font-medium leading-relaxed"
-            >
-              The definitive ecosystem for clinical excellence. Bridging performance and automated rewards through enterprise-grade smart intelligence.
-            </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-flex max-w-full items-center justify-center gap-2 px-3.5 py-1.5 bg-white/95 border border-cyan-100 text-cyan-600 rounded-full text-[10px] sm:text-[11px] font-bold uppercase mb-5 md:mb-6 shadow-[0_2px_15px_rgba(8,145,178,0.1)]"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
+                <span className="tracking-wider">Trusted by 500+ Dental Practices</span>
+              </motion.div>
+              
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-3xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-[1.1] tracking-tight"
+              >
+                <span className="block drop-shadow-sm">Empowering Dentistry</span>
+                <span className="text-gradient drop-shadow-sm">Smart Rewards.</span>
+              </motion.h1>
+              
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-sm sm:text-base md:text-lg text-slate-500 max-w-2xl lg:max-w-none mb-10 font-medium leading-relaxed"
+              >
+                The definitive ecosystem for clinical excellence. Bridging performance and automated rewards through enterprise-grade smart intelligence.
+              </motion.p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link href="/signup" className="w-full sm:w-auto">
-                <button className="group w-full px-10 py-4 premium-gradient text-white rounded-xl font-black text-xs uppercase tracking-wider shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
-                  JOIN AS PRACTITIONER <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </button>
-              </Link>
-              <Link href="/login" className="w-full sm:w-auto">
-                <button className="w-full px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.03]">
-                  Admin Access
-                </button>
-              </Link>
-            </div>
-          </motion.div>
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 w-full sm:w-auto">
+                <Link href="/signup" className="w-full sm:w-auto">
+                  <button className="group w-full px-10 py-4 premium-gradient text-white rounded-xl font-black text-xs uppercase tracking-wider shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
+                    JOIN AS PRACTITIONER <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </Link>
+                <Link href="/login" className="w-full sm:w-auto">
+                  <button className="w-full px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.03]">
+                    Admin Access
+                  </button>
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Right Column: Hero Illustration/Mockup */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="lg:col-span-5 w-full flex justify-center"
+            >
+              <div className="relative group max-w-md lg:max-w-none w-full">
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition duration-1000" />
+                <div className="relative bg-white p-2.5 rounded-2xl border border-slate-100 shadow-2xl flex items-center justify-center overflow-hidden">
+                  <img 
+                    src="/hero-bg.png" 
+                    alt="Blueteeth Workspace Dashboard Mockup" 
+                    className="w-full h-auto rounded-xl object-contain shadow-sm border border-slate-100" 
+                  />
+                </div>
+              </div>
+            </motion.div>
+          </div>
 
           {/* Floating Elements - Enhanced */}
           <div className="absolute top-1/4 -left-20 w-80 h-80 bg-cyan-400/10 rounded-full blur-[100px] animate-pulse" />

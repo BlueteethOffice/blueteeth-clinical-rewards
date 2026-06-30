@@ -37,6 +37,11 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    // Force light mode on login page to prevent dark theme issues
+    document.documentElement.classList.remove('dark');
+  }, []);
+
   // 🛡️ SECURITY: Auto-redirect disabled as requested to prevent "automatic" login
   /*
   useEffect(() => {

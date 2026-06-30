@@ -24,6 +24,11 @@ function ResetPasswordContent() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
+    // Force light mode on reset password page to prevent dark theme issues
+    document.documentElement.classList.remove('dark');
+  }, []);
+
+  useEffect(() => {
     const code = searchParams.get('oobCode');
     if (code) {
       setOobCode(code);
