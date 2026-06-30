@@ -17,7 +17,11 @@ import {
   Star,
   Quote,
   ArrowUpRight,
-  Plus
+  Plus,
+  Gift,
+  Headphones,
+  ClipboardList,
+  ChevronDown
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
@@ -55,22 +59,22 @@ export default function LandingPage() {
     // Force light mode on landing page to prevent dark mode background issues
     document.documentElement.classList.remove('dark');
     
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-50 text-slate-900 dark:text-slate-900 selection:bg-cyan-100 selection:text-cyan-900 font-sans antialiased">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-blue-100 selection:text-blue-900 font-sans antialiased">
       {/* Sticky Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'py-2 md:py-3 bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm' 
-          : 'py-3 md:py-5 bg-transparent border-b border-white/10'
+          ? 'py-2 md:py-3 bg-white/95 backdrop-blur-md border-b border-slate-200/50 shadow-sm' 
+          : 'py-3 md:py-4 bg-white/80 backdrop-blur-md border-b border-slate-100/50 shadow-sm'
       }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center shadow-[0_8px_30px_rgba(8,145,178,0.15)] border border-cyan-100 group-hover:border-cyan-300 group-hover:-translate-y-0.5 transition-all duration-300 p-1.5">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center shadow-[0_8px_30px_rgba(37,99,235,0.08)] border border-slate-100 group-hover:border-blue-200 group-hover:-translate-y-0.5 transition-all duration-300 p-1.5">
               <img 
                 src="/logo.png" 
                 alt="Logo" 
@@ -78,10 +82,10 @@ export default function LandingPage() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-black tracking-tighter text-cyan-600 leading-none">
+              <span className="text-lg md:text-xl font-bold tracking-tight text-slate-900 leading-none">
                 Blueteeth
               </span>
-              <span className="text-[7px] md:text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] leading-none mt-1">Clinical Elite</span>
+              <span className="text-[7px] md:text-[8px] font-bold text-slate-400 uppercase tracking-[0.3em] leading-none mt-1">Clinical Elite</span>
             </div>
           </Link>
 
@@ -90,7 +94,7 @@ export default function LandingPage() {
               <Link 
                 key={item} 
                 href={`#${item.toLowerCase()}`} 
-                className="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors uppercase tracking-wider"
+                className="text-xs font-bold text-slate-800 hover:text-blue-600 transition-colors uppercase tracking-wider"
               >
                 {item}
               </Link>
@@ -98,11 +102,11 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            <Link href="/login" className="hidden sm:block text-[10px] font-black text-slate-600 dark:text-slate-350 hover:text-slate-900 dark:hover:text-white transition-all px-3 uppercase tracking-wider">
+            <Link href="/login" className="hidden sm:block text-[10px] font-bold text-slate-800 hover:text-blue-600 transition-all px-3 uppercase tracking-wider">
               Login
             </Link>
             <Link href="/signup">
-              <button className="px-4 md:px-5 py-2 premium-gradient text-white rounded-full text-[10px] md:text-xs font-black shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all uppercase tracking-wider">
+              <button className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-[10px] md:text-xs font-bold shadow-lg shadow-blue-500/20 hover:scale-105 transition-all uppercase tracking-wider">
                 Join Now
               </button>
             </Link>
@@ -112,75 +116,207 @@ export default function LandingPage() {
 
       <main className="mesh-bg">
         {/* Hero Section */}
-        <section className="relative min-h-[500px] md:min-h-[85vh] flex items-center pt-32 sm:pt-36 md:pt-28 pb-12 px-6 overflow-hidden">
-          {/* Subtle Grid Background */}
-          <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" 
-               style={{ backgroundImage: 'radial-gradient(circle, #0891b2 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+        <section className="relative flex flex-col justify-start pt-20 sm:pt-24 md:pt-26 pb-20 md:pb-24 px-6 overflow-hidden">
+          {/* Full Hero Background Image */}
+          <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
+            <img 
+              src="/image.png" 
+              alt="Hero Background" 
+              className="w-full h-full object-cover object-center md:object-right"
+            />
+            {/* Very soft, clean gradient overlay that does not wash out the background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#f8fafc]/50 to-transparent lg:from-[#f8fafc]/40 lg:to-transparent" />
+          </div>
+
+          {/* Subtle Grid Background - low opacity texture */}
+          <div className="absolute inset-0 z-10 opacity-[0.01] pointer-events-none" 
+               style={{ backgroundImage: 'radial-gradient(circle, #2563eb 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
           
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
-            {/* Left Column: Text & CTA */}
-            <motion.div 
-              className="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start"
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="inline-flex max-w-full items-center justify-center gap-2 px-3.5 py-1.5 bg-white/95 border border-cyan-100 text-cyan-600 rounded-full text-[10px] sm:text-[11px] font-bold uppercase mb-5 md:mb-6 shadow-[0_2px_15px_rgba(8,145,178,0.1)]"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-                <span className="tracking-wider">Trusted by 500+ Dental Practices</span>
-              </motion.div>
-              
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-3xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-[1.1] tracking-tight"
-              >
-                <span className="block drop-shadow-sm">Empowering Dentistry</span>
-                <span className="text-gradient drop-shadow-sm">Smart Rewards.</span>
-              </motion.h1>
-              
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-sm sm:text-base md:text-lg text-slate-500 max-w-2xl lg:max-w-none mb-10 font-medium leading-relaxed"
-              >
-                The definitive ecosystem for clinical excellence. Bridging performance and automated rewards through enterprise-grade smart intelligence.
-              </motion.p>
+          <div className="max-w-7xl mx-auto w-full relative z-20">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+              {/* Left Column - Text Content */}
+              <div className="lg:col-span-6 text-center lg:text-left flex flex-col items-center lg:items-start relative z-20">
+                {/* Badge */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="inline-flex items-center gap-2 px-3 py-1 bg-white/90 border border-blue-100 text-blue-600 rounded-full text-[10px] sm:text-xs font-bold uppercase mb-4 shadow-sm"
+                >
+                  <ShieldCheck size={12} className="text-blue-600" />
+                  <span className="tracking-wider">Trusted by 500+ Dental Practices</span>
+                </motion.div>
+                
+                {/* Headline */}
+                <motion.h1 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-3xl sm:text-4xl md:text-[46px] lg:text-[50px] font-extrabold text-slate-900 mb-4 leading-[1.1] tracking-tight"
+                >
+                  <span className="block drop-shadow-sm">Empowering Dentistry</span>
+                  <span className="block text-blue-600 drop-shadow-sm">Smart Rewards.</span>
+                </motion.h1>
+                
+                {/* Description */}
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="text-xs sm:text-sm md:text-base text-slate-650 max-w-lg mb-6 font-semibold leading-relaxed"
+                >
+                  The definitive ecosystem for clinical excellence. Bridging performance and automated rewards through enterprise-grade smart intelligence.
+                </motion.p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 w-full sm:w-auto">
-                <Link href="/signup" className="w-full sm:w-auto">
-                  <button className="group w-full px-10 py-4 premium-gradient text-white rounded-xl font-black text-xs uppercase tracking-wider shadow-[0_10px_25px_-5px_rgba(8,145,178,0.4)] flex items-center justify-center gap-2 hover:scale-[1.03] transition-all duration-300">
-                    JOIN AS PRACTITIONER <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </Link>
-                <Link href="/login" className="w-full sm:w-auto">
-                  <button className="w-full px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.03]">
-                    Admin Access
-                  </button>
-                </Link>
-              </div>
-            </motion.div>
-
-            {/* Right Column: Hero Illustration/Mockup */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="lg:col-span-5 w-full flex justify-center"
-            >
-              <div className="relative group max-w-md lg:max-w-none w-full">
-                <div className="absolute -inset-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition duration-1000" />
-                <div className="relative bg-white p-2.5 rounded-2xl border border-slate-100 shadow-2xl flex items-center justify-center overflow-hidden">
-                  <img 
-                    src="/hero-bg.png" 
-                    alt="Blueteeth Workspace Dashboard Mockup" 
-                    className="w-full h-auto rounded-xl object-contain shadow-sm border border-slate-100" 
-                  />
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 w-full sm:w-auto mt-6 sm:mt-8">
+                  <Link href="/signup" className="w-full sm:w-auto">
+                    <button className="group w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/10 flex items-center justify-center gap-2 hover:scale-[1.02] transition-all duration-300">
+                      JOIN AS PRACTITIONER <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </Link>
+                  <Link href="/login" className="w-full sm:w-auto">
+                    <button className="w-full px-6 py-3 bg-white/90 border border-slate-200 text-slate-900 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-50 hover:scale-[1.02] transition-all shadow-sm flex items-center justify-center gap-2">
+                      <ShieldCheck size={14} className="text-blue-600" /> ADMIN ACCESS
+                    </button>
+                  </Link>
                 </div>
               </div>
-            </motion.div>
+
+              {/* Right Column - Floating Practice Performance Dashboard Card */}
+              <div className="lg:col-span-6 flex justify-center lg:justify-start lg:-ml-16 relative z-20 w-full mt-8 lg:mt-12">
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1, duration: 0.5 }}
+                  className="bg-white/95 backdrop-blur-md border border-slate-100/70 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.08)] p-4 w-full max-w-[340px] hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-300 relative"
+                >
+                  {/* Card Header */}
+                  <div className="flex items-center justify-between border-b border-slate-50 pb-3">
+                    <span className="text-xs font-bold text-slate-800 tracking-tight">Practice Performance</span>
+                    <button className="flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-50 hover:bg-slate-100 border border-slate-100 px-2 py-0.5 rounded-lg transition-colors">
+                      This Month <ChevronDown size={10} className="text-slate-400" />
+                    </button>
+                  </div>
+
+                  {/* Metrics Row */}
+                  <div className="grid grid-cols-3 gap-1.5 mt-3">
+                    {/* Patients */}
+                    <div className="bg-slate-50/50 rounded-xl p-2 border border-slate-100/40 text-center flex flex-col items-center justify-between">
+                      <div className="w-7 h-7 rounded-full bg-blue-50/70 flex items-center justify-center text-blue-600 shadow-inner">
+                        <Users size={13} />
+                      </div>
+                      <div className="mt-2">
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Patients</span>
+                        <span className="text-xs font-black text-slate-800 block mt-0.5">2,543</span>
+                      </div>
+                      <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50/50 px-1 py-0.5 rounded mt-1.5 block">+18.2%</span>
+                    </div>
+
+                    {/* Treatments */}
+                    <div className="bg-slate-50/50 rounded-xl p-2 border border-slate-100/40 text-center flex flex-col items-center justify-between">
+                      <div className="w-7 h-7 rounded-full bg-blue-50/70 flex items-center justify-center text-blue-600 shadow-inner">
+                        <ClipboardList size={13} />
+                      </div>
+                      <div className="mt-2">
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Treatments</span>
+                        <span className="text-xs font-black text-slate-800 block mt-0.5">1,845</span>
+                      </div>
+                      <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50/50 px-1 py-0.5 rounded mt-1.5 block">+12.6%</span>
+                    </div>
+
+                    {/* Rewards */}
+                    <div className="bg-slate-50/50 rounded-xl p-2 border border-slate-100/40 text-center flex flex-col items-center justify-between">
+                      <div className="w-7 h-7 rounded-full bg-blue-50/70 flex items-center justify-center text-blue-600 shadow-inner">
+                        <Coins size={13} />
+                      </div>
+                      <div className="mt-2">
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Rewards</span>
+                        <span className="text-xs font-black text-slate-800 block mt-0.5">₹48,750</span>
+                      </div>
+                      <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50/50 px-1 py-0.5 rounded mt-1.5 block">+24.5%</span>
+                    </div>
+                  </div>
+
+                  {/* Performance Overview */}
+                  <div className="mt-3.5 pt-2.5 border-t border-slate-50">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[11px] font-bold text-slate-700">Performance Overview</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50/50 px-1 py-0.5 rounded">+6.4%</span>
+                        <span className="text-[9px] font-medium text-slate-400">vs last month</span>
+                      </div>
+                    </div>
+
+                    {/* SVG Line Chart Container */}
+                    <div className="relative h-28 w-full mt-1.5 bg-slate-50/30 rounded-xl border border-slate-100/30 p-1">
+                      {/* Tooltip */}
+                      <div className="absolute top-[10px] left-[78%] -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-blue-100 shadow-md rounded-lg p-2 text-left z-20 shrink-0 pointer-events-none">
+                        <div className="text-[8px] text-slate-400 font-semibold leading-none">May 2025</div>
+                        <div className="flex items-center gap-1.5 mt-1 leading-none">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 block"></span>
+                          <span className="text-[9px] font-extrabold text-slate-800">Performance 92%</span>
+                        </div>
+                      </div>
+
+                      {/* SVG */}
+                      <svg viewBox="0 0 400 120" className="w-full h-full overflow-visible">
+                        <defs>
+                          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
+                            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
+                          </linearGradient>
+                        </defs>
+
+                        {/* Y-Axis Grid Lines */}
+                        <line x1="40" y1="20" x2="390" y2="20" stroke="#f1f5f9" strokeWidth="1" />
+                        <line x1="40" y1="50" x2="390" y2="50" stroke="#f1f5f9" strokeWidth="1" />
+                        <line x1="40" y1="80" x2="390" y2="80" stroke="#f1f5f9" strokeWidth="1" />
+                        <line x1="40" y1="110" x2="390" y2="110" stroke="#f1f5f9" strokeWidth="1" />
+
+                        {/* Y-Axis Labels */}
+                        <text x="32" y="23" className="text-[8px] fill-slate-400 font-bold text-right" textAnchor="end">100%</text>
+                        <text x="32" y="53" className="text-[8px] fill-slate-400 font-bold text-right" textAnchor="end">75%</text>
+                        <text x="32" y="83" className="text-[8px] fill-slate-400 font-bold text-right" textAnchor="end">50%</text>
+                        <text x="32" y="113" className="text-[8px] fill-slate-400 font-bold text-right" textAnchor="end">20%</text>
+
+                        {/* X-Axis Labels */}
+                        <text x="40" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">Jan</text>
+                        <text x="110" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">Feb</text>
+                        <text x="180" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">Mar</text>
+                        <text x="250" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">Apr</text>
+                        <text x="320" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">May</text>
+                        <text x="390" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">Jun</text>
+
+                        {/* Dashed Indicator Line for May */}
+                        <line x1="320" y1="20" x2="320" y2="110" stroke="#3b82f6" strokeWidth="1" strokeDasharray="3,3" />
+
+                        {/* Gradient Area Path */}
+                        <path
+                          d="M 40,95 C 75,90 85,82 110,80 C 135,78 155,90 180,85 C 205,80 225,50 250,40 C 275,30 295,20 320,20 C 345,20 365,40 390,50 L 390,110 L 40,110 Z"
+                          fill="url(#chartGradient)"
+                        />
+
+                        {/* Stroke Line Path */}
+                        <path
+                          d="M 40,95 C 75,90 85,82 110,80 C 135,78 155,90 180,85 C 205,80 225,50 250,40 C 275,30 295,20 320,20 C 345,20 365,40 390,50"
+                          fill="none"
+                          stroke="#3b82f6"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                        />
+
+                        {/* Nodes / Dots */}
+                        <circle cx="40" cy="95" r="3.5" fill="#3b82f6" stroke="#ffffff" strokeWidth="1" />
+                        <circle cx="110" cy="80" r="3.5" fill="#3b82f6" stroke="#ffffff" strokeWidth="1" />
+                        <circle cx="180" cy="85" r="3.5" fill="#3b82f6" stroke="#ffffff" strokeWidth="1" />
+                        <circle cx="250" cy="40" r="3.5" fill="#3b82f6" stroke="#ffffff" strokeWidth="1" />
+                        <circle cx="320" cy="20" r="5" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                        <circle cx="390" cy="50" r="3.5" fill="#3b82f6" stroke="#ffffff" strokeWidth="1" />
+                      </svg>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
           </div>
 
           {/* Floating Elements - Enhanced */}
@@ -189,8 +325,62 @@ export default function LandingPage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-radial-gradient from-cyan-50/20 to-transparent pointer-events-none opacity-50" />
         </section>
 
-        {/* Feature Grid */}
-        <section id="features" className="pt-6 md:pt-8 pb-12 px-6 bg-white">
+        {/* Feature Grid with Overlapping Banner */}
+        <section id="features" className="relative pt-6 pb-12 px-6 bg-white z-20">
+          <div className="max-w-7xl mx-auto -mt-10 md:-mt-12 mb-10 md:mb-16 relative z-30">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white border border-slate-100 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-4 md:p-5 w-full"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-0 lg:divide-x lg:divide-slate-100">
+                {/* Feature 1 */}
+                <div className="flex items-center gap-3 lg:px-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-50/70 flex items-center justify-center text-blue-600 shrink-0 shadow-inner">
+                    <BarChart3 size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-xs md:text-sm font-bold text-slate-800 tracking-tight">Smart Analytics</h4>
+                    <p className="text-[10px] text-slate-400 font-medium leading-normal mt-0.5">Real-time insights and performance tracking</p>
+                  </div>
+                </div>
+                
+                {/* Feature 2 */}
+                <div className="flex items-center gap-3 lg:px-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-50/70 flex items-center justify-center text-blue-600 shrink-0 shadow-inner">
+                    <Gift size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-xs md:text-sm font-bold text-slate-800 tracking-tight">Automated Rewards</h4>
+                    <p className="text-[10px] text-slate-400 font-medium leading-normal mt-0.5">Performance-based rewards and incentives</p>
+                  </div>
+                </div>
+                
+                {/* Feature 3 */}
+                <div className="flex items-center gap-3 lg:px-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-50/70 flex items-center justify-center text-blue-600 shrink-0 shadow-inner">
+                    <ShieldCheck size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-xs md:text-sm font-bold text-slate-800 tracking-tight">Secure & Compliant</h4>
+                    <p className="text-[10px] text-slate-400 font-medium leading-normal mt-0.5">Enterprise-grade security and compliance</p>
+                  </div>
+                </div>
+                
+                {/* Feature 4 */}
+                <div className="flex items-center gap-3 lg:px-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-50/70 flex items-center justify-center text-blue-600 shrink-0 shadow-inner">
+                    <Headphones size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-xs md:text-sm font-bold text-slate-800 tracking-tight">24/7 Support</h4>
+                    <p className="text-[10px] text-slate-400 font-medium leading-normal mt-0.5">Dedicated support whenever you need it</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-xl mx-auto mb-10 md:mb-16">
               <span className="text-xs font-bold text-cyan-600 uppercase tracking-wider mb-3 block">Features</span>

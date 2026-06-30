@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { SearchX, Home, ArrowLeft } from 'lucide-react';
 import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: '404 – Page Not Found | Blueteeth',
