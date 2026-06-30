@@ -63,7 +63,7 @@ export default function LandingPage() {
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled 
           ? 'py-2 md:py-3 bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm' 
-          : 'py-3 md:py-5 bg-white/5 backdrop-blur-md border-b border-white/10'
+          : 'py-3 md:py-5 bg-transparent border-b border-white/10'
       }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
@@ -87,7 +87,7 @@ export default function LandingPage() {
               <Link 
                 key={item} 
                 href={`#${item.toLowerCase()}`} 
-                className="text-xs font-bold text-slate-500 hover:text-cyan-600 transition-colors uppercase tracking-wider"
+                className="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors uppercase tracking-wider"
               >
                 {item}
               </Link>
@@ -95,7 +95,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            <Link href="/login" className="hidden sm:block text-[10px] font-black text-slate-600 hover:text-slate-900 transition-all px-3 uppercase tracking-wider">
+            <Link href="/login" className="hidden sm:block text-[10px] font-black text-slate-600 dark:text-slate-350 hover:text-slate-900 dark:hover:text-white transition-all px-3 uppercase tracking-wider">
               Login
             </Link>
             <Link href="/signup">

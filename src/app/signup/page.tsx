@@ -225,7 +225,7 @@ export default function SignupPage() {
           </div>
         </div>
 
-        <div className="bg-white/90 backdrop-blur-xl p-5 sm:p-8 rounded-lg shadow-2xl shadow-slate-200/50 border border-white relative overflow-hidden">
+        <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl p-5 sm:p-8 rounded-lg shadow-2xl shadow-slate-200/50 dark:shadow-none border border-white dark:border-white/5 relative overflow-hidden">
           <AnimatePresence mode="wait">
             {step === 'details' && (
               <div
@@ -252,7 +252,7 @@ export default function SignupPage() {
                           type="text" required
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 border border-slate-100 rounded-lg focus:border-cyan-600/50 focus:bg-white focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm"
+                          className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/10 rounded-lg focus:border-cyan-600/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm text-slate-900 dark:text-white"
                           placeholder={formData.role === 'clinician' ? "Amit Sharma (Dr. will be added)" : "John Doe"}
                         />
                       </div>
@@ -271,10 +271,10 @@ export default function SignupPage() {
                           type="email" required
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className={`w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 border rounded-lg focus:bg-white focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm ${
+                          className={`w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 dark:bg-slate-900/50 border rounded-lg focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm text-slate-900 dark:text-white ${
                             formData.email && !/^\S+@\S+\.\S+$/.test(formData.email) 
                             ? 'border-rose-400 focus:border-rose-500' 
-                            : 'border-slate-100 focus:border-cyan-600/50'
+                            : 'border-slate-100 dark:border-white/10 focus:border-cyan-600/50'
                           }`}
                           placeholder="name@clinic.com"
                         />
@@ -298,7 +298,7 @@ export default function SignupPage() {
                                 setFormData({ ...formData, phone: val });
                               }
                             }}
-                            className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 border border-slate-100 rounded-lg focus:border-cyan-600/50 focus:bg-white focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm"
+                            className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/10 rounded-lg focus:border-cyan-600/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm text-slate-900 dark:text-white"
                             placeholder="12 Digit Max"
                           />
                         </div>
@@ -310,10 +310,10 @@ export default function SignupPage() {
                           <select
                             value={formData.role}
                             onChange={(e) => setFormData({ ...formData, role: e.target.value as UserRole })}
-                            className="w-full pl-12 pr-8 py-3.5 sm:py-4 bg-slate-50 border border-slate-100 rounded-lg focus:border-cyan-600/50 focus:bg-white focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm cursor-pointer appearance-none"
+                            className="w-full pl-12 pr-8 py-3.5 sm:py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/10 rounded-lg focus:border-cyan-600/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm cursor-pointer appearance-none text-slate-900 dark:text-white"
                           >
-                            <option value="associate">Associate</option>
-                            <option value="clinician">Clinician</option>
+                            <option value="associate" className="text-slate-900 dark:text-white dark:bg-slate-900">Associate</option>
+                            <option value="clinician" className="text-slate-900 dark:text-white dark:bg-slate-900">Clinician</option>
                           </select>
                         </div>
                         {formData.role === 'clinician' && (
@@ -331,7 +331,7 @@ export default function SignupPage() {
                           minLength={6}
                           value={formData.password}
                           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                          className="w-full pl-12 pr-12 py-3.5 sm:py-4 bg-slate-50 border border-slate-100 rounded-lg focus:border-cyan-600/50 focus:bg-white focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm"
+                          className="w-full pl-12 pr-12 py-3.5 sm:py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/10 rounded-lg focus:border-cyan-600/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm text-slate-900 dark:text-white"
                           placeholder="Min 6 characters"
                         />
                         <button
@@ -362,7 +362,7 @@ export default function SignupPage() {
                               type="text" required
                               value={formData.registrationNumber}
                               onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
-                              className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-purple-50/50 border border-purple-100 rounded-lg focus:border-purple-600/50 focus:bg-white focus:ring-4 focus:ring-purple-500/5 outline-none transition-all font-bold text-sm"
+                              className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 rounded-lg focus:border-purple-600/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-purple-500/5 outline-none transition-all font-bold text-sm text-slate-900 dark:text-white"
                               placeholder="e.g. MC-12345"
                             />
                           </div>
