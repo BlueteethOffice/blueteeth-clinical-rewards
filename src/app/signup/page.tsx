@@ -61,7 +61,7 @@ export default function SignupPage() {
     try {
       const cleanEmail = formData.email.trim().toLowerCase();
 
-      // ✅ RELIABLE CHECK: Use server-side Firestore query (Admin SDK)
+      // ✅ RELIABLE CHECK: Use server-side Firestore + Auth query (Admin SDK)
       // fetchSignInMethodsForEmail is deprecated in Firebase v9+ and returns [] always
       const checkRes = await fetch('/api/auth/otp', {
         method: 'POST',
@@ -69,6 +69,12 @@ export default function SignupPage() {
         body: JSON.stringify({ email: cleanEmail, action: 'check' }),
       });
       const checkData = await checkRes.json();
+
+      // If API itself failed, don't silently pass — show a friendly error
+      if (!checkRes.ok) {
+        throw new Error(checkData.error || 'Unable to verify email. Please try again.');
+      }
+
       if (checkData.exists) {
         throw new Error('This email is already registered. Please login instead.');
       }

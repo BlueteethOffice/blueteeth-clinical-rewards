@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { getAdminDb, getAdminError } from '@/lib/firebase-admin';
+import { getAdminDb, getAdminAuth, getAdminError } from '@/lib/firebase-admin';
 
 import { rateLimit } from '@/lib/security';
 
@@ -123,8 +123,35 @@ export async function POST(req: Request) {
 
     // ─── CHECK USER ──────────────────────────────────────────────────────────
     if (action === 'check') {
-      const userDoc = await db.collection('users').where('email', '==', email).limit(1).get();
-      return NextResponse.json({ exists: !userDoc.empty });
+      // Check both Firestore AND Firebase Auth to avoid false negatives/positives
+      let existsInFirestore = false;
+      let existsInAuth = false;
+
+      // 1. Firestore check
+      try {
+        const userDoc = await db.collection('users').where('email', '==', email).limit(1).get();
+        existsInFirestore = !userDoc.empty;
+      } catch (e) {
+        console.error('[CHECK] Firestore query failed:', e);
+      }
+
+      // 2. Firebase Auth check (Admin SDK)
+      const adminAuthInstance = getAdminAuth();
+      if (adminAuthInstance) {
+        try {
+          await adminAuthInstance.getUserByEmail(email);
+          existsInAuth = true;
+        } catch (e: any) {
+          // auth/user-not-found means email is NOT in Auth — this is expected for new users
+          if (e.code !== 'auth/user-not-found') {
+            console.error('[CHECK] Auth lookup error:', e.message);
+          }
+        }
+      }
+
+      const exists = existsInFirestore || existsInAuth;
+      console.log(`[CHECK] ${email} — Firestore: ${existsInFirestore}, Auth: ${existsInAuth}`);
+      return NextResponse.json({ exists });
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
