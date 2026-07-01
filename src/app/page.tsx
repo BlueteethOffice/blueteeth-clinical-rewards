@@ -139,12 +139,12 @@ export default function LandingPage() {
                 fill
                 priority
                 sizes="100vw"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                initial={{ opacity: 0, scale: 1.03 }}
+                animate={{ opacity: 1, scale: 1.07 }}
                 exit={{ opacity: 0 }}
                 transition={{
-                  duration: 1.0,
-                  ease: "easeInOut"
+                  opacity: { duration: 1.8, ease: "easeInOut" },
+                  scale: { duration: 7, ease: "linear" }
                 }}
                 className="w-full h-full object-cover object-center md:object-right absolute inset-0"
               />
