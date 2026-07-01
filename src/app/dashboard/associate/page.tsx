@@ -36,50 +36,39 @@ export default function AssociateDashboard() {
   const [payouts, setPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
-  const [hasMore, setHasMore] = useState(false);
-  const [lastId, setLastId] = useState<string | null>(null);
-
-  const fetchCases = async (isNext = false) => {
-    if (!user?.uid) return;
-    setLoading(true);
-    try {
-      const url = `/api/cases?userId=${user.uid}&role=associate&limit=${itemsPerPage}${isNext && lastId ? `&lastId=${lastId}` : ''}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      
-      if (!res.ok) {
-        console.error("API Error:", data.error);
-        return;
-      }
-
-      const newCases = Array.isArray(data.cases) ? data.cases : [];
-      
-      if (isNext) {
-        setCases(prev => [...(Array.isArray(prev) ? prev : []), ...newCases]);
-      } else {
-        setCases(newCases);
-      }
-      
-      setLastId(data.lastId);
-      setHasMore(data.hasMore);
-    } catch (error) {
-      console.error("Fetch cases error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [displayLimit, setDisplayLimit] = useState(5);
 
   useEffect(() => {
-    fetchCases();
-    
-    // Still keep payout listener as it's usually smaller
     if (!user?.uid) return;
+    setLoading(true);
+
+    const qCases = query(
+      collection(db, 'cases'),
+      where('associateId', '==', user.uid)
+    );
+
+    const unsubCases = onSnapshot(qCases, (snapshot) => {
+      const casesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Case[];
+
+      const sortedCases = casesData.sort((a, b) => {
+        const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+        const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+        return timeB - timeA;
+      });
+
+      setCases(sortedCases);
+      setLoading(false);
+    }, (err) => {
+      console.error("Cases stream error:", err);
+      setLoading(false);
+    });
+
     const qPayouts = query(
       collection(db, 'payouts'),
-      where('associateId', '==', user.uid)
+      where('userId', '==', user.uid)
     );
 
     const unsubPayouts = onSnapshot(qPayouts, (snapshot) => {
@@ -96,7 +85,10 @@ export default function AssociateDashboard() {
       }
     });
 
-    return () => unsubPayouts();
+    return () => {
+      unsubCases();
+      unsubPayouts();
+    };
   }, [user]);
 
   const stats = useMemo(() => {
@@ -109,10 +101,14 @@ export default function AssociateDashboard() {
     
     const grossEarnings = (approved.reduce((sum, c) => sum + (c.points || 0), 0) * POINT_VALUE) || 0;
     const totalWithdrawn = (safePayouts
-      .filter(p => p.status === 'completed' || p.status === 'approved' || p.status === 'processing')
+      .filter(p => p.status === 'completed' || p.status === 'approved' || p.status === 'paid')
       .reduce((sum, p) => sum + (p.amount || 0), 0)) || 0;
 
-    const withdrawableAmount = Math.max(0, grossEarnings - totalWithdrawn);
+    const pendingPayouts = (safePayouts
+      .filter(p => p.status === 'pending' || p.status === 'processing')
+      .reduce((sum, p) => sum + (p.amount || 0), 0)) || 0;
+
+    const withdrawableAmount = Math.max(0, grossEarnings - totalWithdrawn - pendingPayouts);
 
     return {
       total: safeCases.length || 0,
@@ -126,9 +122,11 @@ export default function AssociateDashboard() {
     };
   }, [cases, payouts]);
 
-  const { paginatedCases } = useMemo(() => {
-    return { paginatedCases: cases };
-  }, [cases]);
+  const paginatedCases = useMemo(() => {
+    return cases.slice(0, displayLimit);
+  }, [cases, displayLimit]);
+
+  const hasMore = cases.length > displayLimit;
 
   // Removed full-screen loading block to allow instant layout shell rendering
 
@@ -165,7 +163,7 @@ export default function AssociateDashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6 mb-12">
           <StatCard title="Earnings" value={loading ? '...' : `₹${(stats.grossEarnings || 0).toLocaleString()}`} icon={TrendingUp} color="bg-cyan-600" />
-          <StatCard title="Payout" value={loading ? '...' : `₹${(stats.withdrawableAmount || 0).toLocaleString()}`} icon={Wallet} color="bg-emerald-600" />
+          <StatCard title="Withdrawable" value={loading ? '...' : `₹${(stats.withdrawableAmount || 0).toLocaleString()}`} icon={Wallet} color="bg-emerald-600" />
           <StatCard title="Paid Out" value={loading ? '...' : `₹${(stats.totalWithdrawn || 0).toLocaleString()}`} icon={ArrowDownCircle} color="bg-slate-900" />
           <StatCard title="Points" value={loading ? '...' : `${stats.pendingPoints || 0} PTS`} icon={Coins} color="bg-amber-600" />
         </div>
@@ -243,7 +241,7 @@ export default function AssociateDashboard() {
                   {hasMore && (
                     <div className="flex items-center justify-center pt-6">
                       <button 
-                        onClick={() => fetchCases(true)} 
+                        onClick={() => setDisplayLimit(prev => prev + 5)} 
                         disabled={loading}
                         className="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl text-[10px] font-bold uppercase tracking-wider hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center gap-2"
                       >

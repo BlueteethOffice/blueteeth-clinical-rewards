@@ -94,7 +94,6 @@ export default function Sidebar({
               <Link 
                 key={item.name} 
                 href={item.href} 
-                prefetch={false} // ⚡ PERFORMANCE: Don't clog network with background fetches
                 onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}
               >
                 <div
