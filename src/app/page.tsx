@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, 
   ShieldCheck, 
@@ -26,6 +27,8 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+
+const MotionImage = motion(Image);
 
 const Testimonials = [
   {
@@ -52,6 +55,15 @@ export default function LandingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
+  const slides = ['/image 2.png', '/image.png', '/image 3.png'];
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Removed auto-redirect to allow viewing landing page while logged in
 
@@ -82,10 +94,10 @@ export default function LandingPage() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-bold tracking-tight text-slate-900 leading-none">
-                Blueteeth
+              <span className="text-lg md:text-xl font-black bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tighter leading-none pb-0.5">
+                BLUETEETH
               </span>
-              <span className="text-[7px] md:text-[8px] font-bold text-slate-400 uppercase tracking-[0.3em] leading-none mt-1">Clinical Elite</span>
+              <span className="text-[7px] md:text-[8px] font-extrabold text-cyan-600 dark:text-cyan-400 uppercase tracking-[0.12em] leading-none mt-1">DENTISTRY AT YOUR DOORSTEP</span>
             </div>
           </Link>
 
@@ -116,16 +128,28 @@ export default function LandingPage() {
 
       <main className="mesh-bg">
         {/* Hero Section */}
-        <section className="relative flex flex-col justify-start pt-20 sm:pt-24 md:pt-26 pb-20 md:pb-24 px-6 overflow-hidden">
-          {/* Full Hero Background Image */}
-          <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
-            <img 
-              src="/image.png" 
-              alt="Hero Background" 
-              className="w-full h-full object-cover object-center md:object-right"
-            />
-            {/* Very soft, clean gradient overlay that does not wash out the background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#f8fafc]/50 to-transparent lg:from-[#f8fafc]/40 lg:to-transparent" />
+        <section className="relative flex flex-col justify-start pt-36 sm:pt-44 md:pt-52 lg:pt-56 pb-24 md:pb-28 px-6 overflow-x-hidden">
+          {/* Full Hero Background Image Slideshow */}
+          <div className="absolute inset-0 z-0 w-full h-full overflow-hidden bg-slate-100">
+            <AnimatePresence mode="popLayout">
+              <MotionImage 
+                key={currentSlide}
+                src={slides[currentSlide]} 
+                alt="Hero Background" 
+                fill
+                priority
+                sizes="100vw"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: 1.0,
+                  ease: "easeInOut"
+                }}
+                className="w-full h-full object-cover object-center md:object-right absolute inset-0"
+              />
+            </AnimatePresence>
+            
           </div>
 
           {/* Subtle Grid Background - low opacity texture */}
@@ -134,51 +158,45 @@ export default function LandingPage() {
           
           <div className="max-w-7xl mx-auto w-full relative z-20">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
-              {/* Left Column - Text Content */}
-              <div className="lg:col-span-6 text-center lg:text-left flex flex-col items-center lg:items-start relative z-20">
-                {/* Badge */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+              {/* Left Column - Text Content inside a Premium Glass Container */}
+              <div className="lg:col-span-6 relative z-20 flex flex-col items-center lg:items-start text-center lg:text-left w-full">
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="inline-flex items-center gap-2 px-3 py-1 bg-white/90 border border-blue-100 text-blue-600 rounded-full text-[10px] sm:text-xs font-bold uppercase mb-4 shadow-sm"
+                  transition={{ duration: 0.6 }}
+                  className="bg-gradient-to-br from-white/45 via-white/30 to-blue-50/20 dark:from-slate-900/40 dark:to-blue-900/20 backdrop-blur-lg border border-white/50 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(37,99,235,0.12)] max-w-xl w-full flex flex-col items-center lg:items-start"
                 >
-                  <ShieldCheck size={12} className="text-blue-600" />
-                  <span className="tracking-wider">Trusted by 500+ Dental Practices</span>
-                </motion.div>
-                
-                {/* Headline */}
-                <motion.h1 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-3xl sm:text-4xl md:text-[46px] lg:text-[50px] font-extrabold text-slate-900 mb-4 leading-[1.1] tracking-tight"
-                >
-                  <span className="block drop-shadow-sm">Empowering Dentistry</span>
-                  <span className="block text-blue-600 drop-shadow-sm">Smart Rewards.</span>
-                </motion.h1>
-                
-                {/* Description */}
-                <motion.p 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="text-xs sm:text-sm md:text-base text-slate-650 max-w-lg mb-6 font-semibold leading-relaxed"
-                >
-                  The definitive ecosystem for clinical excellence. Bridging performance and automated rewards through enterprise-grade smart intelligence.
-                </motion.p>
+                  {/* Badge */}
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50/85 border border-blue-100 text-blue-600 rounded-full text-[10px] sm:text-xs font-bold uppercase mb-4 shadow-xs">
+                    <ShieldCheck size={12} className="text-blue-600" />
+                    <span className="tracking-wider">Trusted by 500+ Dental Practices</span>
+                  </div>
+                  
+                  {/* Headline */}
+                  <h1 className="text-3xl sm:text-4xl md:text-[40px] lg:text-[44px] font-black text-slate-900 mb-4 leading-[1.2] tracking-tight text-left lg:text-left w-full">
+                    <span className="block drop-shadow-sm">Empowering Dentistry</span>
+                    <span className="block bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">Smart Rewards.</span>
+                  </h1>
+                  
+                  {/* Description */}
+                  <p className="text-xs sm:text-sm md:text-base text-slate-600 mb-6 font-semibold leading-relaxed text-left lg:text-left w-full">
+                    The definitive ecosystem for clinical excellence. Bridging performance and automated rewards through enterprise-grade smart intelligence.
+                  </p>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 w-full sm:w-auto mt-6 sm:mt-8">
-                  <Link href="/signup" className="w-full sm:w-auto">
-                    <button className="group w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/10 flex items-center justify-center gap-2 hover:scale-[1.02] transition-all duration-300">
-                      JOIN AS PRACTITIONER <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  </Link>
-                  <Link href="/login" className="w-full sm:w-auto">
-                    <button className="w-full px-6 py-3 bg-white/90 border border-slate-200 text-slate-900 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-50 hover:scale-[1.02] transition-all shadow-sm flex items-center justify-center gap-2">
-                      <ShieldCheck size={14} className="text-blue-600" /> ADMIN ACCESS
-                    </button>
-                  </Link>
-                </div>
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row items-center justify-start gap-3 w-full mt-4">
+                    <Link href="/signup" className="w-full sm:w-auto">
+                      <button className="group w-full px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/10 flex items-center justify-center gap-2 hover:scale-[1.02] transition-all duration-300">
+                        JOIN AS PRACTITIONER <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </Link>
+                    <Link href="/login" className="w-full sm:w-auto">
+                      <button className="w-full px-6 py-3.5 bg-white/90 border border-slate-200 text-slate-900 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-50 hover:scale-[1.02] transition-all shadow-sm flex items-center justify-center gap-2">
+                        <ShieldCheck size={14} className="text-blue-600" /> ADMIN ACCESS
+                      </button>
+                    </Link>
+                  </div>
+                </motion.div>
               </div>
 
               {/* Right Column - Floating Practice Performance Dashboard Card */}
@@ -187,7 +205,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1, duration: 0.5 }}
-                  className="bg-white/95 backdrop-blur-md border border-slate-100/70 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.08)] p-4 w-full max-w-[340px] hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-300 relative"
+                  className="bg-gradient-to-br from-white/45 via-white/30 to-blue-50/20 dark:from-slate-900/40 dark:to-blue-900/20 backdrop-blur-lg border border-white/50 rounded-2xl shadow-[0_20px_50px_rgba(37,99,235,0.12)] p-4 w-full max-w-[340px] hover:shadow-[0_25px_60px_rgba(37,99,235,0.18)] transition-all duration-300 relative"
                 >
                   {/* Card Header */}
                   <div className="flex items-center justify-between border-b border-slate-50 pb-3">
@@ -266,19 +284,16 @@ export default function LandingPage() {
                           </linearGradient>
                         </defs>
 
-                        {/* Y-Axis Grid Lines */}
                         <line x1="40" y1="20" x2="390" y2="20" stroke="#f1f5f9" strokeWidth="1" />
                         <line x1="40" y1="50" x2="390" y2="50" stroke="#f1f5f9" strokeWidth="1" />
                         <line x1="40" y1="80" x2="390" y2="80" stroke="#f1f5f9" strokeWidth="1" />
                         <line x1="40" y1="110" x2="390" y2="110" stroke="#f1f5f9" strokeWidth="1" />
 
-                        {/* Y-Axis Labels */}
                         <text x="32" y="23" className="text-[8px] fill-slate-400 font-bold text-right" textAnchor="end">100%</text>
                         <text x="32" y="53" className="text-[8px] fill-slate-400 font-bold text-right" textAnchor="end">75%</text>
                         <text x="32" y="83" className="text-[8px] fill-slate-400 font-bold text-right" textAnchor="end">50%</text>
                         <text x="32" y="113" className="text-[8px] fill-slate-400 font-bold text-right" textAnchor="end">20%</text>
 
-                        {/* X-Axis Labels */}
                         <text x="40" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">Jan</text>
                         <text x="110" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">Feb</text>
                         <text x="180" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">Mar</text>
@@ -286,16 +301,13 @@ export default function LandingPage() {
                         <text x="320" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">May</text>
                         <text x="390" y="119" className="text-[8px] fill-slate-400 font-bold" textAnchor="middle">Jun</text>
 
-                        {/* Dashed Indicator Line for May */}
                         <line x1="320" y1="20" x2="320" y2="110" stroke="#3b82f6" strokeWidth="1" strokeDasharray="3,3" />
 
-                        {/* Gradient Area Path */}
                         <path
                           d="M 40,95 C 75,90 85,82 110,80 C 135,78 155,90 180,85 C 205,80 225,50 250,40 C 275,30 295,20 320,20 C 345,20 365,40 390,50 L 390,110 L 40,110 Z"
                           fill="url(#chartGradient)"
                         />
 
-                        {/* Stroke Line Path */}
                         <path
                           d="M 40,95 C 75,90 85,82 110,80 C 135,78 155,90 180,85 C 205,80 225,50 250,40 C 275,30 295,20 320,20 C 345,20 365,40 390,50"
                           fill="none"
@@ -304,7 +316,6 @@ export default function LandingPage() {
                           strokeLinecap="round"
                         />
 
-                        {/* Nodes / Dots */}
                         <circle cx="40" cy="95" r="3.5" fill="#3b82f6" stroke="#ffffff" strokeWidth="1" />
                         <circle cx="110" cy="80" r="3.5" fill="#3b82f6" stroke="#ffffff" strokeWidth="1" />
                         <circle cx="180" cy="85" r="3.5" fill="#3b82f6" stroke="#ffffff" strokeWidth="1" />

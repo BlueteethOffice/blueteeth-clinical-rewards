@@ -73,7 +73,7 @@ export default function Sidebar({
           </div>
           <div className="flex flex-col justify-center">
             <span className="text-[22px] sm:text-[26px] font-black bg-linear-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent tracking-tighter leading-none pb-1">BLUETEETH</span>
-            <span className="text-[9px] font-black text-cyan-600/60 tracking-[0.4em] uppercase leading-none">Clinical Elite</span>
+            <span className="text-[7.5px] sm:text-[8.5px] font-extrabold text-cyan-600 dark:text-cyan-400 tracking-[0.12em] uppercase leading-none mt-0.5">DENTISTRY AT YOUR DOORSTEP</span>
           </div>
         </Link>
 

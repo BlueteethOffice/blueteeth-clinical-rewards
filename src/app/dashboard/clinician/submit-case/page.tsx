@@ -37,8 +37,19 @@ const formSchema = z.object({
   gender: z.string().min(1, 'Please select gender'),
   treatmentType: z.string().min(1, 'Please select treatment type'),
   treatmentCharge: z.string().min(1, 'Please enter treatment charge').regex(/^\d+$/, 'Only numbers allowed'),
-  clinicLocation: z.string().min(3, 'Please enter clinic location'),
-  bookingDate: z.string().min(1, 'Please select booking date'),
+  clinicLocation: z.string().min(3, "Please enter patient's location"),
+  bookingDate: z.string().min(1, 'Please select booking date').refine((val) => {
+    const date = new Date(val);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    date.setHours(0,0,0,0);
+    
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(today.getDate() - 10);
+    tenDaysAgo.setHours(0,0,0,0);
+    
+    return date >= tenDaysAgo && date <= today;
+  }, 'Date must be between today and 10 days ago'),
   notes: z.string().optional(),
 });
 
@@ -67,6 +78,12 @@ export default function ClinicianSubmitCasePage() {
       bookingDate: new Date().toISOString().split('T')[0],
     }
   });
+
+  const today = new Date();
+  const maxDate = today.toISOString().split('T')[0];
+  const tenDaysAgo = new Date();
+  tenDaysAgo.setDate(today.getDate() - 10);
+  const minDate = tenDaysAgo.toISOString().split('T')[0];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'initial' | 'final') => {
     if (e.target.files && e.target.files[0]) {
@@ -237,7 +254,8 @@ export default function ClinicianSubmitCasePage() {
               </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Date</label>
-                <input {...register('bookingDate')} type="date" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" />
+                <input {...register('bookingDate')} type="date" min={minDate} max={maxDate} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" />
+                {errors.bookingDate && <p className="text-red-500 text-[10px] font-bold mt-1">{errors.bookingDate.message}</p>}
               </div>
             </div>
           </div>
@@ -277,7 +295,7 @@ export default function ClinicianSubmitCasePage() {
                   <input 
                     {...register('clinicLocation')} 
                     required 
-                    placeholder="Clinic Location" 
+                    placeholder="Patient Location" 
                     onInput={(e) => {
                       const val = e.currentTarget.value;
                       e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');

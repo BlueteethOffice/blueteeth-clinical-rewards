@@ -36,7 +36,7 @@ import {
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  phone: z.string().min(10, 'Mobile number must be at least 10 digits').max(12, 'Mobile number cannot exceed 12 digits').regex(/^\d+$/, 'Only numbers allowed'),
+  phone: z.string().length(10, 'Mobile number must be exactly 10 digits').regex(/^\d+$/, 'Only numbers allowed'),
   age: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 1 && Number(val) <= 100, 'Age must be between 1 and 100'),
   gender: z.union([z.literal('Male'), z.literal('Female'), z.literal('Other')]),
   clinicName: z.string().min(3, 'Clinic name must be at least 3 characters').optional().or(z.literal('')),
@@ -317,7 +317,7 @@ export default function ProfilePage() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">Mobile Number</label>
-                    <input {...register('phone')} readOnly={isPhoneLockedGlobal || !isEditing} maxLength={12} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${(isPhoneLockedGlobal || !isEditing) ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} />
+                    <input {...register('phone')} readOnly={isPhoneLockedGlobal || !isEditing} maxLength={10} className={`w-full px-5 py-3.5 rounded-xl outline-none transition-all font-bold text-sm ${(isPhoneLockedGlobal || !isEditing) ? 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-cyan-600 text-slate-900 dark:text-white'}`} />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Age</label>

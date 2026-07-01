@@ -64,6 +64,9 @@ export default function SignupPage() {
   const sendOTP = async () => {
     setLoading(true);
     try {
+      if (formData.phone.length !== 10) {
+        throw new Error('Mobile number must be exactly 10 digits');
+      }
       const cleanEmail = formData.email.trim().toLowerCase();
 
       // ✅ RELIABLE CHECK: Use server-side Firestore + Auth query (Admin SDK)
@@ -299,12 +302,12 @@ export default function SignupPage() {
                             value={formData.phone}
                             onChange={(e) => {
                               const val = e.target.value.replace(/\D/g, ''); // Numbers only
-                              if (val.length <= 12) {
+                              if (val.length <= 10) {
                                 setFormData({ ...formData, phone: val });
                               }
                             }}
                             className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/10 rounded-lg focus:border-cyan-600/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-cyan-500/5 outline-none transition-all font-bold text-sm text-slate-900 dark:text-white"
-                            placeholder="12 Digit Max"
+                            placeholder="10 Digit Mobile"
                           />
                         </div>
                       </div>

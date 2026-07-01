@@ -37,8 +37,19 @@ const formSchema = z.object({
   gender: z.union([z.literal('Male'), z.literal('Female'), z.literal('Other')]),
   treatmentType: z.string().min(1, 'Please select treatment type'),
   treatmentCharge: z.string().min(1, 'Please enter treatment charge').regex(/^\d+$/, 'Only numbers allowed'),
-  clinicLocation: z.string().min(3, 'Please enter clinic location'),
-  bookingDate: z.string().min(1, 'Please select booking date'),
+  clinicLocation: z.string().min(3, "Please enter patient's location"),
+  bookingDate: z.string().min(1, 'Please select booking date').refine((val) => {
+    const date = new Date(val);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    date.setHours(0,0,0,0);
+    
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(today.getDate() - 10);
+    tenDaysAgo.setHours(0,0,0,0);
+    
+    return date >= tenDaysAgo && date <= today;
+  }, 'Date must be between today and 10 days ago'),
   notes: z.string().optional(),
 });
 
@@ -65,6 +76,12 @@ export default function SubmitCasePage() {
       bookingDate: new Date().toISOString().split('T')[0],
     }
   });
+
+  const today = new Date();
+  const maxDate = today.toISOString().split('T')[0];
+  const tenDaysAgo = new Date();
+  tenDaysAgo.setDate(today.getDate() - 10);
+  const minDate = tenDaysAgo.toISOString().split('T')[0];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -258,7 +275,8 @@ export default function SubmitCasePage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Date</label>
-                <input {...register('bookingDate')} type="date" className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg outline-none font-medium text-slate-900 dark:text-white transition-all" />
+                <input {...register('bookingDate')} type="date" min={minDate} max={maxDate} className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg outline-none font-medium text-slate-900 dark:text-white transition-all" />
+                {errors.bookingDate && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.bookingDate.message}</p>}
               </div>
             </div>
           </div>
@@ -300,11 +318,12 @@ export default function SubmitCasePage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Location</label>
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Patient Location</label>
                   <div className="relative">
                     <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-rose-500" strokeWidth={2.5} />
                     <input 
                       {...register('clinicLocation')} 
+                      placeholder="Patient's current location/city"
                       onInput={(e) => {
                         const val = e.currentTarget.value;
                         e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
