@@ -281,7 +281,7 @@ export default function ClinicianCasePage() {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold text-slate-400 uppercase">Mobile</span>
-                    <span className="text-sm font-black text-slate-900 dark:text-white">{caseData.mobile}</span>
+                    <span className="text-sm font-black text-slate-900 dark:text-white">{caseData.mobile || 'N/A'}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold text-slate-400 uppercase">Age / Gender</span>

@@ -31,8 +31,8 @@ import {
 import { TREATMENT_POINTS } from '@/types';
 
 const formSchema = z.object({
-  patientName: z.string().min(2, 'Patient name must be at least 2 characters'),
-  mobile: z.string().length(10, 'Mobile number must be exactly 10 digits').regex(/^\d+$/, 'Only numbers allowed'),
+  patientFirstName: z.string().min(2, 'First name must be at least 2 characters'),
+  patientLastName: z.string().min(1, 'Last name is required'),
   age: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 1 && Number(val) <= 100, 'Age must be between 1 and 100'),
   gender: z.union([z.literal('Male'), z.literal('Female'), z.literal('Other')]),
   treatmentType: z.string().min(1, 'Please select treatment type'),
@@ -44,12 +44,12 @@ const formSchema = z.object({
     today.setHours(0,0,0,0);
     date.setHours(0,0,0,0);
     
-    const tenDaysAgo = new Date();
-    tenDaysAgo.setDate(today.getDate() - 10);
-    tenDaysAgo.setHours(0,0,0,0);
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(today.getMonth() - 1);
+    oneMonthAgo.setHours(0,0,0,0);
     
-    return date >= tenDaysAgo && date <= today;
-  }, 'Date must be between today and 10 days ago'),
+    return date >= oneMonthAgo && date <= today;
+  }, 'Date must be between today and 1 month ago'),
   notes: z.string().optional(),
 });
 
@@ -79,9 +79,9 @@ export default function SubmitCasePage() {
 
   const today = new Date();
   const maxDate = today.toISOString().split('T')[0];
-  const tenDaysAgo = new Date();
-  tenDaysAgo.setDate(today.getDate() - 10);
-  const minDate = tenDaysAgo.toISOString().split('T')[0];
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(today.getMonth() - 1);
+  const minDate = oneMonthAgo.toISOString().split('T')[0];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -110,7 +110,8 @@ export default function SubmitCasePage() {
       // 🚀 TURBO MODE: Start the process and redirect IMMEDIATELY
       const newCaseRef = doc(collection(db, 'cases'));
       const caseId = newCaseRef.id;
-      const formattedPatientName = data.patientName.trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      const patientFullName = `${data.patientFirstName.trim()} ${data.patientLastName.trim()}`;
+      const formattedPatientName = patientFullName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
       const points = TREATMENT_POINTS[data.treatmentType] || 0;
       const token = await firebaseUser?.getIdToken();
 
@@ -223,24 +224,30 @@ export default function SubmitCasePage() {
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Patient Full Name</label>
-                <input 
-                  {...register('patientName')} 
-                  placeholder="Rahul Sharma" 
-                  onInput={(e) => {
-                    const val = e.currentTarget.value;
-                    e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                  }}
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium text-slate-900 dark:text-white" 
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Mobile</label>
-                <div className="relative">
-                  <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500" strokeWidth={2.5} />
-                  <input {...register('mobile')} maxLength={10} placeholder="9876543210" className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium text-slate-900 dark:text-white" />
+              <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Patient First Name</label>
+                  <input 
+                    {...register('patientFirstName')} 
+                    placeholder="Rahul" 
+                    onInput={(e) => {
+                      const val = e.currentTarget.value;
+                      e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    }}
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium text-slate-900 dark:text-white" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Patient Last Name</label>
+                  <input 
+                    {...register('patientLastName')} 
+                    placeholder="Sharma" 
+                    onInput={(e) => {
+                      const val = e.currentTarget.value;
+                      e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    }}
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-medium text-slate-900 dark:text-white" 
+                  />
                 </div>
               </div>
 

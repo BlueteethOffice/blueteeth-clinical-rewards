@@ -68,7 +68,7 @@ export default function AssignedCasesPage() {
     const matchesSearch = 
       c.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.mobile.includes(searchTerm) ||
+      (c.mobile || '').includes(searchTerm) ||
       c.treatmentType.toLowerCase().includes(searchTerm.toLowerCase());
     
     if (filterStatus === 'all') return matchesSearch;

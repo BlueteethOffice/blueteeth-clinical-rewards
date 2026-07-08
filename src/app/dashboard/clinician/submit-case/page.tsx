@@ -31,8 +31,8 @@ import { TREATMENT_POINTS } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const formSchema = z.object({
-  patientName: z.string().min(2, 'Patient name must be at least 2 characters'),
-  mobile: z.string().length(10, 'Mobile number must be exactly 10 digits').regex(/^\d+$/, 'Only numbers allowed'),
+  patientFirstName: z.string().min(2, 'First name must be at least 2 characters'),
+  patientLastName: z.string().min(1, 'Last name is required'),
   age: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 1 && Number(val) <= 100, 'Age must be between 1 and 100'),
   gender: z.string().min(1, 'Please select gender'),
   treatmentType: z.string().min(1, 'Please select treatment type'),
@@ -44,12 +44,12 @@ const formSchema = z.object({
     today.setHours(0,0,0,0);
     date.setHours(0,0,0,0);
     
-    const tenDaysAgo = new Date();
-    tenDaysAgo.setDate(today.getDate() - 10);
-    tenDaysAgo.setHours(0,0,0,0);
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(today.getMonth() - 1);
+    oneMonthAgo.setHours(0,0,0,0);
     
-    return date >= tenDaysAgo && date <= today;
-  }, 'Date must be between today and 10 days ago'),
+    return date >= oneMonthAgo && date <= today;
+  }, 'Date must be between today and 1 month ago'),
   notes: z.string().optional(),
 });
 
@@ -81,9 +81,9 @@ export default function ClinicianSubmitCasePage() {
 
   const today = new Date();
   const maxDate = today.toISOString().split('T')[0];
-  const tenDaysAgo = new Date();
-  tenDaysAgo.setDate(today.getDate() - 10);
-  const minDate = tenDaysAgo.toISOString().split('T')[0];
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(today.getMonth() - 1);
+  const minDate = oneMonthAgo.toISOString().split('T')[0];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'initial' | 'final') => {
     if (e.target.files && e.target.files[0]) {
@@ -133,7 +133,7 @@ export default function ClinicianSubmitCasePage() {
     try {
       // 🚀 TURBO MODE: Start the process and redirect IMMEDIATELY
       const newCaseRef = doc(collection(db, 'cases'));
-      const formattedPatientName = data.patientName.trim();
+      const formattedPatientName = `${data.patientFirstName.trim()} ${data.patientLastName.trim()}`;
       const token = await firebaseUser?.getIdToken();
 
       // 1. Initial Meta-Save (Instant)
@@ -205,29 +205,36 @@ export default function ClinicianSubmitCasePage() {
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2 space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Patient Name</label>
-                <input 
-                  {...register('patientName')} 
-                  required 
-                  onInput={(e) => {
-                    const val = e.currentTarget.value;
-                    e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                  }}
-                  className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg outline-none font-bold text-slate-900" 
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mobile</label>
-                <div className="relative">
-                  <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500" strokeWidth={2.5} />
-                  <input {...register('mobile')} required maxLength={10} className="w-full pl-10 pr-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" />
+              <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-1.5">
+                  <label className="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-wider ml-1">Patient First Name</label>
+                  <input 
+                    {...register('patientFirstName')} 
+                    required 
+                    onInput={(e) => {
+                      const val = e.currentTarget.value;
+                      e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    }}
+                    className="w-full px-5 py-3.5 bg-slate-50 border-2 border-slate-300 rounded-lg outline-none font-extrabold text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 transition-all" 
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-wider ml-1">Patient Last Name</label>
+                  <input 
+                    {...register('patientLastName')} 
+                    required 
+                    onInput={(e) => {
+                      const val = e.currentTarget.value;
+                      e.currentTarget.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    }}
+                    className="w-full px-5 py-3.5 bg-slate-50 border-2 border-slate-300 rounded-lg outline-none font-extrabold text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 transition-all" 
+                  />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Age</label>
+                <label className="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-wider ml-1">Age</label>
                 <div className="relative">
-                  <Activity size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-500" strokeWidth={2.5} />
+                  <Activity size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-600" strokeWidth={3} />
                   <input 
                     {...register('age')} 
                     type="number" 
@@ -239,13 +246,13 @@ export default function ClinicianSubmitCasePage() {
                       if (Number(val) > 100) e.currentTarget.value = '100';
                       if (val.length > 3) e.currentTarget.value = val.slice(0, 3);
                     }}
-                    className="w-full pl-10 pr-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" 
+                    className="w-full pl-10 pr-5 py-3.5 bg-slate-50 border-2 border-slate-300 rounded-lg font-extrabold text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 transition-all outline-none" 
                   />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Gender</label>
-                <select {...register('gender')} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900">
+                <label className="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-wider ml-1">Gender</label>
+                <select {...register('gender')} required className="w-full px-5 py-3.5 bg-slate-50 border-2 border-slate-300 rounded-lg font-extrabold text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 transition-all outline-none cursor-pointer">
                   <option value="">Select</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -253,8 +260,8 @@ export default function ClinicianSubmitCasePage() {
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Date</label>
-                <input {...register('bookingDate')} type="date" min={minDate} max={maxDate} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" />
+                <label className="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-wider ml-1">Date</label>
+                <input {...register('bookingDate')} type="date" min={minDate} max={maxDate} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-slate-300 rounded-lg font-extrabold text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 transition-all outline-none cursor-pointer" />
                 {errors.bookingDate && <p className="text-red-500 text-[10px] font-bold mt-1">{errors.bookingDate.message}</p>}
               </div>
             </div>
@@ -303,11 +310,20 @@ export default function ClinicianSubmitCasePage() {
                     className="w-full pl-10 pr-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-900" 
                   />
                 </div>
+                <div className="space-y-1.5 mt-2">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Clinical Notes (Optional)</label>
+                  <textarea 
+                    {...register('notes')} 
+                    rows={3}
+                    placeholder="Any specific instructions or clinical details..." 
+                    className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg outline-none font-bold text-slate-900 resize-none transition-all"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="space-y-6">
-              <div className="glass-card p-6 rounded-xl border-l-4 border-emerald-500 shadow-sm">
+            <div className="flex flex-col gap-6 h-full">
+              <div className="glass-card p-6 rounded-xl border-l-4 border-emerald-500 shadow-sm flex-1 flex flex-col">
                 <h4 className="font-bold text-slate-900 mb-4 uppercase text-[10px] flex items-center gap-2">
                   <div className="w-7 h-7 bg-gradient-to-br from-emerald-400 to-teal-600 text-white rounded-lg flex items-center justify-center shadow-md">
                     <Upload size={14} strokeWidth={2.5} />
@@ -315,10 +331,10 @@ export default function ClinicianSubmitCasePage() {
                   Initial Proof
                 </h4>
                 {!initialFile ? (
-                  <>
+                  <div className="flex-1 flex">
                     <input type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, 'initial')} className="hidden" id="initial-upload" />
-                    <label htmlFor="initial-upload" className="w-full h-20 border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all"><Plus className="text-slate-400" /></label>
-                  </>
+                    <label htmlFor="initial-upload" className="w-full flex-1 border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all"><Plus className="text-slate-400" /></label>
+                  </div>
                 ) : (
                   <div className="relative w-24 h-24 group">
                     {initialFile.preview === 'pdf' ? (
@@ -334,7 +350,7 @@ export default function ClinicianSubmitCasePage() {
                 )}
               </div>
 
-              <div className="glass-card p-6 rounded-xl border-l-4 border-blue-500 shadow-sm">
+              <div className="glass-card p-6 rounded-xl border-l-4 border-blue-500 shadow-sm flex-1 flex flex-col">
                 <h4 className="font-bold text-slate-900 mb-4 uppercase text-[10px] flex items-center gap-2">
                   <div className="w-7 h-7 bg-gradient-to-br from-blue-400 to-indigo-600 text-white rounded-lg flex items-center justify-center shadow-md">
                     <Upload size={14} strokeWidth={2.5} />
@@ -342,10 +358,10 @@ export default function ClinicianSubmitCasePage() {
                   Final Proof (Optional)
                 </h4>
                 {!finalFile ? (
-                  <>
+                  <div className="flex-1 flex">
                     <input type="file" accept="image/*,application/pdf" onChange={(e) => handleFileChange(e, 'final')} className="hidden" id="final-upload" />
-                    <label htmlFor="final-upload" className="w-full h-20 border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all"><Plus className="text-slate-400" /></label>
-                  </>
+                    <label htmlFor="final-upload" className="w-full flex-1 border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all"><Plus className="text-slate-400" /></label>
+                  </div>
                 ) : (
                   <div className="relative w-24 h-24 group">
                     {finalFile.preview === 'pdf' ? (

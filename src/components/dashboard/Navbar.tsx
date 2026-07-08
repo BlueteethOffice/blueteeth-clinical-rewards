@@ -229,7 +229,7 @@ export default function Navbar({ setIsMobileMenuOpen }: { setIsMobileMenuOpen?: 
                             <div className="w-9 h-9 bg-slate-50 dark:bg-slate-800 rounded flex items-center justify-center text-slate-400 group-hover:bg-cyan-50 group-hover:text-cyan-600 transition-colors"><User size={16} /></div>
                             <div className="min-w-0">
                               <p className="text-sm font-bold text-slate-900 dark:text-white truncate tracking-tight">{c.patientName}</p>
-                              <p className="text-[10px] text-slate-400 font-bold">{c.mobile}</p>
+                              {c.mobile && <p className="text-[10px] text-slate-400 font-bold">{c.mobile}</p>}
                             </div>
                           </div>
                           <div className="text-right">

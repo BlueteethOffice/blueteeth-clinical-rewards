@@ -35,7 +35,7 @@ export type CaseSourceType = 'associate' | 'clinician_self' | 'assigned';
 export interface Case {
   id: string;
   patientName: string;
-  mobile: string;
+  mobile?: string;
   treatmentType: string;
   clinicLocation: string;
   bookingDate: string;

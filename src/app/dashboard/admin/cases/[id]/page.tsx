@@ -355,8 +355,12 @@ export default function AdminCaseDetailPage() {
                         <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-tight">{caseData.patientName}</h2>
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-1.5 text-slate-500 font-bold uppercase text-[9px] tracking-widest">
                           <span className="flex items-center gap-1"><Calendar size={12} className="text-cyan-500" /> {caseData.age || 'N/A'} YRS</span>
-                          <span className="hidden xs:inline w-1 h-1 bg-slate-200 rounded-full" />
-                          <span className="flex items-center gap-1"><Phone size={12} className="text-emerald-500" /> {caseData.mobile}</span>
+                          {caseData.mobile && (
+                            <>
+                              <span className="hidden xs:inline w-1 h-1 bg-slate-200 rounded-full" />
+                              <span className="flex items-center gap-1"><Phone size={12} className="text-emerald-500" /> {caseData.mobile}</span>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -445,7 +445,9 @@ export default function CaseDetailsPage() {
                     </div>
                     <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2 text-[11px] sm:text-sm font-bold text-slate-500">
                       <span className="flex items-center gap-1.5"><User size={14} className="text-cyan-500" /> {caseData.age} Y, {caseData.gender}</span>
-                      <span className="flex items-center gap-1.5"><Phone size={14} className="text-emerald-500" /> {caseData.mobile}</span>
+                      {caseData.mobile && (
+                        <span className="flex items-center gap-1.5"><Phone size={14} className="text-emerald-500" /> {caseData.mobile}</span>
+                      )}
                     </div>
                   </div>
 
