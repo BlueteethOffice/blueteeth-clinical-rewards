@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -61,6 +61,19 @@ export default function SubmitCasePage() {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<{ file: File; preview: string }[]>([]);
   const [showTreatments, setShowTreatments] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowTreatments(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const {
     register,
@@ -298,7 +311,7 @@ export default function SubmitCasePage() {
                 Clinical Details
               </h3>
               <div className="space-y-6">
-                <div className="relative">
+                <div className="relative" ref={dropdownRef}>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1 transition-colors">Treatment Type</label>
                   <button type="button" onClick={() => setShowTreatments(!showTreatments)} className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 rounded-lg text-left flex items-center justify-between font-medium text-slate-900 dark:text-white transition-all">
                     <span>{watch('treatmentType') || 'Select Treatment'}</span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -60,6 +60,19 @@ export default function ClinicianSubmitCasePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showTreatments, setShowTreatments] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowTreatments(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   
   const [initialFile, setInitialFile] = useState<{file: File, preview: string} | null>(null);
   const [finalFile, setFinalFile] = useState<{file: File, preview: string} | null>(null);
@@ -276,7 +289,7 @@ export default function ClinicianSubmitCasePage() {
                 Treatment Details
               </h3>
               <div className="space-y-5 relative">
-                <div className="relative">
+                <div className="relative" ref={dropdownRef}>
                   <button type="button" onClick={() => setShowTreatments(!showTreatments)} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-lg text-left flex items-center justify-between font-bold text-slate-900 hover:bg-slate-100 transition-all">
                     <span>{watch('treatmentType') || 'Select Treatment'}</span>
                     <ChevronDown size={16} className={showTreatments ? 'rotate-180' : ''} />
