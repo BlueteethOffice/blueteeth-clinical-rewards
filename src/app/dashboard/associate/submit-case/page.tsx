@@ -44,12 +44,12 @@ const formSchema = z.object({
     today.setHours(0,0,0,0);
     date.setHours(0,0,0,0);
     
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(today.getMonth() - 1);
-    oneMonthAgo.setHours(0,0,0,0);
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(today.getMonth() - 3);
+    threeMonthsAgo.setHours(0,0,0,0);
     
-    return date >= oneMonthAgo && date <= today;
-  }, 'Date must be between today and 1 month ago'),
+    return date >= threeMonthsAgo && date <= today;
+  }, 'Date must be between today and 3 months ago'),
   notes: z.string().optional(),
 });
 
@@ -92,9 +92,9 @@ export default function SubmitCasePage() {
 
   const today = new Date();
   const maxDate = today.toISOString().split('T')[0];
-  const oneMonthAgo = new Date();
-  oneMonthAgo.setMonth(today.getMonth() - 1);
-  const minDate = oneMonthAgo.toISOString().split('T')[0];
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(today.getMonth() - 3);
+  const minDate = threeMonthsAgo.toISOString().split('T')[0];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
