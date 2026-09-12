@@ -320,7 +320,7 @@ export default function SubmitCasePage() {
                   <AnimatePresence>
                     {showTreatments && (
                       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute z-50 left-0 right-0 mt-2 bg-white dark:bg-slate-900 rounded-lg shadow-2xl border border-slate-100 dark:border-white/10 max-h-60 overflow-y-auto transition-colors">
-                        {Object.keys(TREATMENT_POINTS).map(type => (
+                        {Object.keys(TREATMENT_POINTS).map((type) => (
                           <button key={type} type="button" onClick={() => { setValue('treatmentType', type, { shouldValidate: true }); setShowTreatments(false); }} className="w-full px-5 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium border-b border-slate-50 dark:border-white/5 flex items-center justify-between text-slate-900 dark:text-white transition-all">
                             <span>{type}</span>
                             <span className="text-[10px] font-bold text-slate-400">{TREATMENT_POINTS[type]} PTS</span>

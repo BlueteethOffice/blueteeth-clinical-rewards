@@ -430,6 +430,20 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
+
+            <div className="mt-12 p-6 md:p-8 bg-slate-50 rounded-2xl border border-slate-100 text-center max-w-3xl mx-auto">
+              <p className="text-slate-600 text-sm md:text-base font-medium leading-relaxed">
+                For professional dentist-at-home services and convenient dental care at your doorstep in Delhi NCR, visit{' '}
+                <a 
+                  href="https://blueteeth.in/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="font-bold text-blue-600 hover:text-blue-700 underline underline-offset-4 transition-colors"
+                >
+                  Blueteeth
+                </a>.
+              </p>
+            </div>
           </div>
         </section>
 

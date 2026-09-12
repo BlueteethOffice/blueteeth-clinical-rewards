@@ -58,7 +58,8 @@ service cloud.firestore {
           'Full Mouth Rehab': 20,
           'Scaling & Polishing': 2,
           'Dental X-Ray (RVG)': 1,
-          'Clinical Consultation': 1
+          'Clinical Consultation': 1,
+          'Consultation': 1
         };
         return pointsMap[type];
       }

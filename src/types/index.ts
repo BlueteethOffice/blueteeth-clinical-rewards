@@ -92,6 +92,7 @@ export interface Payout {
 export const TREATMENT_POINTS: Record<string, number> = {
   'Braces & Aligners': 15,
   'Complete Denture': 5,
+  'Consultation': 1,
   'Cosmetic Dentistry': 7,
   'Crowns & Bridges': 4,
   'Dental Fillings': 1,

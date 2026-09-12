@@ -297,7 +297,7 @@ export default function ClinicianSubmitCasePage() {
                   <AnimatePresence>
                     {showTreatments && (
                       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute z-50 left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 max-h-60 overflow-y-auto p-1">
-                        {Object.keys(TREATMENT_POINTS).map(t => (
+                        {Object.keys(TREATMENT_POINTS).map((t) => (
                           <button key={t} type="button" onClick={() => { setValue('treatmentType', t, { shouldValidate: true }); setShowTreatments(false); }} className="w-full px-4 py-2.5 text-left hover:bg-slate-50 rounded-lg transition-all font-bold text-slate-700 text-sm border-b border-slate-50 last:border-none">
                             {t}
                           </button>
